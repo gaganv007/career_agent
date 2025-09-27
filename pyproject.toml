@@ -1,0 +1,23 @@
+[project]
+name = "metcs-633-bu-agent"
+version = "0.1.0"
+description = "An agent designed for BU MET CS633. Its intent is to provide students with career advice and course recommendations based on the tent."
+authors = [
+    {name = "Sean Silver", email = "smsilver@bu.edu"},
+    {name = "Brendan Collins", email = "bcollins@bu.edu"},
+    {name = "Gagan Veginati", email = "gaganvbu@bu.edu"},
+    {name = "Jonthan Rothendler", email = "jroth@bu.edu"},
+    {name = "Zhara Omirzak", email = "zharas01@bu.edu"}
+]
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+    "google-adk (>=1.14.1,<2.0.0)",
+    "litellm (>=1.77.4,<2.0.0)",
+    "streamlit (>=1.50.0,<2.0.0)",
+    "docker (>=7.1.0,<8.0.0)"
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
