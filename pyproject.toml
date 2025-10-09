@@ -1,7 +1,7 @@
 [project]
 name = "metcs-633-bu-agent"
 version = "0.1.0"
-description = "An agent designed for BU MET CS633. Its intent is to provide students with career advice and course recommendations based on the tent."
+description = "An agent designed for BU MET CS633 (Fall 2025). Its intent is to provide students with career advice and course recommendations based on the tent."
 authors = [
     {name = "Sean Silver", email = "smsilver@bu.edu"},
     {name = "Brendan Collins", email = "bcollins@bu.edu"},
@@ -12,12 +12,16 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.12,<4.0"
 dependencies = [
-    "google-adk (>=1.14.1,<2.0.0)",
-    "litellm (>=1.77.4,<2.0.0)",
-    "streamlit (>=1.50.0,<2.0.0)",
-    "docker (>=7.1.0,<8.0.0)"
+    "black>=25.9.0",
+    "docker>=7.1.0",
+    "firestore>=0.0.8",
+    "flask>=3.1.2",
+    "google-adk>=1.15.1",
+    "kubernetes>=34.1.0",
+    "logging>=0.4.9.6",
+    "networkx>=3.5",
+    "pandas>=2.3.3",
+    "pytest>=8.4.2",
+    "react>=4.3.0",
+    "spacy>=3.8.7",
 ]
-
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
