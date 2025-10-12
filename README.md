@@ -14,7 +14,7 @@ Coming Soon!
 ## Library 
 We use [uv](https://docs.astral.sh/uv/getting-started/installation/) to manage libraries for our project. To ensure each developer is using the same libraries, follow these instructions.
 
-1. [Create a Virual Environment](https://code.visualstudio.com/docs/python/environments) in your local copy of the [repo](https://github.com/gaganv007/career_agent)
+1. [Create a Virual Environment](https://code.visualstudio.com/docs/python/environments) in your local copy of the [repo](https://github.com/gaganv007/career_agent); "Python -m venv .venv"
 2. Activate your virtual environment
 3. Open a [terminal](https://code.visualstudio.com/docs/terminal/getting-started)
 4. Type "pip install uv"
