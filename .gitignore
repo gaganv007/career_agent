@@ -3,4 +3,4 @@
 __pycache__/
 .venv/ 
 .vscode/
-src/setup/local_cfg.py
+local_cfg.py

@@ -18,10 +18,13 @@ def build_session_state(**kwargs):
     return state
 
 
-async def update_session_state(service: InMemorySessionService, app_name, user_id, session_id, **kwargs):
+async def update_session_state(
+    service: InMemorySessionService, app_name, user_id, session_id, **kwargs
+):
     stored_session = service.sessions[app_name][user_id][session_id]
     for key, value in kwargs.items():
         stored_session.state[key] = value
+
 
 async def run_conversation(
     head_agent=AGENTS["weather_agent"],
@@ -46,30 +49,45 @@ async def run_conversation(
         session_service=service,  # Uses our session manager
     )
 
+    query_agent = lambda query: call_agent_async(
+        query=prompt,
+        runner=head_runner,
+        user_id=user_id,
+        session_id=session_id,
+    )
+
     prompts = [
-        "Hello there!",
+        "Howdy! I am Brendan. How are you?",
         "What is the weather in New York?",
         "What is the weather in Paris?",
+        "What BLOCKs the request for weather in Tokyo",
         "What is the weather in London?",
         "Thanks, bye!",
     ]
     for prompt in prompts:
         if "new york" in prompt.lower():
-            await update_session_state(service, app_name, user_id, session_id, user_preference_temperature_unit="Fahrenheit")
+            await update_session_state(
+                service,
+                app_name,
+                user_id,
+                session_id,
+                user_preference_temperature_unit="Fahrenheit",
+            )
         else:
-            await update_session_state(service, app_name, user_id, session_id, user_preference_temperature_unit="Celcius")
+            await update_session_state(
+                service,
+                app_name,
+                user_id,
+                session_id,
+                user_preference_temperature_unit="Celcius",
+            )
 
-        response = await call_agent_async(
-            query=prompt,
-            runner=head_runner,
-            user_id=user_id,
-            session_id=session_id,
-        )
+        response = await query_agent(prompt)
         print(response)
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.ERROR)
+    logging.basicConfig(level=logging.INFO)
     try:
         asyncio.run(run_conversation(user_preference_temperature_unit="Celsius"))
     except Exception as e:

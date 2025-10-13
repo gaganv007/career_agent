@@ -1,3 +1,4 @@
+from setup.interactions import block_keyword_guardrail
 from agents.build import build_agent
 from agents.functions import *
 
@@ -62,5 +63,6 @@ AGENTS = {
         _tools=[get_weather],
         _sub_agents=[SUB_AGENTS["greeting_agent"], SUB_AGENTS["farewell_agent"]],
         output_key="last_weather_report",
+        before_model_callback=block_keyword_guardrail,
     ),
 }
