@@ -1,6 +1,17 @@
-from setup.interactions import block_keyword_guardrail
+import logging
+
+logger = logging.getLogger(
+    "AgentLogger"
+)  # Use the same logger name as in src/setup/logger_config.py
+
+from setup.interactions import *
 from agents.build import build_agent
 from agents.functions import *
+
+
+def load_instructions():
+    pass
+
 
 # --- Agent Configuration ---
 instructions = {
@@ -28,6 +39,12 @@ instructions = {
     "farewell_agent": [
         "You are the Farewell Agent. Your ONLY task is to provide a polite goodbye message using the 'say_goodbye' tool. Do not perform any other actions."
     ],
+    "generic_agent": [
+        "You are a helpful assistant.",
+        "You will answer the user to the best your abilities.",
+        "You will query Gemini for information",
+        "You will not store any private or sensitive information.",
+    ],
 }
 
 SUB_AGENTS = {
@@ -48,6 +65,14 @@ SUB_AGENTS = {
 }
 
 AGENTS = {
+    "generic_agent": build_agent(
+        _name="generic_agent_v1",
+        _model="gemini",
+        _description="A general-purpose assistant to answer basic questions.",
+        _instruction=instructions["generic_agent"],
+        _tools=[],
+        before_model_callback=block_keyword_guardrail,
+    ),
     "career_agent": build_agent(
         _name="career_agent_v1",
         _model="gemini",
@@ -64,5 +89,6 @@ AGENTS = {
         _sub_agents=[SUB_AGENTS["greeting_agent"], SUB_AGENTS["farewell_agent"]],
         output_key="last_weather_report",
         before_model_callback=block_keyword_guardrail,
+        before_tool_callback=block_paris_tool_guardrail,
     ),
 }

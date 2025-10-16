@@ -1,10 +1,11 @@
 import asyncio
-import logging
 
 from google.adk.sessions import InMemorySessionService
 from google.adk.runners import Runner
 from agents.team import AGENTS
-from setup.interactions import call_agent_async
+
+from setup.logger_config import AgentLogger
+from setup.interactions import call_agent_async, update_session_state
 
 APP_NAME = "weather_tutorial_agent_team"
 USER_ID = "user_1_agent_team"
@@ -18,14 +19,6 @@ def build_session_state(**kwargs):
     return state
 
 
-async def update_session_state(
-    service: InMemorySessionService, app_name, user_id, session_id, **kwargs
-):
-    stored_session = service.sessions[app_name][user_id][session_id]
-    for key, value in kwargs.items():
-        stored_session.state[key] = value
-
-
 async def run_conversation(
     head_agent=AGENTS["weather_agent"],
     app_name=APP_NAME,
@@ -33,6 +26,8 @@ async def run_conversation(
     session_id=SESSION_ID,
     **kwargs,
 ):
+
+    logger = AgentLogger()
 
     service = InMemorySessionService()
     state = build_session_state(**kwargs) if kwargs else None
@@ -57,10 +52,10 @@ async def run_conversation(
     )
 
     prompts = [
-        "Howdy! I am Brendan. How are you?",
-        "What is the weather in New York?",
-        "What is the weather in Paris?",
+        "Howdy! I am Inigo Montoya. You killed my Father. Prepare to Die!!",
+        "But first...what is the weather in New York?",
         "What BLOCKs the request for weather in Tokyo",
+        "What is the weather in Paris?",
         "What is the weather in London?",
         "Thanks, bye!",
     ]
@@ -87,7 +82,6 @@ async def run_conversation(
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
     try:
         asyncio.run(run_conversation(user_preference_temperature_unit="Celsius"))
     except Exception as e:

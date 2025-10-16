@@ -1,18 +1,22 @@
 import logging
-from setup.agent_logs import *
 
 logging.getLogger("google_genai.types").setLevel(logging.ERROR)
+logger = logging.getLogger("AgentLogger")
 
+from google.adk.sessions import InMemorySessionService
 from google.adk.agents.callback_context import CallbackContext
+
 from google.adk.models.llm_request import LlmRequest
 from google.adk.models.llm_response import LlmResponse
 from google.genai import types  # For creating response content
-from typing import Optional
+from typing import Optional, Dict, Any  # For type hints
+
+from google.adk.tools.base_tool import BaseTool
+from google.adk.tools.tool_context import ToolContext
 
 
 async def call_agent_async(query: str, runner, user_id, session_id) -> str:
     """Sends a query to the agent and prints the final response."""
-    logging.info(f"\n>>> User Query: {query}")
 
     # Prepare the user's message in ADK format
     content = types.Content(role="user", parts=[types.Part(text=query)])
@@ -20,18 +24,12 @@ async def call_agent_async(query: str, runner, user_id, session_id) -> str:
     final_response_text = "Agent did not produce a final response."  # Default
 
     # Key Concept: run_async executes the agent logic and yields Events.
-    # We iterate through events to find the final answer.
     async for event in runner.run_async(
         user_id=user_id, session_id=session_id, new_message=content
     ):
-        logging.info(
-            f"  [Event] Author: {event.author}, Type: {type(event).__name__}, Final: {event.is_final_response()}, Content: {event.content}"
-        )
-
         # Key Concept: is_final_response() marks the concluding message for the turn.
         if event.is_final_response():
             if event.content and event.content.parts:
-                # Assuming text response in the first part
                 final_response_text = event.content.parts[0].text
             elif (
                 event.actions and event.actions.escalate
@@ -42,10 +40,19 @@ async def call_agent_async(query: str, runner, user_id, session_id) -> str:
             # Add more checks here if needed (e.g., specific error codes)
             break  # Stop processing events once the final response is found
 
-        new_log_entry = prepare_entry(data=[user_id, session_id, query, final_response_text, event.author, type(event).__name__, event.is_final_response(), event.content.parts[0].text],
-                        columns=["User_ID", "Session_ID", "User_Query", "Response", "Event_Author", "Event_Type", "Is_Final_Response", "Event_Content"])
-        append_df_to_excel(new_log_entry, sheet_name="Query Log")
+    logger.info(
+        f"User_ID: {user_id}, Session_ID: {session_id}\nEvent_Author: {event.author}, Event_Type: {type(event).__name__}, Is_Final_Response: {event.is_final_response()}\nEvent_Content: {event.content.parts[0].text}, Query: {query}, Response: {final_response_text}"
+    )
     return f"{final_response_text}"
+
+
+async def update_session_state(
+    service: InMemorySessionService, app_name, user_id, session_id, **kwargs
+):
+    stored_session = service.sessions[app_name][user_id][session_id]
+    for key, value in kwargs.items():
+        stored_session.state[key] = value
+        logging.info(f"Updated state: {key} = {value}")
 
 
 def block_keyword_guardrail(
@@ -75,7 +82,7 @@ def block_keyword_guardrail(
 
     logging.info(
         f"--- Callback: Inspecting last user message: '{last_user_message_text[:100]}...' ---"
-    )  # Log first 100 chars
+    )
 
     # --- Guardrail Logic ---
     keyword_to_block = "BLOCK"
@@ -105,3 +112,55 @@ def block_keyword_guardrail(
         )
     else:
         return None  # Returning None signals ADK to continue normally
+
+
+def block_paris_tool_guardrail(
+    tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext
+) -> Optional[Dict]:
+    """
+    Checks if 'get_weather_stateful' is called for 'Paris'.
+    If so, blocks the tool execution and returns a specific error dictionary.
+    Otherwise, allows the tool call to proceed by returning None.
+    """
+    tool_name = tool.name
+    agent_name = tool_context.agent_name  # Agent attempting the tool call
+    logger.info(
+        f"--- Callback: block_paris_tool_guardrail running for tool '{tool_name}' in agent '{agent_name}' ---"
+    )
+    logger.info(f"--- Callback: Inspecting args: {args} ---")
+
+    # --- Guardrail Logic ---
+    target_tool_name = "get_weather"
+    blocked_city = "paris"
+
+    # Check if it's the correct tool and the city argument matches the blocked city
+    if tool_name == target_tool_name:
+        city_argument = args.get("city", "")  # Safely get the 'city' argument
+        if city_argument and city_argument.lower() == blocked_city:
+            logger.info(
+                f"--- Callback: Detected blocked city '{city_argument}'. Blocking tool execution! ---"
+            )
+            # Optionally update state
+            tool_context.state["guardrail_tool_block_triggered"] = True
+            logging.info(
+                f"--- Callback: Set state 'guardrail_tool_block_triggered': True ---"
+            )
+
+            # Return a dictionary matching the tool's expected output format for errors
+            # This dictionary becomes the tool's result, skipping the actual tool run.
+            return {
+                "status": "error",
+                "error_message": f"Policy restriction: Weather checks for '{city_argument.capitalize()}' are currently disabled by a tool guardrail.",
+            }
+        else:
+            logger.info(
+                f"--- Callback: City '{city_argument}' is allowed for tool '{tool_name}'. ---"
+            )
+    else:
+        logger.info(
+            f"--- Callback: Tool '{tool_name}' is not the target tool. Allowing. ---"
+        )
+
+    # If the checks above didn't return a dictionary, allow the tool to execute
+    logger.info(f"--- Callback: Allowing tool '{tool_name}' to proceed. ---")
+    return None  # Returning None allows the actual tool function to run

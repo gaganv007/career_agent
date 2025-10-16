@@ -1,11 +1,14 @@
 import logging
-import agents.functions as functions
+
+logger = logging.getLogger("AgentLogger")
+
 from google.adk.agents import Agent
 from local_cfg import MODEL_GEMINI_2_0_FLASH, MODEL_OPENAI_GPT_4
 
 
 def format_instruction(instruction_list: list[str]) -> str:
     return " ".join(instruction_list)
+
 
 def select_model(model_name: str) -> str:
     if "gemini" in model_name.lower():
@@ -34,11 +37,11 @@ def build_agent(
             sub_agents=_sub_agents,
             **kwargs,
         )
-        logging.info(
-            f"✅ Agent '{_name}' created with model '{_model}' and tools: {_tools}"
+        logger.info(
+            f"Agent '{_name}' created with model '{_model}' and tools: {_tools}"
         )
 
         return agent
     except Exception as e:
-        logging.error(f"❌ Error Creating Agent {_name}: {e}")
+        logger.error(f"Error Creating Agent {_name}: {e}")
         raise e
