@@ -1,15 +1,15 @@
 import asyncio
-
+from datetime import datetime
 from google.adk.sessions import InMemorySessionService
 from google.adk.runners import Runner
-from agents.team import AGENTS
 
 from setup.logger_config import AgentLogger
-from setup.interactions import call_agent_async, update_session_state
+from setup.interactions import query_agent, update_session_state, update_callback_state
+from agents.team import AGENT, SUB_AGENTS
 
-APP_NAME = "weather_tutorial_agent_team"
-USER_ID = "user_1_agent_team"
-SESSION_ID = "session_001_agent_team"
+APP_NAME = "BU MET 633 Fall 2025 Term Project"
+USER_ID = "test_user_123"
+SESSION_ID = f"test_session_001_{datetime.now().strftime('%Y%m%d%H%M%S')}"
 
 
 def build_session_state(**kwargs):
@@ -20,7 +20,7 @@ def build_session_state(**kwargs):
 
 
 async def run_conversation(
-    head_agent=AGENTS["weather_agent"],
+    head_agent=AGENT,
     app_name=APP_NAME,
     user_id=USER_ID,
     session_id=SESSION_ID,
@@ -28,57 +28,39 @@ async def run_conversation(
 ):
 
     logger = AgentLogger()
-
     service = InMemorySessionService()
     state = build_session_state(**kwargs) if kwargs else None
 
-    # The 'await' keywords INSIDE this function are necessary for async operations.
-    # Create the specific session where the conversation will happen
     await service.create_session(
         app_name=app_name, user_id=user_id, session_id=session_id, state=state
     )
 
     head_runner = Runner(
-        agent=head_agent,  # The agent we want to run
-        app_name=app_name,  # Associates runs with our app
-        session_service=service,  # Uses our session manager
+        agent=head_agent,
+        app_name=app_name,
+        session_service=service,
     )
 
-    query_agent = lambda query: call_agent_async(
-        query=prompt,
-        runner=head_runner,
-        user_id=user_id,
-        session_id=session_id,
-    )
+    print("Chat with the agent (type 'exit' or 'quit' to end)")
+    print("-" * 50)
 
-    prompts = [
-        "Howdy! I am Inigo Montoya. You killed my Father. Prepare to Die!!",
-        "But first...what is the weather in New York?",
-        "What BLOCKs the request for weather in Tokyo",
-        "What is the weather in Paris?",
-        "What is the weather in London?",
-        "Thanks, bye!",
-    ]
-    for prompt in prompts:
-        if "new york" in prompt.lower():
-            await update_session_state(
-                service,
-                app_name,
-                user_id,
-                session_id,
-                user_preference_temperature_unit="Fahrenheit",
-            )
-        else:
-            await update_session_state(
-                service,
-                app_name,
-                user_id,
-                session_id,
-                user_preference_temperature_unit="Celcius",
-            )
+    while True:
+        prompt = input("\nYou: ").strip()
 
-        response = await query_agent(prompt)
-        print(response)
+        if prompt.lower() in ["exit", "quit"]:
+            print("\nGoodbye!")
+            break
+
+        if not prompt:
+            continue
+
+        response = await query_agent(
+            query=prompt,
+            runner=head_runner,
+            user_id=user_id,
+            session_id=session_id,
+        )
+        print(f"\nAgent: {response}")
 
 
 if __name__ == "__main__":

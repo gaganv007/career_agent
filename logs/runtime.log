@@ -1,109 +1,48 @@
-2025-10-15 20:03:33,159 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:126
---- Callback: block_paris_tool_guardrail running for tool 'transfer_to_agent' in agent 'weather_agent_v1' ---
-2025-10-15 20:03:33,159 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:129
---- Callback: Inspecting args: {'agent_name': 'greeting_agent_v1'} ---
-2025-10-15 20:03:33,159 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:159
---- Callback: Tool 'transfer_to_agent' is not the target tool. Allowing. ---
-2025-10-15 20:03:33,159 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:164
---- Callback: Allowing tool 'transfer_to_agent' to proceed. ---
-2025-10-15 20:03:34,779 - AgentLogger - INFO
-interactions.py @ call_agent_async:43
-User_ID: user_1_agent_team, Session_ID: session_001_agent_team
-Event_Author: greeting_agent_v1, Event_Type: Event, Is_Final_Response: True, Event_Content: Hello, Inigo Montoya!
+2025-10-17 16:43:48,580 - AgentLogger - INFO
+Guardrails.py @ __call__:67
+--- Callback: block_keyword_guardrail running for agent: generic_agent_v1 ---
+2025-10-17 16:43:48,581 - AgentLogger - INFO
+Guardrails.py @ __call__:187
+--- Callback: token_limit_guardrail running for agent: generic_agent_v1 ---
+2025-10-17 16:43:48,581 - AgentLogger - INFO
+Guardrails.py @ __call__:218
+Estimated token count: 1
+2025-10-17 16:43:51,205 - AgentLogger - INFO
+interactions.py @ query_agent:36
+User_ID: test_user_123, Session_ID: test_session_001_20251017164336
+Event_Author: greeting_agent_v1, Event_Type: Event, Is_Final_Response: True
+Event_Content: Hello! How can I help you today?
+Query: Hell, Response: Hello! How can I help you today?
 
-Query: Howdy! I am Inigo Montoya. You killed my Father. Prepare to Die!!, Response: Hello, Inigo Montoya!
+2025-10-17 16:43:56,466 - AgentLogger - INFO
+Guardrails.py @ __call__:67
+--- Callback: block_keyword_guardrail running for agent: generic_agent_v1 ---
+2025-10-17 16:43:56,466 - AgentLogger - INFO
+Guardrails.py @ __call__:187
+--- Callback: token_limit_guardrail running for agent: generic_agent_v1 ---
+2025-10-17 16:43:56,466 - AgentLogger - INFO
+Guardrails.py @ __call__:218
+Estimated token count: 3
+2025-10-17 16:43:57,227 - AgentLogger - INFO
+interactions.py @ query_agent:36
+User_ID: test_user_123, Session_ID: test_session_001_20251017164336
+Event_Author: generic_agent_v1, Event_Type: Event, Is_Final_Response: True
+Event_Content: I am sorry, I am not able to provide information about that topic. Is there anything else I can help you with?
+Query: Hell on earth, Response: I am sorry, I am not able to provide information about that topic. Is there anything else I can help you with?
 
-2025-10-15 20:03:36,535 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:126
---- Callback: block_paris_tool_guardrail running for tool 'get_weather' in agent 'weather_agent_v1' ---
-2025-10-15 20:03:36,535 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:129
---- Callback: Inspecting args: {'city': 'New York'} ---
-2025-10-15 20:03:36,535 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:155
---- Callback: City 'New York' is allowed for tool 'get_weather'. ---
-2025-10-15 20:03:36,535 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:164
---- Callback: Allowing tool 'get_weather' to proceed. ---
-2025-10-15 20:03:36,623 - AgentLogger - INFO
-functions.py @ get_weather:48
---- Function 'get_weather' called with: 'New York' ---
-2025-10-15 20:03:36,623 - AgentLogger - INFO
-functions.py @ get_weather:54
---- Tool: Reading state 'user_preference_temperature_unit': Fahrenheit ---
-2025-10-15 20:03:37,226 - AgentLogger - INFO
-interactions.py @ call_agent_async:43
-User_ID: user_1_agent_team, Session_ID: session_001_agent_team
-Event_Author: weather_agent_v1, Event_Type: Event, Is_Final_Response: True, Event_Content: The weather in New york is sunny with a temperature of 77°F.
-
-Query: But first...what is the weather in New York?, Response: The weather in New york is sunny with a temperature of 77°F.
-
-2025-10-15 20:03:37,230 - AgentLogger - INFO
-interactions.py @ call_agent_async:43
-User_ID: user_1_agent_team, Session_ID: session_001_agent_team
-Event_Author: weather_agent_v1, Event_Type: Event, Is_Final_Response: True, Event_Content: I cannot process this request because it contains the blocked keyword 'BLOCK'.
-Query: What BLOCKs the request for weather in Tokyo, Response: I cannot process this request because it contains the blocked keyword 'BLOCK'.
-2025-10-15 20:03:37,910 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:126
---- Callback: block_paris_tool_guardrail running for tool 'get_weather' in agent 'weather_agent_v1' ---
-2025-10-15 20:03:37,910 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:129
---- Callback: Inspecting args: {'city': 'Paris'} ---
-2025-10-15 20:03:37,910 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:139
---- Callback: Detected blocked city 'Paris'. Blocking tool execution! ---
-2025-10-15 20:03:38,688 - AgentLogger - INFO
-interactions.py @ call_agent_async:43
-User_ID: user_1_agent_team, Session_ID: session_001_agent_team
-Event_Author: weather_agent_v1, Event_Type: Event, Is_Final_Response: True, Event_Content: I am sorry, I cannot fulfill this request. Weather checks for Paris are currently disabled.
-
-Query: What is the weather in Paris?, Response: I am sorry, I cannot fulfill this request. Weather checks for Paris are currently disabled.
-
-2025-10-15 20:03:39,399 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:126
---- Callback: block_paris_tool_guardrail running for tool 'get_weather' in agent 'weather_agent_v1' ---
-2025-10-15 20:03:39,399 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:129
---- Callback: Inspecting args: {'city': 'London'} ---
-2025-10-15 20:03:39,399 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:155
---- Callback: City 'London' is allowed for tool 'get_weather'. ---
-2025-10-15 20:03:39,399 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:164
---- Callback: Allowing tool 'get_weather' to proceed. ---
-2025-10-15 20:03:39,400 - AgentLogger - INFO
-functions.py @ get_weather:48
---- Function 'get_weather' called with: 'London' ---
-2025-10-15 20:03:39,400 - AgentLogger - INFO
-functions.py @ get_weather:54
---- Tool: Reading state 'user_preference_temperature_unit': Celcius ---
-2025-10-15 20:03:40,119 - AgentLogger - INFO
-interactions.py @ call_agent_async:43
-User_ID: user_1_agent_team, Session_ID: session_001_agent_team
-Event_Author: weather_agent_v1, Event_Type: Event, Is_Final_Response: True, Event_Content: The weather in London is cloudy with a temperature of 15°C.
-
-Query: What is the weather in London?, Response: The weather in London is cloudy with a temperature of 15°C.
-
-2025-10-15 20:03:40,825 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:126
---- Callback: block_paris_tool_guardrail running for tool 'transfer_to_agent' in agent 'weather_agent_v1' ---
-2025-10-15 20:03:40,826 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:129
---- Callback: Inspecting args: {'agent_name': 'farewell_agent_v1'} ---
-2025-10-15 20:03:40,826 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:159
---- Callback: Tool 'transfer_to_agent' is not the target tool. Allowing. ---
-2025-10-15 20:03:40,826 - AgentLogger - INFO
-interactions.py @ block_paris_tool_guardrail:164
---- Callback: Allowing tool 'transfer_to_agent' to proceed. ---
-2025-10-15 20:03:41,868 - AgentLogger - INFO
-interactions.py @ call_agent_async:43
-User_ID: user_1_agent_team, Session_ID: session_001_agent_team
-Event_Author: farewell_agent_v1, Event_Type: Event, Is_Final_Response: True, Event_Content: Goodbye! Have a great day.
-
-Query: Thanks, bye!, Response: Goodbye! Have a great day.
+2025-10-17 16:44:04,064 - AgentLogger - INFO
+Guardrails.py @ __call__:67
+--- Callback: block_keyword_guardrail running for agent: generic_agent_v1 ---
+2025-10-17 16:44:04,065 - AgentLogger - INFO
+Guardrails.py @ __call__:187
+--- Callback: token_limit_guardrail running for agent: generic_agent_v1 ---
+2025-10-17 16:44:04,065 - AgentLogger - INFO
+Guardrails.py @ __call__:218
+Estimated token count: 5
+2025-10-17 16:44:04,913 - AgentLogger - INFO
+interactions.py @ query_agent:36
+User_ID: test_user_123, Session_ID: test_session_001_20251017164336
+Event_Author: generic_agent_v1, Event_Type: Event, Is_Final_Response: True
+Event_Content: I am a general-purpose assistant designed to answer basic questions. If your question requires more specialized knowledge, I can transfer you to another agent.
+Query: what is your purpose, Response: I am a general-purpose assistant designed to answer basic questions. If your question requires more specialized knowledge, I can transfer you to another agent.
 
