@@ -12,7 +12,7 @@ def format_instruction(instruction_list: list[str]) -> str:
 
 def select_model(model_name: str) -> str:
     if "gemini" in model_name.lower():
-        return MODEL_GEMINI_2_0_FLASH
+        return str(MODEL_GEMINI_2_0_FLASH)
     else:
         raise ValueError(f"Unsupported model: {model_name}")
 

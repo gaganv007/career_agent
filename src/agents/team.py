@@ -40,10 +40,13 @@ SUB_AGENTS = {
     "greeting": build_agent(
         _name="greeting_agent_v1",
         _model="gemini",
-        _description="Handles simple greetings and hellos using the 'say_hello' tool",
+        _description="Handles simple greetings and hellos to start the conversation. Will lead the user to asking for career advice",
         _instruction=[
-            "You are the Greeting Agent. Your ONLY task is to provide a friendly greeting using the 'say_hello' tool. Do nothing else."
+            "You are the Greeting Agent.",
+            "Your task is to provide a friendly greeting using the 'say_hello' tool and also use the 'say_warning' tool.",
+            "You should get the user to ask for career advice and do nothing else.",
         ],
+        tools=[say_hello, say_warning],
     ),
     "farewell": build_agent(
         _name="farewell_agent_v1",
@@ -52,10 +55,11 @@ SUB_AGENTS = {
         _instruction=[
             "You are the Farewell Agent. Your ONLY task is to provide a polite goodbye message using the 'say_goodbye' tool. Do not perform any other actions."
         ],
+        tools=[say_goodbye],
     ),
 }
 
-# Function Guardrail Example
+# Tool Guardrails
 function_rules = {
     "get_weather": {
         "location": ["Area51", "Restricted Zone"],
@@ -64,20 +68,22 @@ function_rules = {
 }
 function_guard = FunctionGuard(function_rules)
 
-query_guard = QueryGuard(blocked_words=["classified", "confidential"])
+query_guard = QueryGuard(
+    blocked_words=["sex", "drugs", "murder", "crime", "rape", "exploit", "slave"]
+)
 token_guard = TokenGuard(max_tokens=125)
 
-AGENT = build_agent(
+#Primary Orchestrator
+orchestrator = build_agent(
     _name="generic_agent_v1",
     _model="gemini",
-    _description="A general-purpose assistant to answer basic questions.",
+    _description="An operater agent that directs user inputs to the proper sub-agent.",
     _instruction=[
         "You are a helpful assistant.",
         "You will answer the user to the best your abilities.",
         "You will query Gemini for information",
         "You will not store any private or sensitive information.",
     ],
-    tools=[],
     sub_agents=list(SUB_AGENTS.values()),
     before_model_callback=[query_guard, token_guard],
     before_tool_callback=None,
