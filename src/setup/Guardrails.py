@@ -1,3 +1,4 @@
+# pylint: disable=import-error
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.models.llm_request import LlmRequest
 from google.adk.models.llm_response import LlmResponse
@@ -38,9 +39,10 @@ class QueryGuard:
         Args:
             blocked_words (list, optional): List of words to block. Defaults to empty list.
         """
+        self.name = "QueryGuard"
         self.blocked_words = blocked_words
 
-    def __call__(
+    async def __call__(
         self, callback_context: CallbackContext, llm_request: LlmRequest
     ) -> Optional[LlmResponse]:
         """Inspects the latest user message for blocked keywords.
@@ -80,7 +82,7 @@ class QueryGuard:
             for kw in self.blocked_words:
                 if kw.upper() in last_user_message_text.upper():
                     logger.info(
-                        f"--- Callback: Found '{kw}' in last user message '{last_user_message_text[:100]}...'\nBlocking LLM call! ---"
+                        f"'{kw}' in last user message '{last_user_message_text[:100]}...'\nBlocking"
                     )
                     return LlmResponse(
                         content=types.Content(
@@ -122,6 +124,7 @@ class FunctionGuard:
                     }
                 }
         """
+        self.name = "FunctionGuard"
         self.blocked_params = blocked_params
 
     async def __call__(self, function_call: dict) -> bool:
@@ -167,10 +170,11 @@ class TokenGuard:
         Args:
             max_tokens (int): Maximum number of tokens allowed per query
         """
+        self.name = "TokenGuard"
         self.max_tokens = max_tokens
         self.chars_per_token = 4  # Approximate ratio for English text
 
-    def __call__(
+    async def __call__(
         self, callback_context: CallbackContext, llm_request: LlmRequest
     ) -> Optional[LlmResponse]:
         """

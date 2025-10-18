@@ -1,13 +1,13 @@
+# pylint: disable=import-error
 import logging
 import inspect
-
-logging.getLogger("google_genai.types").setLevel(logging.ERROR)
-logger = logging.getLogger("AgentLogger")
-
 from google.adk.sessions import InMemorySessionService
 from google.adk.agents.callback_context import CallbackContext
 from google.genai import types
 from google.adk.tools.tool_context import ToolContext
+
+logging.getLogger("google_genai.types").setLevel(logging.ERROR)
+logger = logging.getLogger("AgentLogger")
 
 
 async def query_agent(query: str, runner, user_id, session_id) -> str:
@@ -31,9 +31,11 @@ async def query_agent(query: str, runner, user_id, session_id) -> str:
             # Add more checks here if needed (e.g., specific error codes)
             break
 
-    logger.info(
-        f"User_ID: {user_id}, Session_ID: {session_id}\nEvent_Author: {event.author}, Event_Type: {type(event).__name__}, Is_Final_Response: {event.is_final_response()}\nEvent_Content: {event.content.parts[0].text}Query: {query}, Response: {final_response_text}"
-    )
+    log_line = []
+    log_line.append(f"User_ID: {user_id}, Session_ID: {session_id}")
+    log_line.append(f"Event_Author: {event.author}, Event_Type: {type(event).__name__}")  # type: ignore
+    log_line.append(f"Query: {query}, Response: {final_response_text}")  # type: ignore
+    logger.info("%s", [line for line in log_line])
     return f"{final_response_text}"
 
 
