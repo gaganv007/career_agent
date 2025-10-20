@@ -1,0 +1,29 @@
+[project]
+name = "metcs-633-bu-agent"
+version = "0.1.0"
+description = "An agent designed for BU MET CS633 (Fall 2025). Its intent is to provide students with career advice and course recommendations based on the tent."
+authors = [
+    {name = "Sean Silver", email = "smsilver@bu.edu"},
+    {name = "Brendan Collins", email = "bcollins@bu.edu"},
+    {name = "Gagan Veginati", email = "gaganvbu@bu.edu"},
+    {name = "Jonthan Rothendler", email = "jroth@bu.edu"},
+    {name = "Zhara Omirzak", email = "zharas01@bu.edu"}
+]
+readme = "README.md"
+requires-python = ">=3.13,<4.0"
+dependencies = [
+    "black>=25.9.0",
+    "docker>=7.1.0",
+    "firestore>=0.0.8",
+    "flask>=3.1.2",
+    "google-adk>=1.15.1",
+    "kubernetes>=34.1.0",
+    "litellm>=1.77.7",
+    "logging>=0.4.9.6",
+    "networkx>=3.5",
+    "openpyxl>=3.1.5",
+    "pandas>=2.3.3",
+    "pytest>=8.4.2",
+    "react>=4.3.0",
+    "spacy>=3.8.7",
+]
