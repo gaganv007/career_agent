@@ -1,5 +1,8 @@
 import sys
 from pathlib import Path
+import asyncio
+import time
+from collections import deque
 
 # Add src directory to Python path
 project_root = Path(__file__).resolve().parent
@@ -10,7 +13,7 @@ if str(src_path) not in sys.path:
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, timedelta
 from google.adk.sessions import InMemorySessionService
 from google.adk.runners import Runner
 from typing import Optional
@@ -21,6 +24,35 @@ from setup.interactions import query_agent
 from agents.team import orchestrator
 
 app = FastAPI(title="BU Agent API")
+
+# Rate limiting configuration
+class RateLimiter:
+    def __init__(self, max_requests=10, time_window=60):
+        self.max_requests = max_requests
+        self.time_window = time_window  # seconds
+        self.requests = deque()
+        self.lock = asyncio.Lock()
+    
+    async def check_rate_limit(self):
+        async with self.lock:
+            now = time.time()
+            # Remove old requests outside the time window
+            while self.requests and self.requests[0] <= now - self.time_window:
+                self.requests.popleft()
+            
+            # Check if we can make a new request
+            if len(self.requests) >= self.max_requests:
+                # Calculate wait time
+                oldest_request = self.requests[0]
+                wait_time = self.time_window - (now - oldest_request) + 1
+                return False, wait_time
+            
+            # Add current request
+            self.requests.append(now)
+            return True, 0
+
+# Initialize rate limiter (8 requests per minute to be safe)
+rate_limiter = RateLimiter(max_requests=8, time_window=60)
 
 # Enable CORS for frontend communication
 app.add_middleware(
@@ -50,13 +82,20 @@ class ChatResponse(BaseModel):
 async def startup_event():
     """Initialize logger on startup"""
     AgentLogger()
+    print("\n" + "="*60)
     print("BU Agent API Server Started")
-    print("Visit http://localhost:8000/docs for API documentation")
+    print("="*60)
+    print("📍 API URL: http://localhost:8000")
+    print("📚 API Docs: http://localhost:8000/docs")
+    print("⚠️  Rate Limit: 8 requests per minute")
+    print("💡 Tip: Wait at least 8 seconds between messages")
+    print("="*60 + "\n")
 
 @app.get("/")
 async def root():
     return {
         "message": "BU Agent API is running",
+        "rate_limit": "8 requests per minute",
         "endpoints": {
             "/chat": "POST - Send a message to the agent",
             "/health": "GET - Check server health",
@@ -66,6 +105,7 @@ async def root():
 
 @app.get("/health")
 async def health_check():
+    # Health checks don't count against rate limit
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
 @app.post("/chat", response_model=ChatResponse)
@@ -73,9 +113,21 @@ async def chat(request: ChatRequest):
     """
     Send a message to the BU Agent and get a response
     """
+    # Check rate limit first
+    allowed, wait_time = await rate_limiter.check_rate_limit()
+    
+    if not allowed:
+        print(f"\n⚠️  Rate limit exceeded. Wait {wait_time:.1f} seconds before next request.")
+        raise HTTPException(
+            status_code=429,
+            detail=f"Rate limit exceeded. Please wait {wait_time:.1f} seconds before sending another message."
+        )
+    
     try:
         user_id = request.user_id
         session_id = request.session_id or f"session_{user_id}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+        
+        print(f"\n📨 Processing message from {user_id}: '{request.message[:50]}...'")
         
         # Create or get existing session
         session_key = f"{user_id}_{session_id}"
@@ -95,8 +147,12 @@ async def chat(request: ChatRequest):
                 session_service=service,
             )
             sessions[session_key] = runner
+            print(f"✅ Created new session: {session_key}")
         else:
             runner = sessions[session_key]
+        
+        # Add a small delay to prevent rapid-fire requests
+        await asyncio.sleep(0.5)
         
         # Query the agent
         response = await query_agent(
@@ -106,16 +162,36 @@ async def chat(request: ChatRequest):
             session_id=session_id,
         )
         
+        print(f"✅ Response sent successfully")
+        
         return ChatResponse(
             response=response,
             session_id=session_id,
             user_id=user_id
         )
         
+    except HTTPException:
+        # Re-raise HTTP exceptions (like rate limit)
+        raise
+        
     except Exception as e:
         import traceback
-        error_detail = f"Error: {str(e)}\n\nTraceback:\n{traceback.format_exc()}"
-        print(f"\n{'='*60}\nERROR in /chat endpoint:\n{error_detail}\n{'='*60}\n")
+        error_detail = f"Error: {str(e)}"
+        
+        # Check if it's a Google API rate limit error
+        if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
+            print(f"\n⚠️  Google API Rate Limit Hit!")
+            print("Solutions:")
+            print("1. Wait 1 minute for quota to reset")
+            print("2. Switch to a different model in .env")
+            print("3. Reduce request frequency\n")
+            
+            raise HTTPException(
+                status_code=429,
+                detail="Google API quota exceeded. Please wait 60 seconds before trying again."
+            )
+        
+        print(f"\n{'='*60}\nERROR in /chat endpoint:\n{error_detail}\n\nTraceback:\n{traceback.format_exc()}\n{'='*60}\n")
         raise HTTPException(status_code=500, detail=f"Error processing request: {str(e)}")
 
 @app.get("/sessions")

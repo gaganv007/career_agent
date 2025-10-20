@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BU Agent - Debug Mode</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #CC0000;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .debug-panel {
+            background: #ffffcc;
+            border: 1px solid #ffcc00;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .chat-container {
+            min-height: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #fafafa;
+        }
+        
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .user-message {
+            background: #007bff;
+            color: white;
+            margin-left: 20%;
+        }
+        
+        .agent-message {
+            background: white;
+            border: 1px solid #ddd;
+            margin-right: 20%;
+        }
+        
+        .input-area {
+            padding: 20px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+        
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background: #CC0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+        }
+        
+        .status {
+            padding: 10px;
+            background: #e0e0e0;
+            text-align: center;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>BU Agent - Debug Mode</h1>
+        </div>
+        
+        <div class="status" id="status">Ready</div>
+        
+        <div class="debug-panel" id="debugPanel">
+            Debug Log:
+        </div>
+        
+        <div class="chat-container" id="chatContainer">
+            <!-- Messages will appear here -->
+        </div>
+        
+        <div class="input-area">
+            <div class="input-row">
+                <input type="text" id="messageInput" placeholder="Type your message..." autocomplete="off">
+                <button id="sendBtn" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+        let sessionId = null;
+        const userId = 'debug_user_' + Date.now();
+        
+        function addDebugLog(message) {
+            const panel = document.getElementById('debugPanel');
+            const time = new Date().toLocaleTimeString();
+            panel.innerHTML += `<br>[${time}] ${message}`;
+            panel.scrollTop = panel.scrollHeight;
+            console.log(`[DEBUG] ${message}`);
+        }
+        
+        function addMessage(text, type) {
+            addDebugLog(`Adding ${type} message: "${text.substring(0, 50)}..."`);
+            const container = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}-message`;
+            messageDiv.textContent = text;
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const btn = document.getElementById('sendBtn');
+            const status = document.getElementById('status');
+            const message = input.value.trim();
+            
+            if (!message) {
+                addDebugLog('Empty message, aborting');
+                return;
+            }
+            
+            addDebugLog(`Sending message: "${message}"`);
+            
+            // Disable UI
+            input.disabled = true;
+            btn.disabled = true;
+            status.textContent = 'Sending...';
+            
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+            
+            try {
+                const requestBody = {
+                    message: message,
+                    user_id: userId,
+                    session_id: sessionId
+                };
+                
+                addDebugLog(`Request body: ${JSON.stringify(requestBody)}`);
+                
+                const response = await fetch(`${API_URL}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                addDebugLog(`Response status: ${response.status}`);
+                
+                const responseText = await response.text();
+                addDebugLog(`Raw response: ${responseText.substring(0, 100)}...`);
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                    addDebugLog(`Parsed JSON successfully`);
+                } catch (e) {
+                    addDebugLog(`Failed to parse JSON: ${e.message}`);
+                    throw new Error(`Invalid JSON response: ${responseText}`);
+                }
+                
+                if (response.ok) {
+                    if (!sessionId && data.session_id) {
+                        sessionId = data.session_id;
+                        addDebugLog(`Session ID set: ${sessionId}`);
+                    }
+                    
+                    const agentResponse = data.response || 'No response text';
+                    addDebugLog(`Agent response: "${agentResponse.substring(0, 100)}..."`);
+                    
+                    // Add agent message
+                    addMessage(agentResponse, 'agent');
+                    status.textContent = 'Ready';
+                } else {
+                    const error = data.detail || data.error || 'Unknown error';
+                    addDebugLog(`Error from API: ${error}`);
+                    throw new Error(error);
+                }
+                
+            } catch (error) {
+                addDebugLog(`Caught error: ${error.message}`);
+                console.error('Full error:', error);
+                addMessage(`Error: ${error.message}`, 'agent');
+                status.textContent = 'Error occurred';
+            } finally {
+                // Re-enable UI
+                input.disabled = false;
+                btn.disabled = false;
+                input.focus();
+            }
+        }
+        
+        // Allow Enter key to send
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Initialize
+        addDebugLog('Page loaded, ready to chat');
+        document.getElementById('messageInput').focus();
+    </script>
+</body>
+</html>
