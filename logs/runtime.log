@@ -17543,3 +17543,75 @@ guardrails.py @ __call__:69
 2025-10-20 18:06:13,135 - AgentLogger - INFO
 interactions.py @ query_agent:48
 ['User_ID: bu_student_1760997960174, Session_ID: session_bu_student_1760997960174_20251020180608', 'Event_Author: Career_Advisor, Event_Type: Event', 'Query: What courses should I take for AI/ML?, Response: Before I can give you specific advice, what job title are you hoping to achieve in the AI/ML field?\n']
+2025-10-20 18:37:25,773 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-20 18:37:25,774 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 0
+2025-10-20 18:37:25,777 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-20 18:37:27,042 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Greeter ---
+2025-10-20 18:37:27,042 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-20 18:37:27,043 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Greeter ---
+2025-10-20 18:37:28,050 - AgentLogger - INFO
+functions.py @ say_hello:16
+'say_hello': Called with: key='None',Returning 'Hello there! What can I assist you with today?'
+2025-10-20 18:37:28,052 - AgentLogger - INFO
+functions.py @ say_warning:26
+'say_warning': Called, Returning 'I am a bot that runs entirely in memory,                   so this conversation will not be saved once                    you leave or refresh the page.'
+2025-10-20 18:37:28,055 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Greeter ---
+2025-10-20 18:37:28,055 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-20 18:37:28,055 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Greeter ---
+2025-10-20 18:37:28,966 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1760999841912, Session_ID: session_bu_user_1760999841912_20251020183725', 'Event_Author: Greeter, Event_Type: Event', 'Query: hey, Response: Hello there! What can I assist you with today? I am a bot that runs entirely in memory, so this conversation will not be saved once you leave or refresh the page. Are you seeking career advice today?\n']
+2025-10-20 18:37:32,570 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-20 18:37:32,571 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 1
+2025-10-20 18:37:32,571 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-20 18:37:33,395 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Greeter ---
+2025-10-20 18:37:33,396 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-20 18:37:33,396 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Greeter ---
+2025-10-20 18:37:34,151 - AgentLogger - INFO
+functions.py @ say_hello:16
+'say_hello': Called with: key='None',Returning 'Hello there! What can I assist you with today?'
+2025-10-20 18:37:34,152 - AgentLogger - INFO
+functions.py @ say_warning:26
+'say_warning': Called, Returning 'I am a bot that runs entirely in memory,                   so this conversation will not be saved once                    you leave or refresh the page.'
+2025-10-20 18:37:34,154 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Greeter ---
+2025-10-20 18:37:34,154 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-20 18:37:34,154 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Greeter ---
+2025-10-20 18:37:35,376 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1760999849824, Session_ID: session_bu_user_1760999849824_20251020183732', 'Event_Author: Greeter, Event_Type: Event', "Query: Hello!, Response: Hello there! What can I assist you with today? Just a heads up, I am a bot that runs entirely in memory, so this conversation will not be saved once you leave or refresh the page.\n\nI'm great at getting you started, but I think you'll get the best results if you ask for career advice. How does that sound?\n"]

@@ -18,16 +18,12 @@
             --bu-light: #F5F5F5;
             --accent-blue: #0066CC;
             --success-green: #28a745;
-            --warning-orange: #ff6b35;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, var(--bu-red) 0%, var(--bu-red-dark) 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            min-height: 100vh;
             padding: 20px;
         }
 
@@ -38,6 +34,7 @@
             width: 100%;
             max-width: 900px;
             height: 90vh;
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -46,39 +43,27 @@
         .header {
             background: linear-gradient(135deg, var(--bu-red) 0%, var(--bu-red-dark) 100%);
             color: white;
-            padding: 25px;
+            padding: 20px;
             text-align: center;
-            border-bottom: 3px solid var(--bu-red-dark);
         }
 
         .header h1 {
-            font-size: 26px;
-            margin-bottom: 8px;
-            font-weight: 700;
+            font-size: 24px;
+            margin-bottom: 5px;
         }
 
         .header .subtitle {
-            font-size: 15px;
-            opacity: 0.95;
-            font-weight: 400;
-        }
-
-        .header .tagline {
-            font-size: 13px;
-            opacity: 0.85;
-            margin-top: 5px;
-            font-style: italic;
+            font-size: 14px;
+            opacity: 0.9;
         }
 
         .status-bar {
-            padding: 12px 20px;
+            padding: 10px 20px;
             background: var(--bu-light);
             border-bottom: 1px solid #e0e0e0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
         }
 
         .status-indicator {
@@ -86,7 +71,6 @@
             align-items: center;
             gap: 8px;
             font-size: 13px;
-            color: #555;
         }
 
         .status-dot {
@@ -94,44 +78,39 @@
             height: 10px;
             border-radius: 50%;
             background: var(--success-green);
-            animation: pulse 2s infinite;
         }
 
         .status-dot.disconnected {
             background: #dc3545;
-            animation: none;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(0.95); }
-        }
-
-        .agent-info {
-            font-size: 12px;
-            color: #777;
-            padding: 3px 10px;
-            background: white;
-            border-radius: 12px;
-            border: 1px solid #ddd;
-        }
-
-        .chat-container {
+        /* CRITICAL: Make sure chat container is visible and has proper sizing */
+        #chatContainer {
             flex: 1;
             overflow-y: auto;
-            padding: 25px;
+            padding: 20px;
             background: #fafafa;
+            min-height: 300px;
         }
 
-        .message-group {
-            margin-bottom: 20px;
+        /* CRITICAL: Ensure messages are visible */
+        .chat-message {
+            margin: 10px 0;
+            padding: 12px 15px;
+            border-radius: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+            /* Force visibility */
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
             animation: slideIn 0.3s ease;
         }
 
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(15px);
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
@@ -139,107 +118,24 @@
             }
         }
 
-        .message-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .message-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .message-group.user .message-avatar {
-            background: linear-gradient(135deg, var(--accent-blue), #0052a3);
-            color: white;
-        }
-
-        .message-group.agent .message-avatar {
-            background: linear-gradient(135deg, var(--bu-red), var(--bu-red-dark));
-            color: white;
-        }
-
-        .message-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #444;
-        }
-
-        .message-time {
-            font-size: 11px;
-            color: #999;
-            margin-left: auto;
-        }
-
-        .message-content {
-            margin-left: 40px;
-            padding: 14px 18px;
-            border-radius: 16px;
-            word-wrap: break-word;
-            line-height: 1.5;
-            max-width: 80%;
-        }
-
-        .message-group.user .message-content {
+        .user-message {
             background: linear-gradient(135deg, var(--accent-blue), #0052a3);
             color: white;
             margin-left: auto;
-            margin-right: 0;
-            border-bottom-right-radius: 4px;
+            text-align: right;
         }
 
-        .message-group.agent .message-content {
+        .agent-message {
             background: white;
+            border: 2px solid #e0e0e0;
             color: #333;
-            border: 1px solid #e0e0e0;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-right: auto;
         }
 
-        .typing-indicator {
-            display: none;
-            margin-left: 40px;
-            margin-bottom: 15px;
-            padding: 14px 18px;
-            background: white;
-            border-radius: 16px;
-            border: 1px solid #e0e0e0;
-            width: fit-content;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .typing-indicator.active {
-            display: block;
-            animation: slideIn 0.3s ease;
-        }
-
-        .typing-dots {
-            display: flex;
-            gap: 5px;
-        }
-
-        .typing-dots span {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--bu-red);
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
-
-        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
-            40% { transform: scale(1); opacity: 1; }
+        .message-header {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-bottom: 5px;
         }
 
         .input-area {
@@ -250,180 +146,162 @@
 
         .input-container {
             display: flex;
-            gap: 12px;
-            align-items: center;
+            gap: 10px;
         }
 
         #messageInput {
             flex: 1;
-            padding: 14px 18px;
+            padding: 12px 20px;
             border: 2px solid #e0e0e0;
             border-radius: 25px;
             font-size: 15px;
             outline: none;
-            transition: all 0.3s;
-            font-family: inherit;
         }
 
         #messageInput:focus {
             border-color: var(--bu-red);
-            box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.1);
         }
 
         #sendBtn {
             background: linear-gradient(135deg, var(--bu-red), var(--bu-red-dark));
             color: white;
             border: none;
-            padding: 14px 28px;
+            padding: 12px 30px;
             border-radius: 25px;
             cursor: pointer;
             font-weight: 600;
             font-size: 15px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(204, 0, 0, 0.3);
         }
 
         #sendBtn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(204, 0, 0, 0.4);
-        }
-
-        #sendBtn:active:not(:disabled) {
-            transform: translateY(0);
         }
 
         #sendBtn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
 
-        .controls {
+        .typing-indicator {
+            display: none;
+            padding: 10px 15px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            width: fit-content;
+            margin: 10px 0;
+        }
+
+        .typing-indicator.active {
+            display: block;
+        }
+
+        .typing-dots {
             display: flex;
-            gap: 10px;
-            margin-top: 12px;
-            flex-wrap: wrap;
+            gap: 4px;
         }
 
-        .control-btn {
-            padding: 8px 16px;
-            background: var(--bu-light);
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.2s;
-            color: #555;
-            font-weight: 500;
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #999;
+            animation: bounce 1.4s infinite ease-in-out both;
         }
 
-        .control-btn:hover {
-            background: #e0e0e0;
-            border-color: #ccc;
-            transform: translateY(-1px);
-        }
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
 
-        .control-btn:active {
-            transform: translateY(0);
+        @keyframes bounce {
+            0%, 80%, 100% { 
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% { 
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .error-banner {
             background: #fee;
             color: #c00;
-            padding: 12px 20px;
-            margin: 15px 20px;
-            border-radius: 10px;
+            padding: 10px 20px;
+            margin: 10px 20px;
+            border-radius: 8px;
             font-size: 14px;
             display: none;
-            border-left: 4px solid #c00;
         }
 
         .error-banner.show {
             display: block;
-            animation: slideIn 0.3s ease;
         }
 
         .quick-actions {
             display: flex;
             gap: 8px;
-            padding: 0 25px 15px 25px;
+            padding: 15px 20px;
             flex-wrap: wrap;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
         }
 
-        .quick-action-btn {
-            padding: 8px 14px;
+        .quick-btn {
+            padding: 6px 12px;
             background: white;
             border: 2px solid var(--bu-red);
             color: var(--bu-red);
-            border-radius: 20px;
+            border-radius: 15px;
             cursor: pointer;
             font-size: 12px;
             font-weight: 600;
-            transition: all 0.2s;
         }
 
-        .quick-action-btn:hover {
+        .quick-btn:hover {
             background: var(--bu-red);
             color: white;
-            transform: translateY(-2px);
         }
 
-        .welcome-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-left: 4px solid var(--bu-red);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
         }
 
-        .welcome-card h3 {
-            color: var(--bu-red);
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-
-        .welcome-card ul {
-            margin-left: 20px;
+        .control-btn {
+            padding: 6px 12px;
+            background: var(--bu-light);
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
             color: #555;
-            line-height: 1.8;
         }
 
-        .welcome-card li {
-            margin-bottom: 5px;
+        .control-btn:hover {
+            background: #e0e0e0;
         }
 
-        /* Scrollbar styling */
-        .chat-container::-webkit-scrollbar {
-            width: 8px;
+        /* Debug panel - hidden by default, shown when debug mode is on */
+        #debugPanel {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.9);
+            color: #0f0;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 10px;
+            border-radius: 5px;
+            z-index: 9999;
         }
 
-        .chat-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        .chat-container::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 4px;
-        }
-
-        .chat-container::-webkit-scrollbar-thumb:hover {
-            background: #999;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                height: 100vh;
-                border-radius: 0;
-            }
-
-            .header h1 {
-                font-size: 22px;
-            }
-
-            .message-content {
-                max-width: 90%;
-            }
+        #debugPanel.active {
+            display: block;
         }
     </style>
 </head>
@@ -432,7 +310,6 @@
         <div class="header">
             <h1>🎓 BU MET Course & Career Guide</h1>
             <div class="subtitle">Master of Science in Computer Information Systems</div>
-            <div class="tagline">Your intelligent advisor for course selection and career planning</div>
         </div>
 
         <div class="status-bar">
@@ -440,30 +317,22 @@
                 <div class="status-dot" id="statusDot"></div>
                 <span id="statusText">Connecting...</span>
             </div>
-            <div class="agent-info" id="agentInfo">
-                <span id="sessionInfo">Initializing session...</span>
+            <div style="font-size: 12px; color: #666;">
+                Session: <span id="sessionInfo">Not started</span>
             </div>
         </div>
 
         <div class="error-banner" id="errorBanner"></div>
 
-        <div class="quick-actions" id="quickActions">
-            <button class="quick-action-btn" onclick="sendQuickMessage('Hello! I need help with course selection.')">📚 Course Help</button>
-            <button class="quick-action-btn" onclick="sendQuickMessage('I want career advice for data science.')">💼 Career Advice</button>
-            <button class="quick-action-btn" onclick="sendQuickMessage('What courses should I take for AI/ML?')">🤖 AI/ML Path</button>
-            <button class="quick-action-btn" onclick="sendQuickMessage('Help me plan my schedule.')">📅 Schedule Planning</button>
+        <div class="quick-actions">
+            <button class="quick-btn" onclick="sendQuickMessage('Hello!')">👋 Greeting</button>
+            <button class="quick-btn" onclick="sendQuickMessage('I need help with course selection')">📚 Courses</button>
+            <button class="quick-btn" onclick="sendQuickMessage('I want career advice')">💼 Career</button>
+            <button class="quick-btn" onclick="sendQuickMessage('Help me plan my schedule')">📅 Schedule</button>
         </div>
 
-        <div class="chat-container" id="chatContainer">
-            <div class="welcome-card">
-                <h3>Welcome to BU MET Guide!</h3>
-                <ul>
-                    <li><strong>Course Recommendations:</strong> Get personalized course suggestions based on your interests and career goals</li>
-                    <li><strong>Career Guidance:</strong> Receive expert advice on career paths in computer science</li>
-                    <li><strong>Schedule Planning:</strong> Help organizing your academic schedule</li>
-                    <li><strong>Program Information:</strong> Learn about the MS in CIS program at BU MET</li>
-                </ul>
-            </div>
+        <div id="chatContainer">
+            <!-- Messages will appear here -->
         </div>
 
         <div class="input-area">
@@ -478,112 +347,111 @@
                 <input 
                     type="text" 
                     id="messageInput" 
-                    placeholder="Ask me about courses, careers, or your academic path..."
+                    placeholder="Type your message here..."
                     autocomplete="off"
                 >
-                <button id="sendBtn">Send</button>
+                <button id="sendBtn" onclick="sendMessage()">Send</button>
             </div>
             <div class="controls">
-                <button class="control-btn" onclick="clearChat()">🗑️ Clear Chat</button>
-                <button class="control-btn" onclick="newSession()">🔄 New Session</button>
-                <button class="control-btn" onclick="exportChat()">💾 Export Chat</button>
-                <button class="control-btn" onclick="checkHealth()">📡 Check Status</button>
+                <button class="control-btn" onclick="clearChat()">Clear</button>
+                <button class="control-btn" onclick="toggleDebug()">Debug</button>
+                <button class="control-btn" onclick="testDisplay()">Test</button>
             </div>
         </div>
     </div>
 
+    <!-- Debug panel -->
+    <div id="debugPanel"></div>
+
     <script>
+        // Configuration
         const API_URL = 'http://localhost:8000';
-        let currentSessionId = null;
+        let sessionId = null;
+        let messageCount = 0;
+        let debugMode = false;
         
-        // Use persistent user ID from localStorage to maintain sessions across refreshes
-        let currentUserId = localStorage.getItem('bu_user_id');
-        if (!currentUserId) {
-            currentUserId = 'bu_student_' + Date.now();
-            localStorage.setItem('bu_user_id', currentUserId);
+        // Create a unique user ID for this session
+        const userId = 'bu_user_' + Date.now();
+
+        // Debug logging
+        function debug(msg) {
+            console.log(`[DEBUG] ${msg}`);
+            if (debugMode) {
+                const panel = document.getElementById('debugPanel');
+                const time = new Date().toLocaleTimeString();
+                panel.innerHTML = `[${time}] ${msg}<br>` + panel.innerHTML;
+            }
         }
-        
-        let messageHistory = [];
 
-        const chatContainer = document.getElementById('chatContainer');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const typingIndicator = document.getElementById('typingIndicator');
-        const statusText = document.getElementById('statusText');
-        const statusDot = document.getElementById('statusDot');
-        const sessionInfo = document.getElementById('sessionInfo');
-        const errorBanner = document.getElementById('errorBanner');
-        const agentInfo = document.getElementById('agentInfo');
+        // Toggle debug mode
+        function toggleDebug() {
+            debugMode = !debugMode;
+            document.getElementById('debugPanel').classList.toggle('active', debugMode);
+            debug('Debug mode: ' + (debugMode ? 'ON' : 'OFF'));
+        }
 
-        // Rate limiting variables
-        let lastRequestTime = 0;
-        const MIN_REQUEST_INTERVAL = 8000; // 8 seconds minimum between requests
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', async () => {
-            console.log('Page loaded, initializing...');
+        // CRITICAL FUNCTION: Add message to display
+        function addMessageToChat(text, type) {
+            debug(`Adding ${type} message: "${text}"`);
             
-            // Check health
-            await checkHealth();
-            
-            // Update status
-            sessionInfo.textContent = 'Ready - Send a message to start';
-            messageInput.focus();
-            
-            console.log('Initialization complete');
-            
-            // Check for duplicate tabs
-            const existingTab = localStorage.getItem('bu_agent_tab_id');
-            if (existingTab && Date.now() - parseInt(existingTab) < 5000) {
-                showError('⚠️ Another tab may already be open. Close other tabs for best performance.');
-            }
-            localStorage.setItem('bu_agent_tab_id', Date.now().toString());
-        });
-        
-        // Clean up on tab close
-        window.addEventListener('beforeunload', () => {
-            localStorage.removeItem('bu_agent_tab_id');
-        });
-
-        // Send message on Enter
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-
-        sendBtn.addEventListener('click', sendMessage);
-        
-        async function sendMessage(customMessage = null, isInternal = false) {
-            const message = customMessage || messageInput.value.trim();
-            if (!message) return;
-            
-            console.log('Sending message:', message);
-            
-            // Check rate limit
-            const now = Date.now();
-            const timeSinceLastRequest = now - lastRequestTime;
-            if (timeSinceLastRequest < MIN_REQUEST_INTERVAL) {
-                const waitTime = ((MIN_REQUEST_INTERVAL - timeSinceLastRequest) / 1000).toFixed(1);
-                showError(`⏱️ Please wait ${waitTime} seconds before sending another message (rate limit protection)`);
+            const container = document.getElementById('chatContainer');
+            if (!container) {
+                debug('ERROR: Chat container not found!');
                 return;
             }
-            lastRequestTime = now;
 
-            // Disable input
-            setInputState(false);
-            showTypingIndicator(true);
-            hideError();
+            // Create message element
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `chat-message ${type}-message`;
+            
+            // Add header with timestamp
+            const header = document.createElement('div');
+            header.className = 'message-header';
+            header.textContent = `${type === 'user' ? 'You' : 'Agent'} • ${new Date().toLocaleTimeString()}`;
+            
+            // Add message text
+            const textDiv = document.createElement('div');
+            textDiv.textContent = text;
+            
+            msgDiv.appendChild(header);
+            msgDiv.appendChild(textDiv);
+            
+            // CRITICAL: Actually add to container
+            container.appendChild(msgDiv);
+            
+            // Scroll to bottom
+            container.scrollTop = container.scrollHeight;
+            
+            messageCount++;
+            debug(`Message ${messageCount} added successfully`);
+        }
 
-            // Add user message to chat (only if not internal)
-            if (!isInternal) {
-                addMessage(message, 'user');
-                messageInput.value = '';
+        // Send message function
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) {
+                debug('No message to send');
+                return;
             }
-
+            
+            debug(`Sending: "${message}"`);
+            
+            // Clear input and disable
+            input.value = '';
+            input.disabled = true;
+            document.getElementById('sendBtn').disabled = true;
+            
+            // Show typing indicator
+            document.getElementById('typingIndicator').classList.add('active');
+            
+            // Add user message
+            addMessageToChat(message, 'user');
+            
             try {
-                console.log('Making API request...');
+                // Make API call
+                debug('Making API request...');
                 const response = await fetch(`${API_URL}/chat`, {
                     method: 'POST',
                     headers: {
@@ -591,253 +459,123 @@
                     },
                     body: JSON.stringify({
                         message: message,
-                        user_id: currentUserId,
-                        session_id: currentSessionId
+                        user_id: userId,
+                        session_id: sessionId
                     })
                 });
-
-                console.log('Response status:', response.status);
+                
+                debug(`Response status: ${response.status}`);
+                
                 const responseText = await response.text();
-                console.log('Raw response:', responseText);
+                debug(`Response text: ${responseText.substring(0, 100)}...`);
                 
-                let data;
-                try {
-                    data = JSON.parse(responseText);
-                    console.log('Parsed data:', data);
-                } catch (e) {
-                    console.error('Failed to parse JSON:', e);
-                    throw new Error('Invalid server response');
-                }
-
-                if (!response.ok) {
-                    throw new Error(data.detail || `HTTP ${response.status}`);
+                const data = JSON.parse(responseText);
+                
+                if (data.response) {
+                    // Add agent response
+                    addMessageToChat(data.response, 'agent');
+                    
+                    // Update session
+                    if (!sessionId) {
+                        sessionId = data.session_id;
+                        document.getElementById('sessionInfo').textContent = sessionId.substring(0, 20) + '...';
+                        debug(`Session ID set: ${sessionId}`);
+                    }
+                } else {
+                    throw new Error('No response from agent');
                 }
                 
-                // Update session info
-                if (!currentSessionId && data.session_id) {
-                    currentSessionId = data.session_id;
-                    sessionInfo.textContent = `Session: ${data.session_id.substring(0, 15)}...`;
-                    agentInfo.title = `Full Session ID: ${data.session_id}`;
-                }
-
-                // Add agent response - FIXED TO ENSURE IT DISPLAYS
-                const agentResponse = data.response || 'No response from agent';
-                console.log('Adding agent message:', agentResponse);
-                addMessage(agentResponse, 'agent');
-                
-                // Store in history
-                messageHistory.push({
-                    role: 'user',
-                    content: message,
-                    timestamp: new Date().toISOString()
-                });
-                messageHistory.push({
-                    role: 'agent',
-                    content: agentResponse,
-                    timestamp: new Date().toISOString()
-                });
-
             } catch (error) {
-                console.error('Error:', error);
-                showError(`Failed to send message: ${error.message}`);
-                if (!isInternal) {
-                    addMessage('Sorry, I encountered an error. Please check if the server is running and try again.', 'agent');
-                }
+                debug(`Error: ${error.message}`);
+                console.error('Full error:', error);
+                addMessageToChat(`Error: ${error.message}`, 'agent');
+                showError(error.message);
             } finally {
-                showTypingIndicator(false);
-                setInputState(true);
-                messageInput.focus();
+                // Re-enable input
+                input.disabled = false;
+                document.getElementById('sendBtn').disabled = false;
+                document.getElementById('typingIndicator').classList.remove('active');
+                input.focus();
             }
         }
 
-        function addMessage(text, sender) {
-            console.log(`addMessage called: sender=${sender}, text=${text}`);
-            
-            // Make sure we have valid text
-            if (!text) {
-                console.error('addMessage called with empty text!');
-                return;
-            }
-            
-            // Clear welcome card if it exists
-            const welcomeCard = document.querySelector('.welcome-card');
-            if (welcomeCard) {
-                welcomeCard.remove();
-            }
-            
-            const messageGroup = document.createElement('div');
-            messageGroup.className = `message-group ${sender}`;
-            
-            const header = document.createElement('div');
-            header.className = 'message-header';
-            
-            const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            avatar.textContent = sender === 'user' ? '👤' : '🎓';
-            
-            const label = document.createElement('div');
-            label.className = 'message-label';
-            label.textContent = sender === 'user' ? 'You' : 'BU MET Guide';
-            
-            const time = document.createElement('div');
-            time.className = 'message-time';
-            time.textContent = new Date().toLocaleTimeString('en-US', { 
-                hour: 'numeric', 
-                minute: '2-digit' 
-            });
-            
-            header.appendChild(avatar);
-            header.appendChild(label);
-            header.appendChild(time);
-            
-            const content = document.createElement('div');
-            content.className = 'message-content';
-            content.textContent = text;
-            
-            messageGroup.appendChild(header);
-            messageGroup.appendChild(content);
-            
-            // Add to chat container
-            const container = document.getElementById('chatContainer');
-            if (!container) {
-                console.error('Chat container not found!');
-                return;
-            }
-            
-            container.appendChild(messageGroup);
-            container.scrollTop = container.scrollHeight;
-            
-            console.log('Message added successfully');
-        }
-
-        function sendQuickMessage(message) {
-            messageInput.value = message;
+        // Quick message buttons
+        function sendQuickMessage(text) {
+            document.getElementById('messageInput').value = text;
             sendMessage();
         }
 
-        function setInputState(enabled) {
-            messageInput.disabled = !enabled;
-            sendBtn.disabled = !enabled;
-        }
-
-        function showTypingIndicator(show) {
-            const indicator = document.getElementById('typingIndicator');
-            if (indicator) {
-                indicator.classList.toggle('active', show);
-                if (show) {
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-                }
-            }
-        }
-
+        // Clear chat
         function clearChat() {
-            const messages = chatContainer.querySelectorAll('.message-group');
-            messages.forEach(msg => msg.remove());
-            messageHistory = [];
-            
-            // Keep welcome card
-            if (!document.querySelector('.welcome-card')) {
-                location.reload();
-            }
+            document.getElementById('chatContainer').innerHTML = '';
+            messageCount = 0;
+            debug('Chat cleared');
         }
 
-        function newSession() {
-            if (confirm('Start a new session? Your current conversation will be cleared.')) {
-                currentSessionId = null;
-                // Keep the same user ID but create a new session
-                messageHistory = [];
-                sessionInfo.textContent = 'New session - Send a message to start';
-                clearChat();
-                // Don't reload the page - just clear the chat
-                addWelcomeCard();
-            }
-        }
-        
-        function addWelcomeCard() {
-            const welcomeCard = document.createElement('div');
-            welcomeCard.className = 'welcome-card';
-            welcomeCard.innerHTML = `
-                <h3>Welcome to BU MET Guide!</h3>
-                <ul>
-                    <li><strong>Course Recommendations:</strong> Get personalized course suggestions based on your interests and career goals</li>
-                    <li><strong>Career Guidance:</strong> Receive expert advice on career paths in computer science</li>
-                    <li><strong>Schedule Planning:</strong> Help organizing your academic schedule</li>
-                    <li><strong>Program Information:</strong> Learn about the MS in CIS program at BU MET</li>
-                </ul>
-            `;
-            chatContainer.appendChild(welcomeCard);
+        // Test display function
+        function testDisplay() {
+            addMessageToChat('Test user message at ' + new Date().toLocaleTimeString(), 'user');
+            setTimeout(() => {
+                addMessageToChat('Test agent response at ' + new Date().toLocaleTimeString(), 'agent');
+            }, 500);
         }
 
-        function exportChat() {
-            if (messageHistory.length === 0) {
-                alert('No messages to export!');
-                return;
-            }
-
-            const exportData = {
-                sessionId: currentSessionId,
-                userId: currentUserId,
-                exportTime: new Date().toISOString(),
-                messages: messageHistory
-            };
-
-            const dataStr = JSON.stringify(exportData, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(dataBlob);
-            
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `bu-met-chat-${new Date().toISOString().split('T')[0]}.json`;
-            link.click();
-            
-            URL.revokeObjectURL(url);
+        // Show error
+        function showError(msg) {
+            const banner = document.getElementById('errorBanner');
+            banner.textContent = msg;
+            banner.classList.add('show');
+            setTimeout(() => banner.classList.remove('show'), 5000);
         }
 
+        // Check API health
         async function checkHealth() {
             try {
-                const response = await fetch(`${API_URL}/health`, { timeout: 5000 });
+                const response = await fetch(`${API_URL}/health`);
                 if (response.ok) {
-                    setConnectionStatus(true, 'Connected');
+                    document.getElementById('statusDot').classList.remove('disconnected');
+                    document.getElementById('statusText').textContent = 'Connected';
+                    debug('API health check: OK');
                 } else {
-                    throw new Error('Server not responding');
+                    throw new Error('API not responding');
                 }
-            } catch (error) {
-                setConnectionStatus(false, 'Disconnected');
-                showError('Cannot connect to server. Make sure the API is running on http://localhost:8000');
+            } catch (e) {
+                document.getElementById('statusDot').classList.add('disconnected');
+                document.getElementById('statusText').textContent = 'Disconnected';
+                debug('API health check: FAILED');
             }
         }
 
-        function setConnectionStatus(connected, text) {
-            statusText.textContent = text;
-            statusDot.classList.toggle('disconnected', !connected);
-            if (connected) {
-                statusText.style.color = '#28a745';
-            } else {
-                statusText.style.color = '#dc3545';
+        // Enter key handling
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
             }
-        }
+        });
 
-        function showError(message) {
-            console.error('Error shown:', message);
-            const banner = document.getElementById('errorBanner');
-            if (banner) {
-                banner.textContent = message;
-                banner.classList.add('show');
-                setTimeout(() => {
-                    banner.classList.remove('show');
-                }, 5000);
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            debug('Page loaded, initializing...');
+            checkHealth();
+            document.getElementById('messageInput').focus();
+            
+            // Check health every 30 seconds
+            setInterval(checkHealth, 30000);
+            
+            // Add welcome message
+            setTimeout(() => {
+                addMessageToChat('Welcome to BU MET Guide! How can I help you today?', 'agent');
+            }, 1000);
+        });
+
+        // Prevent accidental page unload
+        window.addEventListener('beforeunload', (e) => {
+            if (messageCount > 0) {
+                e.preventDefault();
+                e.returnValue = '';
             }
-        }
-
-        function hideError() {
-            const banner = document.getElementById('errorBanner');
-            if (banner) {
-                banner.classList.remove('show');
-            }
-        }
-
-        // Check health every 30 seconds
-        setInterval(checkHealth, 30000);
+        });
     </script>
 </body>
 </html>
