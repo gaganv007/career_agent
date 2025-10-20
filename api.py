@@ -18,7 +18,7 @@ import uvicorn
 
 from setup.logger_config import AgentLogger
 from setup.interactions import query_agent
-from agents.team import AGENT
+from agents.team import orchestrator
 
 app = FastAPI(title="BU Agent API")
 
@@ -90,7 +90,7 @@ async def chat(request: ChatRequest):
             
             # Create runner for this session
             runner = Runner(
-                agent=AGENT,
+                agent=orchestrator,
                 app_name=APP_NAME,
                 session_service=service,
             )

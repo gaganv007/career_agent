@@ -68,7 +68,8 @@ async def test_greeting():
         "Hello",
         "Hi there",
         "Hey",
-        "Good morning"
+        "Good morning",
+        "Greetings"
     ]
     
     for msg in test_messages:
