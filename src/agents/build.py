@@ -1,9 +1,9 @@
+# pylint: disable=import-error
 import logging
-
-logger = logging.getLogger("AgentLogger")
-
 from google.adk.agents import Agent
 from setup.config import MODEL_GEMINI_2_0_FLASH
+
+logger = logging.getLogger("AgentLogger")
 
 
 def format_instruction(instruction_list: list[str]) -> str:
@@ -12,7 +12,7 @@ def format_instruction(instruction_list: list[str]) -> str:
 
 def select_model(model_name: str) -> str:
     if "gemini" in model_name.lower():
-        return MODEL_GEMINI_2_0_FLASH
+        return str(MODEL_GEMINI_2_0_FLASH)
     else:
         raise ValueError(f"Unsupported model: {model_name}")
 
@@ -33,6 +33,7 @@ def build_agent(
             instruction=format_instruction(_instruction),
             **kwargs,
         )
+        agent.name = _name
         logger.info(f"Agent '{_name}' created")
 
         return agent
