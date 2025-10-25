@@ -5,3 +5,6 @@ __pycache__/
 .vscode/
 local_cfg.py
 .env
+logs/
+*.log
+logs/runtime.log

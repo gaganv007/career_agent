@@ -13,7 +13,7 @@ logger = logging.getLogger("AgentLogger")
 async def query_agent(query: str, runner, user_id, session_id) -> str:
     content = types.Content(role="user", parts=[types.Part(text=query)])
     final_response_text = "Agent did not produce a final response."
-    
+
     print(f"\n🔍 DEBUG: Starting query_agent with message: '{query}'")
 
     # Key Concept: run_async executes the agent logic and yields Events.
@@ -21,11 +21,11 @@ async def query_agent(query: str, runner, user_id, session_id) -> str:
         user_id=user_id, session_id=session_id, new_message=content
     ):
         print(f"📊 DEBUG: Got event type: {type(event).__name__}")
-        
+
         # Key Concept: is_final_response() marks the concluding message for the turn.
         if event.is_final_response():
             print(f"✅ DEBUG: Got final response event")
-            
+
             if event.content and event.content.parts:
                 final_response_text = event.content.parts[0].text
                 print(f"📝 DEBUG: Response text: '{final_response_text[:100]}...'")
@@ -46,7 +46,7 @@ async def query_agent(query: str, runner, user_id, session_id) -> str:
     log_line.append(f"Event_Author: {event.author}, Event_Type: {type(event).__name__}")  # type: ignore
     log_line.append(f"Query: {query}, Response: {final_response_text}")  # type: ignore
     logger.info("%s", [line for line in log_line])
-    
+
     print(f"🔚 DEBUG: Returning response: '{final_response_text[:100]}...'")
     return f"{final_response_text}"
 

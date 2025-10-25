@@ -26,6 +26,7 @@ from agents.team import orchestrator
 app = FastAPI(title="BU Agent API")
 
 # Rate limiting configuration
+## SS: Max number of sentences in a user prompt.
 class RateLimiter:
     def __init__(self, max_requests=10, time_window=60):
         self.max_requests = max_requests
@@ -55,6 +56,7 @@ class RateLimiter:
 rate_limiter = RateLimiter(max_requests=8, time_window=60)
 
 # Enable CORS for frontend communication
+## SS: Resource sharing between ???
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

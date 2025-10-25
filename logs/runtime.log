@@ -17819,3 +17819,588 @@ guardrails.py @ __call__:69
 2025-10-20 21:32:48,098 - AgentLogger - INFO
 interactions.py @ query_agent:48
 ['User_ID: bu_user_1761010361197, Session_ID: session_bu_user_1761010361197_20251020213245', 'Event_Author: Greeter, Event_Type: Event', 'Query: Hello!, Response: Hello there! What can I assist you with today? Just a heads up, I am a bot that runs entirely in memory, so this conversation will not be saved once you leave or refresh the page.\n\nAre you seeking career advice today?\n']
+2025-10-25 14:23:52,683 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:23:52,683 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 6
+2025-10-25 14:23:52,683 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:23:53,503 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Scheduling_Assistant ---
+2025-10-25 14:23:53,504 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-25 14:23:53,504 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Scheduling_Assistant ---
+2025-10-25 14:23:54,100 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: test, Session_ID: session_test_20251025142352', 'Event_Author: Scheduling_Assistant, Event_Type: Event', 'Query: Test from diagnostic mode, Response: Okay, I am now in control. How can I help you?\n']
+2025-10-25 14:24:12,037 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:24:12,038 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 9
+2025-10-25 14:24:12,038 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:24:12,952 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: diagnostic_user, Session_ID: session_diagnostic_user_20251025142411', 'Event_Author: BU_MET_Guide, Event_Type: Event', "Query: I want to become a software engineer, Response: Okay! To best guide you, are you currently enrolled in the Master's of Computer Information Systems program at Boston University's Metropolitan College, or are you considering enrolling? Also, have you declared a specific concentration within the program, or do you have one in mind?\n"]
+2025-10-25 14:32:07,808 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:32:07,809 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 4
+2025-10-25 14:32:07,809 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:32:09,424 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: diagnostic_user, Session_ID: session_diagnostic_user_20251025142411', 'Event_Author: BU_MET_Guide, Event_Type: Event', "Query: Database Management, Response: Great! Since you're interested in Database Management within the Computer Information Systems program, some courses that would be beneficial for a career as a Software Engineer include:\n\n*   **MET CS 669 - Database Design and Implementation:** This course will provide you with a strong foundation in database concepts, design principles, and implementation techniques.\n*   **MET CS 526 - Data Structures and Algorithms:** Understanding data structures and algorithms is crucial for efficient software development, and this course will equip you with the necessary knowledge.\n*   **MET CS 622 - Advanced Programming Techniques:** This course will enhance your programming skills and introduce you to advanced concepts that are valuable for software engineering roles.\n\nAre you interested in learning about other potentially relevant courses, or would you like me to provide more details on any of these specific courses?\n"]
+2025-10-25 14:32:44,529 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:32:44,529 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 16
+2025-10-25 14:32:44,529 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:32:45,471 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: diagnostic_user, Session_ID: session_diagnostic_user_20251025142411', 'Event_Author: BU_MET_Guide, Event_Type: Event', 'Query: Is data strucutres and algorithms relevant to software engineering?, Response: Yes, data structures and algorithms are highly relevant to software engineering. They are fundamental concepts that underpin many aspects of software development. A strong understanding of these concepts enables software engineers to write efficient, scalable, and maintainable code.\n\nWould you like me to elaborate on specific ways data structures and algorithms are used in software engineering?\n']
+2025-10-25 14:34:39,872 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:34:39,873 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-25 14:34:39,873 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:34:40,671 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: diagnostic_user, Session_ID: session_diagnostic_user_20251025142411', 'Event_Author: BU_MET_Guide, Event_Type: Event', 'Query: What is my name, Response: I do not have access to that information. I am designed to respect your privacy and do not store any personal data.\n']
+2025-10-25 14:34:52,068 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:34:52,068 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 10
+2025-10-25 14:34:52,068 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:34:52,718 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: diagnostic_user, Session_ID: session_diagnostic_user_20251025142411', 'Event_Author: BU_MET_Guide, Event_Type: Event', 'Query: For this session, remember my name is John, Response: Understood. I will remember that your name is John for this session. How can I help you, John?\n']
+2025-10-25 14:35:05,235 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:35:05,236 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 10
+2025-10-25 14:35:05,236 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:35:05,962 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: diagnostic_user, Session_ID: session_diagnostic_user_20251025142411', 'Event_Author: BU_MET_Guide, Event_Type: Event', 'Query: What were we speaking about 3 messages ago, Response: Three messages ago, I asked you if you wanted me to elaborate on specific ways data structures and algorithms are used in software engineering.\n']
+2025-10-25 14:35:16,784 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:35:16,784 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 6
+2025-10-25 14:35:16,784 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:35:18,763 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: diagnostic_user, Session_ID: session_diagnostic_user_20251025142411', 'Event_Author: BU_MET_Guide, Event_Type: Event', "Query: Can you continue with that?, Response: Certainly, John. Here are some ways data structures and algorithms are relevant to software engineering:\n\n*   **Efficient Code:** Choosing the right data structure and algorithm can significantly impact the performance of your code. For example, using a hash table for lookups can be much faster than using a list in certain situations.\n*   **Problem Solving:** Many software engineering problems can be solved by applying specific algorithms. Knowing common algorithms like sorting, searching, and graph traversal can help you develop solutions more quickly.\n*   **Scalability:** As software applications grow, it's important to ensure they can handle increasing amounts of data and traffic. Understanding data structures and algorithms is crucial for designing scalable systems.\n*   **Code Optimization:** Data structures and algorithms knowledge helps in identifying bottlenecks in existing code and optimizing them for better performance.\n*   **System Design:** When designing software systems, you need to consider the data structures and algorithms that will be used to store and process data. This is especially important for large-scale systems.\n\nDo you want to explore any of these points in more detail or discuss a specific application of data structures and algorithms in software engineering?\n"]
+2025-10-25 14:35:47,204 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:35:47,204 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 15
+2025-10-25 14:35:47,204 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:35:48,153 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: diagnostic_user, Session_ID: session_diagnostic_user_20251025142411', 'Event_Author: BU_MET_Guide, Event_Type: Event', "Query: What classes at Harvard Extension are relevant to this topic?, Response: I am sorry, but I am only able to provide information regarding Boston University's Metropolitan College.\n"]
+2025-10-25 14:36:02,132 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:36:02,133 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 9
+2025-10-25 14:36:02,133 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:36:03,006 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:36:03,006 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-25 14:36:03,006 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:36:03,820 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: diagnostic_user, Session_ID: session_diagnostic_user_20251025142411', 'Event_Author: Career_Advisor, Event_Type: Event', 'Query: How can I become a teacher at BU MET, Response: To give you the best advice, what teaching title are you hoping to achieve at BU MET (e.g., lecturer, professor, instructor)?\n']
+2025-10-25 14:36:20,728 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:36:20,729 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 2
+2025-10-25 14:36:20,729 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:36:21,744 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:36:21,744 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-25 14:36:21,744 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:36:22,460 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: diagnostic_user, Session_ID: session_diagnostic_user_20251025142411', 'Event_Author: BU_MET_Guide, Event_Type: Event', 'Query: Instructor, Response: I am sorry, I am not equipped to handle this request at this moment.\n']
+2025-10-25 14:36:38,279 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:36:38,279 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 2
+2025-10-25 14:36:38,279 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:36:39,559 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: diagnostic_user, Session_ID: session_diagnostic_user_20251025142411', 'Event_Author: BU_MET_Guide, Event_Type: Event', "Query: Why not?, Response: My primary function is to guide students within the Boston University Metropolitan College Computer Information Systems master's program, especially with course selection and understanding how those courses relate to career goals. While I can provide some general information, I'm not specialized in career advice or faculty positions at BU MET. That's why I attempted to transfer you to the Career Advisor, as they are better equipped to handle questions about becoming an instructor.\n"]
+2025-10-25 14:37:33,392 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:37:33,392 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 5
+2025-10-25 14:37:33,392 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:37:34,033 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:37:34,034 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-25 14:37:34,034 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:37:34,751 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761416613816, Session_ID: session_bu_user_1761416613816_20251025143732', 'Event_Author: Career_Advisor, Event_Type: Event', 'Query: I want career advice, Response: Okay, I can help with that! To give you the best advice, what is your desired job title?\n']
+2025-10-25 14:37:45,171 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:37:45,171 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 4
+2025-10-25 14:37:45,171 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:37:55,214 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:37:55,214 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 1
+2025-10-25 14:37:55,215 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:38:11,773 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:38:11,774 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 10
+2025-10-25 14:38:11,774 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:38:14,995 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: diagnostic_user, Session_ID: session_diagnostic_user_20251025142411', 'Event_Author: BU_MET_Guide, Event_Type: Event', "Query: Ok, then help me become a database designer, Response: Alright, John! To help you become a database designer with your Computer Information Systems degree and the Database Management concentration, let's focus on the most relevant courses and skills.\n\n**Core Courses:**\n\n*   **MET CS 669 - Database Design and Implementation:** This is absolutely essential. It covers the fundamentals of database design, including data modeling, normalization, and SQL.\n*   **MET CS 769 - Advanced Database Management:** This course builds upon CS 669 and explores more advanced topics like database administration, performance tuning, and data warehousing.\n\n**Electives to Consider:**\n\n*   **MET CS 633 - Business Intelligence and Data Analytics:** This can provide valuable context on how databases are used in a business setting.\n*   **MET CS 579 - Data Mining:** Understanding data mining techniques can inform your database design decisions and help you create databases that are optimized for analysis.\n*   **MET CS 777 - Big Data Analytics:** If you're interested in working with large datasets, this course can provide you with the necessary skills.\n\nBeyond coursework, consider these points:\n\n*   **Hands-on Experience:** Seek out opportunities to work with databases, either through internships, projects, or personal projects.\n*   **SQL Expertise:** Become proficient in SQL, the standard language for interacting with databases.\n*   **Data Modeling Skills:** Practice creating data models using tools like ERwin or Lucidchart.\n*   **Understanding of Different Database Systems:** Familiarize yourself with different database systems, such as MySQL, PostgreSQL, Oracle, and SQL Server.\n*   **Cloud Databases:** Explore cloud-based database services like Amazon RDS, Azure SQL Database, and Google Cloud SQL.\n\nDo you have any specific questions about these courses or skills? Perhaps you'd like to discuss which database systems are most in-demand, or how to build a portfolio to showcase your database design abilities?\n"]
+2025-10-25 14:38:38,508 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:38:38,508 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 7
+2025-10-25 14:38:38,508 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:38:39,367 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: diagnostic_user, Session_ID: session_diagnostic_user_20251025142411', 'Event_Author: BU_MET_Guide, Event_Type: Event', 'Query: What day sis CS 777 offered?, Response: I do not have access to the current course scheduling information. Please check the Boston University Metropolitan College website for the most up-to-date class schedules.\n']
+2025-10-25 14:44:17,401 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:44:17,401 - AgentLogger - WARNING
+guardrails.py @ __call__:208
+Query exceeded token limit: 3095 tokens (limit: 125)
+2025-10-25 14:44:17,402 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: diagnostic_user, Session_ID: session_diagnostic_user_20251025142411', 'Event_Author: BU_MET_Guide, Event_Type: Event', "Query: this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes! this is the song that never ends! it just goes on and on my friend! And just when, you think the last verse marks that it's done! You wait a moment, and another one comes!, Response: I cannot process this request as it exceeds the token limit of 125. Please try a shorter query."]
+2025-10-25 14:44:55,139 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:44:55,139 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 13
+2025-10-25 14:44:55,139 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:44:55,863 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: diagnostic_user, Session_ID: session_diagnostic_user_20251025142411', 'Event_Author: BU_MET_Guide, Event_Type: Event', 'Query: What was the estimated token size of the last message?, Response: I am unable to estimate the token size of the previous message.\n']
+2025-10-25 14:47:06,101 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:47:06,101 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-25 14:47:06,101 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:47:06,833 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761416613816, Session_ID: session_bu_user_1761416613816_20251025143732', 'Event_Author: Career_Advisor, Event_Type: Event', 'Query: what are you, Response: I am a career advisor. I can provide career advice. What would you like to know?\n']
+2025-10-25 14:47:17,405 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:47:17,405 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 7
+2025-10-25 14:47:17,405 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:47:18,006 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761416613816, Session_ID: session_bu_user_1761416613816_20251025143732', 'Event_Author: Career_Advisor, Event_Type: Event', 'Query: Which agent am I speaking to?, Response: You are currently speaking to the Career_Advisor agent.\n']
+2025-10-25 14:47:33,024 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:47:33,024 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 7
+2025-10-25 14:47:33,024 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Advisor ---
+2025-10-25 14:47:33,648 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:47:33,648 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-25 14:47:33,648 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 14:47:34,117 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761416613816, Session_ID: session_bu_user_1761416613816_20251025143732', 'Event_Author: BU_MET_Guide, Event_Type: Event', 'Query: transfer me to the main agent, Response: Agent did not produce a final response.']
+2025-10-25 16:53:05,983 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:53:05,983 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 9
+2025-10-25 16:53:05,983 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:53:06,965 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Course_Agent ---
+2025-10-25 16:53:06,965 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-25 16:53:06,965 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Course_Agent ---
+2025-10-25 16:53:22,116 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:53:22,116 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 9
+2025-10-25 16:53:22,116 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:53:22,819 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Course_Agent ---
+2025-10-25 16:53:22,819 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-25 16:53:22,819 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Course_Agent ---
+2025-10-25 16:53:25,415 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:53:25,416 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 1
+2025-10-25 16:53:25,416 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:53:26,322 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761425594150, Session_ID: session_bu_user_1761425594150_20251025165324', 'Event_Author: BU_MET_Guide, Event_Type: Event', "Query: Hello!, Response: Hello! How can I help you with your questions regarding the Computer Information Systems program at Boston University's Metropolitan College?\n"]
+2025-10-25 16:53:38,133 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:53:38,133 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 9
+2025-10-25 16:53:38,133 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:53:38,815 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Course_Agent ---
+2025-10-25 16:53:38,815 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-25 16:53:38,816 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Course_Agent ---
+2025-10-25 16:53:42,375 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:53:42,376 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 0
+2025-10-25 16:53:42,376 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:53:43,423 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761425594150, Session_ID: session_bu_user_1761425594150_20251025165324', 'Event_Author: BU_MET_Guide, Event_Type: Event', 'Query: Why, Response: It looks like I need more information to provide relevant course recommendations. Could you tell me a bit about your background, interests, and career goals within the field of Computer Information Systems? This will help me tailor the recommendations to your specific needs.\n']
+2025-10-25 16:56:02,936 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:56:02,936 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 6
+2025-10-25 16:56:02,936 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:56:03,714 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Agent ---
+2025-10-25 16:56:03,714 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-25 16:56:03,715 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Agent ---
+2025-10-25 16:56:06,757 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:56:06,757 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 0
+2025-10-25 16:56:06,757 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:56:07,399 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761425755595, Session_ID: session_bu_user_1761425755595_20251025165606', 'Event_Author: BU_MET_Guide, Event_Type: Event', "Query: why, Response: I am here to assist you with your questions regarding the Computer Information Systems program at Boston University's Metropolitan College. Do you have any specific questions I can help you with?\n"]
+2025-10-25 16:56:13,912 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:56:13,912 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 6
+2025-10-25 16:56:13,912 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:56:14,461 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Agent ---
+2025-10-25 16:56:14,461 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-25 16:56:14,461 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Agent ---
+2025-10-25 16:56:19,841 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:56:19,841 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 2
+2025-10-25 16:56:19,841 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:56:20,470 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761425755595, Session_ID: session_bu_user_1761425755595_20251025165606', 'Event_Author: BU_MET_Guide, Event_Type: Event', 'Query: no response, Response: Okay, I will transfer you to the Career_Agent, who is specialized in providing career advice related to Computer Information Systems.\n']
+2025-10-25 16:56:27,475 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:56:27,476 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 5
+2025-10-25 16:56:27,476 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:56:28,185 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761425755595, Session_ID: session_bu_user_1761425755595_20251025165606', 'Event_Author: BU_MET_Guide, Event_Type: Event', "Query: who am I speaking to, Response: You are speaking to BU_MET_Guide, a helpful assistant designed for Boston University's Metropolitan College. I am specialized in helping students that are interested in or enrolled in the Master's of Computer Information Systems program.\n"]
+2025-10-25 16:56:32,543 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:56:32,543 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 6
+2025-10-25 16:56:32,543 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 16:56:33,205 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Agent ---
+2025-10-25 16:56:33,205 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-25 16:56:33,205 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Agent ---
+2025-10-25 17:03:40,292 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 17:03:40,293 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 1
+2025-10-25 17:03:40,293 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 17:03:41,036 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761426218034, Session_ID: session_bu_user_1761426218034_20251025170339', 'Event_Author: BU_MET_Guide, Event_Type: Event', "Query: Hello!, Response: How can I help you with your academic and career planning related to the Master's of Computer Information Systems program at Boston University's Metropolitan College?\n"]
+2025-10-25 17:03:46,578 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 17:03:46,578 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 5
+2025-10-25 17:03:46,578 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 17:03:47,182 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Agent ---
+2025-10-25 17:03:47,182 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-25 17:03:47,182 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Agent ---
+2025-10-25 17:03:48,407 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761426218034, Session_ID: session_bu_user_1761426218034_20251025170339', 'Event_Author: Career_Agent, Event_Type: Event', "Query: I want career advice, Response: Okay, I can help you with career advice related to Computer Information Systems. To give you the best advice, could you please tell me:\n\n1.  **Are you interested in a specific CIS job title?** (e.g., Data Scientist, Software Engineer, Cybersecurity Analyst, etc.)\n2.  **What are your current skills and experience levels?**\n3.  **What are your career goals?** (e.g., specific industry, desired salary range, level of responsibility, etc.)\n\nIf you don't have a specific job title in mind, I can suggest some in-demand CIS roles in the U.S. based on current market trends.\n"]
+2025-10-25 17:04:12,220 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Agent ---
+2025-10-25 17:04:12,220 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 9
+2025-10-25 17:04:12,220 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Agent ---
+2025-10-25 17:04:15,135 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761426218034, Session_ID: session_bu_user_1761426218034_20251025170339', 'Event_Author: Career_Agent, Event_Type: Event', "Query: I would like to become a data scientist, Response: Okay, Data Scientist is a popular and in-demand role. Here's a breakdown of the career path, skills, and outlook for Data Scientists in the U.S.:\n\n**Job Title:** Data Scientist\n\n**Role Description:** Data Scientists analyze large datasets to extract meaningful insights, identify trends, and develop predictive models that help organizations make better decisions. They use programming languages (e.g., Python, R), statistical methods, and machine learning techniques.\n\n**Career Path/Progression:**\n\n*   **Entry-Level:** Junior Data Scientist, Data Analyst\n*   **Mid-Level:** Data Scientist\n*   **Senior-Level:** Senior Data Scientist, Lead Data Scientist, Data Science Manager/Architect\n\n**In-Demand Skills:**\n\n*   **Core Skills:**\n    *   Statistical Analysis\n    *   Machine Learning (Regression, Classification, Clustering)\n    *   Data Visualization (e.g., Tableau, Power BI)\n    *   Programming (Python, R)\n    *   Data Wrangling/Cleaning\n    *   SQL\n*   **Emerging Skills:**\n    *   Deep Learning (TensorFlow, PyTorch)\n    *   Big Data Technologies (Spark, Hadoop)\n    *   Cloud Computing (AWS, Azure, GCP)\n    *   Natural Language Processing (NLP)\n    *   Experimentation and causal inference\n    *   Data storytelling\n\n**U.S. Job Market Trends & Salary Data:**\n\n*   According to the U.S. Bureau of Labor Statistics, the median annual wage for data scientists was \\$108,060 in May 2023.\n*   Job outlook is projected to grow 35 percent from 2022 to 2032, much faster than the average for all occupations.\n*   Demand is high across various industries, including technology, finance, healthcare, and marketing.\n\n**Next Steps:**\n\nDo you want me to transfer you to the Course Agent so that you can explore the courses that will help you gain these skills?\n"]
+2025-10-25 17:04:33,291 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Agent ---
+2025-10-25 17:04:33,291 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 9
+2025-10-25 17:04:33,291 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Agent ---
+2025-10-25 17:04:40,852 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761426218034, Session_ID: session_bu_user_1761426218034_20251025170339', 'Event_Author: Course_Agent, Event_Type: Event', "Query: what courses help develop those skills?, Response: Okay, I can help you map those Data Scientist skills to relevant courses and programs at Boston University's Metropolitan College (BU MET). Based on the skills you provided, here's a potential academic pathway:\n\n**Master of Science in Computer Information Systems (MSCIS) with a concentration in Data Analytics:** This is likely the most direct and comprehensive path. It provides a strong foundation in CIS while focusing specifically on the skills needed for data science.\n\nHere are some key courses within the Data Analytics concentration that align with the skills you mentioned:\n\n*   **Core Skills:**\n    *   **Statistical Analysis:**\n        *   **MET CS 664 Probability and Statistics for Analytics:** This course covers fundamental probability and statistical concepts essential for data analysis and modeling.\n    *   **Machine Learning:**\n        *   **MET CS 677 Data Science with Python:** Introduces machine learning algorithms and techniques using Python.\n        *   **MET CS 767 Machine Learning:** Provides a more in-depth exploration of machine learning concepts and algorithms.\n    *   **Data Visualization:**\n        *   While there isn't a course dedicated solely to data visualization, these skills are integrated into several courses, particularly MET CS 677 (Data Science with Python) and MET CS 699 (Data Analytics and Visualization). You might also consider supplemental online courses or workshops to deepen your expertise in tools like Tableau or Power BI.\n    *   **Programming (Python, R):**\n        *   **MET CS 521 Information Structures with Python:** A foundational course for programming in Python.\n        *   **MET CS 677 Data Science with Python:** Further develops Python skills in the context of data science.\n    *   **Data Wrangling/Cleaning:**\n        *   **MET CS 677 Data Science with Python:** Includes techniques for data cleaning and preparation.\n    *   **SQL:**\n        *   **MET CS 625 Business Data Communication and Database Management:** Covers database concepts and SQL for data retrieval and manipulation.\n*   **Emerging Skills:**\n    *   **Deep Learning:**\n        *   **MET CS 764 Applied Deep Learning:** Explores deep learning architectures and applications using frameworks like TensorFlow and PyTorch.\n    *   **Big Data Technologies:**\n        *   **MET CS 698 Data Management and Big Data:** Introduces big data concepts and technologies like Hadoop and Spark.\n    *   **Cloud Computing:**\n        *    While there isn't a dedicated cloud computing course *within* the Data Analytics concentration, consider electives like **MET CS 682 Information Storage and Management** to learn about cloud-based storage solutions. Also, BU MET offers a Graduate Certificate in Cloud Computing, which could be a valuable supplement.\n    *   **Natural Language Processing (NLP):**\n        *   **MET CS 737 Applied Natural Language Processing:** Focuses on NLP techniques and applications.\n    *   **Experimentation and causal inference:**\n         *   These skills are typically developed through practical experience and projects, but the statistical and machine learning courses (MET CS 664, MET CS 677, MET CS 767) will provide the theoretical foundation.\n    *   **Data storytelling:**\n        *   This skill is honed through project-based courses and requires effective communication of data insights. Consider courses that involve presentations and reports.\n\n**Additional Options:**\n\n*   **Graduate Certificate in Data Analytics:** If you're not ready for a full master's program, a graduate certificate can provide a focused introduction to data analytics.\n*   **Individual Courses:** You can also take individual courses to gain specific skills. This is a good option if you have some existing knowledge and want to fill in gaps.\n\n**Important Considerations:**\n\n*   **Prerequisites:** Be sure to check the prerequisites for each course to ensure you have the necessary background knowledge.\n*   **Course Availability:** Confirm that the courses you're interested in are currently being offered. You can check the BU MET website for the most up-to-date course schedules.\n*   **Career Goals:** Tailor your course selection to your specific career goals within data science. For example, if you're interested in NLP, focus on courses like MET CS 737.\n*   **Transfer Credits:** If you have relevant coursework from other institutions, explore the possibility of transferring credits to reduce the length of the program.\n\nWould you like me to provide more details on any of these courses or programs, or perhaps explore other related options?\n"]
+2025-10-25 17:09:15,862 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 17:09:15,862 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 1
+2025-10-25 17:09:15,862 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 17:09:16,526 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761426553471, Session_ID: session_bu_user_1761426553471_20251025170915', 'Event_Author: BU_MET_Guide, Event_Type: Event', "Query: Hello!, Response: Hi there! How can I help you with your academic and career planning for the Master's of Computer Information Systems program at Boston University's Metropolitan College?\n"]
+2025-10-25 17:09:20,309 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 17:09:20,309 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 5
+2025-10-25 17:09:20,309 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: BU_MET_Guide ---
+2025-10-25 17:09:21,135 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Agent ---
+2025-10-25 17:09:21,135 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-25 17:09:21,135 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Agent ---
+2025-10-25 17:09:22,461 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761426553471, Session_ID: session_bu_user_1761426553471_20251025170915', 'Event_Author: Career_Agent, Event_Type: Event', 'Query: I want career advice, Response: Okay, I can help with career advice related to Computer Information Systems (CIS) careers in the U.S.\n\nTo give you the most relevant advice, could you please tell me:\n\n1.  **Are you interested in a specific CIS job title?** (e.g., Data Scientist, Cybersecurity Analyst, Software Engineer, Database Administrator, etc.)\n2.  **Or, are you looking for general career recommendations within the CIS field?** If so, what aspects are most important to you (e.g., high growth potential, high salary, specific skills, etc.)?\n']
+2025-10-25 17:09:32,210 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Agent ---
+2025-10-25 17:09:32,210 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 9
+2025-10-25 17:09:32,211 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Agent ---
+2025-10-25 17:09:36,260 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761426553471, Session_ID: session_bu_user_1761426553471_20251025170915', 'Event_Author: Career_Agent, Event_Type: Event', "Query: I want to be a database administrator, Response: Okay, let's explore the career path for a Database Administrator (DBA) in the U.S. job market. I will outline the core skills, emerging trends, and typical career progression for this role.\n\n**Database Administrator (DBA) Career Path**\n\n**Job Summary:** Database Administrators are responsible for the performance, integrity, and security of databases. They plan, develop, and troubleshoot database systems.\n\n**In-Demand Skills:**\nBased on recent job postings and industry analysis, the following skills are highly sought after for DBAs in the U.S.:\n*   **Core Skills:**\n    *   Database Management Systems (DBMS): SQL Server, Oracle, MySQL, PostgreSQL, NoSQL databases (e.g., MongoDB, Cassandra)\n    *   SQL (Structured Query Language): Writing complex queries, stored procedures, and triggers\n    *   Database Design: Data modeling, normalization, and schema design\n    *   Backup and Recovery: Implementing and testing backup and recovery strategies\n    *   Performance Tuning: Optimizing database performance through indexing, query optimization, and resource allocation\n    *   Security: Implementing security measures to protect data from unauthorized access\n    *   Operating Systems: Windows Server, Linux, Unix\n    *   Scripting: Shell scripting (e.g., Bash, PowerShell) for automation\n*   **Emerging Skills:**\n    *   Cloud Databases: Experience with cloud-based database services (e.g., AWS RDS, Azure SQL Database, Google Cloud SQL)\n    *   Big Data Technologies: Hadoop, Spark, data warehousing solutions\n    *   DevOps Practices: Database automation, CI/CD pipelines for database deployments\n    *   Data Integration: ETL (Extract, Transform, Load) processes and tools\n    *   Database as Code: Managing database configurations using code and version control\n\n**Typical Career Progression:**\n\n*   **Entry-Level:**\n    *   **Job Titles:** Junior DBA, Database Analyst, Database Support Specialist\n    *   **Responsibilities:** Assisting senior DBAs with routine tasks, monitoring database performance, troubleshooting basic issues, writing SQL queries, and performing data backups.\n*   **Mid-Level:**\n    *   **Job Titles:** DBA, Senior Database Analyst\n    *   **Responsibilities:** Designing, implementing, and maintaining databases, performance tuning, security administration, backup and recovery, and troubleshooting complex issues.\n*   **Senior-Level:**\n    *   **Job Titles:** Senior DBA, Lead DBA, Database Architect, Database Manager\n    *   **Responsibilities:** Leading database projects, setting database standards, designing complex database systems, mentoring junior DBAs, and developing database strategies.\n\nI can provide information about salary ranges from the Bureau of Labor Statistics if you would like.\n\nWould you like me to transfer this information to the Course Agent so you can see which courses at BU MET will help you develop these skills?\n"]
+2025-10-25 17:09:49,867 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Agent ---
+2025-10-25 17:09:49,868 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 0
+2025-10-25 17:09:49,868 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Agent ---
+2025-10-25 17:09:55,433 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761426553471, Session_ID: session_bu_user_1761426553471_20251025170915', 'Event_Author: Course_Agent, Event_Type: Event', "Query: yes, Response: Okay, I can map those Database Administrator (DBA) skills to relevant courses and programs at Boston University Metropolitan College (BU MET). Here are my recommendations to build your skills and knowledge for a DBA career:\n\n**Core Skills Development:**\n\n*   **Database Management Systems (DBMS) & SQL:**\n    *   **MET CS 632 - Database Management and Big Data:** This course provides a comprehensive overview of database management systems, including relational databases (SQL) and NoSQL databases. You'll learn about database design, implementation, and administration, covering essential skills for a DBA.\n    *   **MET CS 521 - Information Structures with Python:** While primarily a programming course, the data structures knowledge will help with understanding database internals and optimization.\n*   **Database Design:**\n    *   **MET CS 632 - Database Management and Big Data:** As mentioned above, this course also covers data modeling, normalization, and schema design, crucial for creating efficient and well-structured databases.\n*   **Backup and Recovery, Performance Tuning, and Security:**\n    *   These topics are touched upon in **MET CS 632 - Database Management and Big Data.** However, deeper dives may require independent study and practical experience. Consider pursuing certifications related to specific database platforms (e.g., Oracle Certified Professional, Microsoft Certified Database Administrator).\n*   **Operating Systems (Windows Server, Linux, Unix):**\n    *   **MET CS 625 - Business Data Communication and Network Management:** Touches on networking and server environments, which are important for database deployment.\n*   **Scripting (Shell Scripting):**\n    *   **MET CS 520 - Information Systems Analysis and Design:** The analysis and design concepts can be applied to scripting and automation tasks for database administration.\n\n**Emerging Skills Development:**\n\n*   **Cloud Databases:**\n    *   **MET CS 699 - Cloud Computing:** This course covers cloud computing concepts and platforms, including cloud-based database services like AWS RDS and Azure SQL Database.\n*   **Big Data Technologies:**\n    *   **MET CS 632 - Database Management and Big Data:** Introduces Big Data technologies.\n    *   **MET CS 669 - Big Data Analytics:** Focuses on analyzing large datasets using tools and techniques relevant to big data environments.\n*   **DevOps Practices:**\n    *   No single course covers DevOps for databases directly. Consider supplementing your coursework with online resources and certifications related to DevOps and database automation.\n\n**Academic Pathway Recommendation:**\n\n*   **Master of Science in Computer Information Systems (MSCIS):**\n    *   This program allows you to tailor your coursework to focus on database management and related areas. By strategically selecting courses like MET CS 632 and MET CS 699, you can build a strong foundation for a DBA career.\n    *   Consider a concentration in Data Analytics for enhanced skills in big data technologies.\n\n**Important Considerations:**\n\n*   **Hands-on Experience:** Supplement your coursework with practical experience through internships, personal projects, or volunteer opportunities.\n*   **Certifications:** Consider pursuing industry-recognized certifications related to specific database platforms (e.g., Oracle, Microsoft SQL Server, AWS, Azure).\n*   **Continuous Learning:** The field of database administration is constantly evolving. Stay up-to-date with the latest technologies and trends through online courses, conferences, and publications.\n\nDoes this help you chart a path towards becoming a Database Administrator?\n"]
+2025-10-25 17:10:16,737 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761426553471, Session_ID: session_bu_user_1761426553471_20251025170915', 'Event_Author: Course_Agent, Event_Type: Event', "Query: can you display the results in a table?, Response: Okay, here's the information presented in a table format to better illustrate the skills, corresponding BU MET courses, and their relevance to a Database Administrator career path:\n\n| Skill Area                      | BU MET Course(s)                                             | Relevance to DBA Role                                                                          |\n| --------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |\n| **Core Skills**                   |                                                              |                                                                                                |\n| DBMS & SQL                      | MET CS 632 - Database Management and Big Data                 | Foundational knowledge of database systems, design, implementation, and SQL querying          |\n| Database Design                   | MET CS 632 - Database Management and Big Data                 | Data modeling, normalization, and schema design for efficient database structures               |\n| Backup & Recovery, Performance Tuning, Security | MET CS 632 - Database Management and Big Data                 | Introduction to concepts; requires further independent study and platform-specific certifications |\n| Operating Systems                 | MET CS 625 - Business Data Communication and Network Management | Understanding server environments for database deployment                                        |\n| Scripting                       | MET CS 520 - Information Systems Analysis and Design           | Applying analysis and design concepts to automate DBA tasks                                     |\n| **Emerging Skills**               |                                                              |                                                                                                |\n| Cloud Databases                   | MET CS 699 - Cloud Computing                                 | Experience with cloud-based database services (AWS, Azure, Google Cloud)                       |\n| Big Data Technologies             | MET CS 632 - Database Management and Big Data, MET CS 669 - Big Data Analytics | Working with large datasets and big data environments                                             |\n| DevOps Practices                  | *No direct course; Requires independent study*                | Database automation, CI/CD pipelines for database deployments                                  |\n\n**Key Takeaways:**\n\n*   **MET CS 632 (Database Management and Big Data)** is a cornerstone course for aspiring DBAs, covering many essential skills.\n*   **MET CS 699 (Cloud Computing)** is crucial for developing skills in cloud-based database technologies, an increasingly important area for DBAs.\n*   Consider the **MSCIS program** with a concentration in Data Analytics to gain a comprehensive skillset for database administration and related fields.\n*   Supplement coursework with hands-on experience, certifications, and continuous learning to stay competitive in the DBA job market.\n"]
