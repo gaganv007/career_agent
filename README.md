@@ -9,7 +9,7 @@ While resources exist across university websites, advising offices, and student 
 To address this, our project aims to build an intelligent agent that leverages Gemini to provide real-time, context-aware responses to student inquiries. Whether it's helping a prospective student understand which major suits their interests or guiding a current student on which electives align with a data science career, the agent delivers accurate and accessible advice—bridging the gap between university resources and student needs.
 
 ## User Guide
-Coming Soon!
+Coming Soon
 
 ## Library 
 We use [uv](https://docs.astral.sh/uv/getting-started/installation/) to manage libraries for our project. To ensure each developer is using the same libraries, follow these instructions.
