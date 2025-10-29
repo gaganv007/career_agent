@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BU Agent - DIAGNOSTIC MODE</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .panel {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #CC0000;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+        
+        #chatDisplay {
+            min-height: 400px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 2px solid #CC0000;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 5px;
+        }
+        
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .user-msg {
+            background: #007bff;
+            color: white;
+            text-align: right;
+            margin-left: 20%;
+        }
+        
+        .agent-msg {
+            background: #28a745;
+            color: white;
+            margin-right: 20%;
+        }
+        
+        .test-msg {
+            background: #ffc107;
+            color: black;
+        }
+        
+        #debugLog {
+            min-height: 400px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 2px solid #333;
+            padding: 10px;
+            background: #000;
+            color: #0f0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .input-section {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 10px;
+        }
+        
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #CC0000;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        button {
+            padding: 10px 30px;
+            background: #CC0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background: #A00000;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .test-section {
+            grid-column: 1 / -1;
+            background: #ffffcc;
+            padding: 15px;
+            border-radius: 5px;
+            border: 2px dashed #ff9900;
+        }
+        
+        .test-btn {
+            margin: 5px;
+            background: #ff9900;
+        }
+        
+        .status {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 BU Agent - DIAGNOSTIC MODE 🔍</h1>
+        
+        <div class="status" id="status">
+            Status: Ready | API: <span id="apiStatus">Unknown</span> | Messages: <span id="msgCount">0</span>
+        </div>
+        
+        <div class="panel">
+            <h3>Chat Display</h3>
+            <div id="chatDisplay">
+                <div class="message test-msg">
+                    📍 Initial test message - If you see this, DOM is working!
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <h3>Debug Log</h3>
+            <div id="debugLog">
+                Diagnostic Mode Active...
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🧪 Manual Tests (Click to test display):</h3>
+            <button class="test-btn" onclick="testAddMessage('user')">Add Test User Message</button>
+            <button class="test-btn" onclick="testAddMessage('agent')">Add Test Agent Message</button>
+            <button class="test-btn" onclick="testAddMessage('test')">Add Test System Message</button>
+            <button class="test-btn" onclick="testAPI()">Test API Call</button>
+            <button class="test-btn" onclick="clearAll()">Clear All</button>
+            <button class="test-btn" onclick="showDOMInfo()">Show DOM Info</button>
+        </div>
+        
+        <div class="input-section">
+            <input type="text" id="messageInput" placeholder="Type your message here..." autocomplete="off">
+            <button id="sendBtn" onclick="sendMessage()">Send Real Message</button>
+        </div>
+    </div>
+
+    <script>
+        let messageCounter = 0;
+        let sessionId = null;
+        const API_URL = 'http://localhost:8000';
+        
+        // Debug logging function
+        function debug(msg, type = 'info') {
+            const log = document.getElementById('debugLog');
+            const time = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#ff0000' : type === 'success' ? '#00ff00' : '#00ffff';
+            log.innerHTML += `<div style="color:${color}">[${time}] ${msg}</div>`;
+            log.scrollTop = log.scrollHeight;
+            console.log(`[DEBUG ${type.toUpperCase()}] ${msg}`);
+        }
+        
+        // Add message to display
+        function addMessageToDisplay(text, type) {
+            debug(`addMessageToDisplay called: type=${type}, text="${text}"`, 'info');
+            
+            const display = document.getElementById('chatDisplay');
+            if (!display) {
+                debug('ERROR: chatDisplay element not found!', 'error');
+                return false;
+            }
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${type}-msg`;
+            msgDiv.textContent = `[${type.toUpperCase()}] ${text}`;
+            msgDiv.style.border = '2px solid red'; // Make it VERY visible
+            
+            try {
+                display.appendChild(msgDiv);
+                display.scrollTop = display.scrollHeight;
+                
+                messageCounter++;
+                document.getElementById('msgCount').textContent = messageCounter;
+                
+                debug(`SUCCESS: Message ${messageCounter} added to display`, 'success');
+                return true;
+            } catch (e) {
+                debug(`ERROR adding message: ${e.message}`, 'error');
+                return false;
+            }
+        }
+        
+        // Test adding messages manually
+        function testAddMessage(type) {
+            const testText = `Test ${type} message at ${new Date().toLocaleTimeString()}`;
+            const result = addMessageToDisplay(testText, type);
+            if (result) {
+                alert(`Test ${type} message added successfully! Check the chat display.`);
+            } else {
+                alert(`FAILED to add ${type} message! Check debug log.`);
+            }
+        }
+        
+        // Send real message to API
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) {
+                debug('No message to send', 'error');
+                return;
+            }
+            
+            debug(`Sending message: "${message}"`, 'info');
+            
+            // Add user message
+            addMessageToDisplay(message, 'user');
+            input.value = '';
+            
+            try {
+                debug('Making fetch request...', 'info');
+                
+                const response = await fetch(`${API_URL}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        user_id: 'diagnostic_user',
+                        session_id: sessionId
+                    })
+                });
+                
+                debug(`Response status: ${response.status}`, 'info');
+                
+                const text = await response.text();
+                debug(`Raw response length: ${text.length} chars`, 'info');
+                
+                const data = JSON.parse(text);
+                debug(`Parsed JSON. Response field exists: ${!!data.response}`, 'info');
+                
+                if (data.response) {
+                    debug(`Agent response: "${data.response.substring(0, 100)}..."`, 'success');
+                    
+                    // Add agent response
+                    const added = addMessageToDisplay(data.response, 'agent');
+                    
+                    if (!added) {
+                        debug('CRITICAL: Failed to add agent message to display!', 'error');
+                        // Try alternative method
+                        document.getElementById('chatDisplay').innerHTML += 
+                            `<div style="background:red;color:white;padding:10px;">
+                            FALLBACK: ${data.response}</div>`;
+                    }
+                    
+                    if (!sessionId) {
+                        sessionId = data.session_id;
+                        debug(`Session ID set: ${sessionId}`, 'info');
+                    }
+                } else {
+                    debug('No response field in data!', 'error');
+                    addMessageToDisplay('ERROR: No response from agent', 'test');
+                }
+                
+            } catch (error) {
+                debug(`ERROR: ${error.message}`, 'error');
+                addMessageToDisplay(`Error: ${error.message}`, 'test');
+            }
+        }
+        
+        // Test API directly
+        async function testAPI() {
+            debug('Testing API directly...', 'info');
+            
+            try {
+                const response = await fetch(`${API_URL}/chat`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        message: 'Test from diagnostic mode',
+                        user_id: 'test'
+                    })
+                });
+                
+                const data = await response.json();
+                debug(`API Test Success: ${JSON.stringify(data)}`, 'success');
+                alert(`API Response: ${data.response}`);
+                
+                // Try to add it to display
+                addMessageToDisplay(`API TEST: ${data.response}`, 'agent');
+                
+            } catch (e) {
+                debug(`API Test Failed: ${e.message}`, 'error');
+                alert(`API Test Failed: ${e.message}`);
+            }
+        }
+        
+        // Clear everything
+        function clearAll() {
+            document.getElementById('chatDisplay').innerHTML = 
+                '<div class="message test-msg">Cleared - Display is working!</div>';
+            messageCounter = 0;
+            document.getElementById('msgCount').textContent = '0';
+            debug('All cleared', 'info');
+        }
+        
+        // Show DOM information
+        function showDOMInfo() {
+            const display = document.getElementById('chatDisplay');
+            const info = {
+                exists: !!display,
+                childCount: display ? display.children.length : 0,
+                innerHTML: display ? display.innerHTML.substring(0, 100) : 'N/A',
+                style: display ? window.getComputedStyle(display).display : 'N/A'
+            };
+            
+            debug(`DOM Info: ${JSON.stringify(info, null, 2)}`, 'info');
+            alert(`DOM Info:\n${JSON.stringify(info, null, 2)}`);
+        }
+        
+        // Check API health
+        async function checkAPI() {
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                if (response.ok) {
+                    document.getElementById('apiStatus').textContent = '✅ Connected';
+                    document.getElementById('apiStatus').style.color = 'green';
+                    debug('API health check: OK', 'success');
+                } else {
+                    throw new Error('Not OK');
+                }
+            } catch (e) {
+                document.getElementById('apiStatus').textContent = '❌ Disconnected';
+                document.getElementById('apiStatus').style.color = 'red';
+                debug('API health check: FAILED', 'error');
+            }
+        }
+        
+        // Enter key handling
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Initialize
+        debug('Page loaded - Diagnostic mode ready', 'success');
+        checkAPI();
+        
+        // Test that we can add a message on load
+        setTimeout(() => {
+            debug('Auto-test: Adding welcome message...', 'info');
+            const result = addMessageToDisplay('Diagnostic system initialized', 'test');
+            if (!result) {
+                alert('CRITICAL ERROR: Cannot add messages to display!');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
