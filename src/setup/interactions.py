@@ -14,28 +14,40 @@ async def query_agent(query: str, runner, user_id, session_id) -> str:
     content = types.Content(role="user", parts=[types.Part(text=query)])
     final_response_text = "Agent did not produce a final response."
 
+    logger.debug(f"\n🔍 DEBUG: Starting query_agent with message: '{query}'")
+
     # Key Concept: run_async executes the agent logic and yields Events.
     async for event in runner.run_async(
         user_id=user_id, session_id=session_id, new_message=content
     ):
+        logger.debug(f"📊 DEBUG: Got event type: {type(event).__name__}")
+
         # Key Concept: is_final_response() marks the concluding message for the turn.
         if event.is_final_response():
+            logger.debug(f"✅ DEBUG: Got final response event")
+
             if event.content and event.content.parts:
                 final_response_text = event.content.parts[0].text
+                print(f"📝 DEBUG: Response text: '{final_response_text[:100]}...'")
             elif (
                 event.actions and event.actions.escalate
             ):  # Handle potential errors/escalations
                 final_response_text = (
                     f"Agent escalated: {event.error_message or 'No specific message.'}"
                 )
+                print(f"⚠️ DEBUG: Agent escalated: {final_response_text}")
+            else:
+                print(f"❌ DEBUG: Final response has no content!")
             # Add more checks here if needed (e.g., specific error codes)
             break
 
     log_line = []
-    log_line.append(f"User_ID: {user_id}, Session_ID: {session_id}")
-    log_line.append(f"Event_Author: {event.author}, Event_Type: {type(event).__name__}")  # type: ignore
-    log_line.append(f"Query: {query}, Response: {final_response_text}")  # type: ignore
+    log_line.append(f"\nUser_ID: {user_id}, Session_ID: {session_id}")
+    log_line.append(f"\nEvent_Author: {event.author}, Event_Type: {type(event).__name__}")  # type: ignore
+    log_line.append(f"\nQuery: {query}, Response: {final_response_text}")  # type: ignore
     logger.info("%s", [line for line in log_line])
+
+    logger.debug(f"🔚 DEBUG: Returning response: '{final_response_text[:100]}...'")
     return f"{final_response_text}"
 
 
