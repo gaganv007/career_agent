@@ -1,3 +1,7 @@
+## Use this script to run the chat API Server
+## Then open index.html through a web browser 
+## to interact with the agent via the UI
+
 import sys
 from pathlib import Path
 import asyncio
