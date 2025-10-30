@@ -5,6 +5,16 @@ pre {font-size: 0.8em;},
 # METCS-633-BU-Agent
 An agent fine-tuned for BU Students to ask about career advice and recommended course.
 
+## Table of Contents
+- [Problem Statement](#problem-statement)
+- [Communication Tools](#communication-tools)
+- [Developer's Guide](#developers-guide)
+  - [Library](#library)
+    - [Python Setup](#python-setup)
+    - [UV Install](#uv-install)
+  - [Running the Application Locally](#running-the-application-locally)
+- [User Guide](#user-guide)
+- [Deployment](#deployment)
 
 ### Problem Statement
 Choosing the right courses and planning a career path can be overwhelming for both prospective and current students at Boston University. With a vast array of programs, concentrations, and extracurricular opportunities, students often struggle to find accurate, relevant, and personalized information to make informed decisions about their academic and professional futures.
