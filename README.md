@@ -1,7 +1,3 @@
-<style>
-pre {font-size: 0.8em;},
-</style>
-
 # METCS-633-BU-Agent
 An agent fine-tuned for BU Students to ask about career advice and recommended course.
 
