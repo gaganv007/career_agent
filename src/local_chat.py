@@ -1,3 +1,6 @@
+## Use this script to run a local chat 
+## session with the orchestrator agent via the terminal.
+
 import asyncio
 from datetime import datetime
 from google.adk.sessions import InMemorySessionService  # pylint: disable=import-error
