@@ -107,11 +107,19 @@ The python libraries within your virtual environment should now include all the 
 
 ### Running the Application Locally
 
-1. Run '[api.py](src/api.py)' from Visual Studio Code
+1. If you haven't already, create a local '.env' to hold the LLM API Key
+
+    - See [.env_example](.env_example)
+
+2. Run '[api.py](src/api.py)' from Visual Studio Code
 
     ![Run api.py](documentation/developer_guide/Run_API.png)
 
-2. Open '<a href="src/index.html" target="_blank">index.html</a>' from your preferred web browser
+    - This will create a local web server that runs the agent and processes interactions
+
+3. Open '<a href="src/index.html" target="_blank">index.html</a>' from your preferred web browser
+
+    - This is the front-end application to interact with
 
 ## User Guide
 🚧 Coming Soon
