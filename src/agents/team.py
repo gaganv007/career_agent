@@ -3,8 +3,11 @@ import logging
 from agents.build import build_agent
 
 # LLM Tools / Functions
-from agents.functions import ask_vertex_retrieval, _summarize_course_recommendations
+from agents.functions import _summarize_skills_for_job, _summarize_course_schedule, _summarize_user_memory, _summarize_course_recommendations
+from agents.functions import _create_temporary_user_id, _store_user_memory, _get_user_memory_for_agent
 from google.adk.tools import google_search
+from agents.functions import ask_vertex_retrieval
+from google.genai import types
 
 # LLM Constraints and Guardrails
 from setup.guardrails import QueryGuard, FunctionGuard, TokenGuard
@@ -61,9 +64,12 @@ SUB_AGENTS = {
             growth trends and suggest paths accordingly. If the user requests education or course recommendations, \
             forward or summarize the skills data for the Course Agent. Never make assumptions about unrelated domains. \
             Always maintain factual accuracy and cite or summarize credible U.S.-based sources.",
+            "Always use '_get_user_memory_for_agent' to access any relevant user context before processing requests.",
+            "Always use '_summarize_skills_for_job' when sharing career information to other agents or the user.",
+
         ],
         before_model_callback=[token_guard, query_guard],
-        # tools=[google_search],
+        tools=[_summarize_skills_for_job, _get_user_memory_for_agent],
     ),
     "Course": build_agent(
         _name="Course_Agent",
@@ -93,8 +99,10 @@ SUB_AGENTS = {
             your recommendations are meant to support U.S.-based CIS roles. \
             When the user asks for career advice, defer to the Career Agent's expertise and \
             request their input first.",
+            "Always use '_get_user_memory_for_agent' to access any relevant user context before processing requests.",
+            "Always use '_summarize_course_recommendations' when relaying course information to other agents or the user.",
         ],
-        # tools=[google_search],
+        tools=[_summarize_course_recommendations, _get_user_memory_for_agent],
     ),
     "schedule": build_agent(
         _name="Scheduling_Agent",
@@ -129,8 +137,11 @@ SUB_AGENTS = {
             You may call the Course Agent again if clarification or updated course times are required. \
             You hould maintain contextual awareness of: Current academic term, BU MET’s official course calendar, \
             and the User's past or ongoing courses (if known).",
+            "Always use '_get_user_memory_for_agent' to access any relevant user context before processing requests.",
+            "Always use '_summarize_course_schedule' when relaying schedule information to other agents or the user.",
         ],
-        # tools=[google_search],
+        before_model_callback=[token_guard, query_guard],
+        tools=[_summarize_course_schedule, _get_user_memory_for_agent],
     ),
     "document": build_agent(
         _name="Document_Agent",
@@ -175,8 +186,10 @@ SUB_AGENTS = {
             If the user uploads multiple documents, process them sequentially and maintain context. \
             If document type is ambiguous, ask the user for clarification: \
             'Is this document your transcript or a general academic record?'",
+            "Always use _get_user_memory_for_agent to access any relevant user context before processing documents.",
         ],
         before_model_callback=[token_guard, query_guard],
+        tools=[_get_user_memory_for_agent]
     ),
     "memory": build_agent(
         _name="Memory_Agent",
@@ -227,7 +240,12 @@ SUB_AGENTS = {
             Expose read-only views of user data to other agents upon request. \
             If another agent requests data not yet collected,  \
             trigger a polite query to the user to gather it.",
+            "Always use '_summarize_user_memory' if another agent needs information \
+            the current user. \
+            Always use '_store_user_memory' to save or update user information in memory.",
         ],
+        before_model_callback=[token_guard, query_guard],
+        tools=[_summarize_user_memory, _store_user_memory],
     ),
 }
 
@@ -256,12 +274,21 @@ orchestrator = build_agent(
         Boston Unversity's Metropolitan College or advancing a career in a computer science \
         field will be politely refused.",
         "When providing course recommendations, use the 'summarize_course_recommendations' function to format \
-        the output as an HTML table for better readability.",
+        the output as an HTML table for better readability."
+        "When first interacting with the user, use '_create_temporary_user_id' and the Memory Agent \
+        to create a temporary user ID to track their session and store any relevant information. Do not \
+        proceed until the user ID is created, and do not inform the user of their user_id or of its creation."
+        "Use the Memory Agent to store and retrieve any relevant user information throughout the session."
+        "Use the Document Agent to process any uploaded documents and extract relevant information for other agents."
+        "Use the Career Agent to provide career path recommendations based on user goals."
+        "Use the Course Agent to map career skills to BU MET courses."
+        "Use the Scheduling Agent to help the user build a class schedule \
+        based on course recommendations and the user's preferences and availability.",
     ],
     sub_agents=list(SUB_AGENTS.values()),
     before_model_callback=[token_guard, query_guard],
     before_tool_callback=None,
     after_tool_callback=None,
     after_model_callback=None,
-    tools=[],
+    tools=[_create_temporary_user_id],
 )
