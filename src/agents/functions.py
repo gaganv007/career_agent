@@ -431,3 +431,77 @@ def _get_user_memory_for_agent(user_id: str, fields: Optional[list[str]] = None)
     except Exception as exc:
         logger.exception("Failed to retrieve user memory for %s: %s", user_id, exc)
         return json.dumps({"user_id": user_id, "profile": None}, ensure_ascii=False)
+
+def _summarize_web_search(query: str, results: list[dict[str, Any]], analysis: Optional[str] = None, top_k: Optional[int] = None):
+    """
+    Normalize web search results and optional analysis into a stable JSON structure.
+    Returns a JSON string.
+
+    Output schema:
+    {
+      "query": "<search query>",
+      "returned_count": <int>,
+      "top_k": <int or null>,
+      "timestamp": "<iso ts>",
+      "results": [
+        {
+          "rank": <index starting at 0>,
+          "title": "<page title>",
+          "snippet": "<short snippet or summary>",
+          "url": "<link>",
+          "domain": "<source domain>",
+          "published_at": "<date or null>",
+          "content_type": "<html/pdf/rss/other or null>",
+          "relevance_score": <number or null>,
+          "raw": { ... original item ... }  # kept for debugging if needed
+        },
+        ...
+      ],
+      "analysis": "<aggregated analysis text or null>"
+    }
+    """
+    try:
+        iso_ts = datetime.utcnow().isoformat() + "Z"
+        normalized_results = []
+        for idx, item in enumerate(results or []):
+            if top_k is not None and idx >= top_k:
+                break
+            title = item.get("title") or item.get("headline") or item.get("name") or ""
+            snippet = item.get("snippet") or item.get("summary") or item.get("description") or ""
+            url = item.get("url") or item.get("link") or item.get("uri") or ""
+            domain = None
+            try:
+                # derive domain if possible
+                if url:
+                    domain = url.split("//")[-1].split("/")[0]
+            except Exception:
+                domain = None
+            published = item.get("published") or item.get("published_at") or item.get("date") or None
+            content_type = item.get("type") or item.get("content_type") or None
+            score = item.get("score") or item.get("relevance") or item.get("relevance_score") or None
+
+            normalized = {
+                "rank": idx,
+                "title": title,
+                "snippet": snippet,
+                "url": url,
+                "domain": domain,
+                "published_at": published,
+                "content_type": content_type,
+                "relevance_score": score,
+                "raw": item,
+            }
+            normalized_results.append(normalized)
+
+        payload = {
+            "query": query,
+            "returned_count": len(results or []),
+            "top_k": top_k if top_k is not None else None,
+            "timestamp": iso_ts,
+            "results": normalized_results,
+            "analysis": analysis or None,
+        }
+        return json.dumps(payload, ensure_ascii=False)
+    except Exception as exc:
+        logger.exception("Failed to summarize web search for query '%s': %s", query, exc)
+        return json.dumps({"query": query, "returned_count": 0, "results": [], "analysis": None}, ensure_ascii=False)
