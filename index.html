@@ -3,579 +3,715 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BU MET Guide - Course & Career Advisor</title>
+    <title>BU Course Agent - AI Academic Advisor</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        :root {
-            --bu-red: #CC0000;
-            --bu-red-dark: #A00000;
-            --bu-gray: #2D2D2D;
-            --bu-light: #F5F5F5;
-            --accent-blue: #0066CC;
-            --success-green: #28a745;
-        }
-
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--bu-red) 0%, var(--bu-red-dark) 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            overflow-x: hidden;
         }
-
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 900px;
-            height: 90vh;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -2;
         }
-
-        .header {
-            background: linear-gradient(135deg, var(--bu-red) 0%, var(--bu-red-dark) 100%);
-            color: white;
-            padding: 20px;
-            text-align: center;
+        
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            opacity: 0.4;
+            background: 
+                radial-gradient(circle at 20% 80%, transparent 50%, rgba(255, 255, 255, 0.3) 50.5%),
+                radial-gradient(circle at 80% 20%, transparent 50%, rgba(255, 255, 255, 0.3) 50.5%),
+                radial-gradient(circle at 40% 40%, transparent 50%, rgba(255, 255, 255, 0.3) 50.5%);
+            animation: bgAnimation 20s ease infinite;
         }
-
-        .header h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
+        
+        @keyframes bgAnimation {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-20px, -20px) rotate(120deg); }
+            66% { transform: translate(20px, -20px) rotate(240deg); }
         }
-
-        .header .subtitle {
-            font-size: 14px;
-            opacity: 0.9;
+        
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
-        .status-bar {
-            padding: 10px 20px;
-            background: var(--bu-light);
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
+        
+        .hero-text {
+            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--success-green);
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
         }
-
-        .status-dot.disconnected {
-            background: #dc3545;
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
-
-        /* CRITICAL: Make sure chat container is visible and has proper sizing */
-        #chatContainer {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background: #fafafa;
-            min-height: 300px;
+        
+        .slide-up {
+            animation: slideUp 0.5s ease-out;
         }
-
-        /* CRITICAL: Ensure messages are visible */
-        .chat-message {
-            margin: 10px 0;
-            padding: 12px 15px;
-            border-radius: 10px;
-            max-width: 70%;
-            word-wrap: break-word;
-            /* Force visibility */
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
+        
+        @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
-        .user-message {
-            background: linear-gradient(135deg, var(--accent-blue), #0052a3);
-            color: white;
-            margin-left: auto;
-            text-align: right;
+        
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
-
-        .agent-message {
-            background: white;
-            border: 2px solid #e0e0e0;
-            color: #333;
-            margin-right: auto;
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
-
-        .message-header {
-            font-size: 11px;
-            opacity: 0.7;
-            margin-bottom: 5px;
+        
+        .message-bubble {
+            animation: messageBubble 0.3s ease-out;
         }
-
-        .input-area {
-            padding: 20px;
-            background: white;
-            border-top: 2px solid #e0e0e0;
+        
+        @keyframes messageBubble {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
-
-        .input-container {
-            display: flex;
-            gap: 10px;
-        }
-
-        #messageInput {
-            flex: 1;
-            padding: 12px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 15px;
-            outline: none;
-        }
-
-        #messageInput:focus {
-            border-color: var(--bu-red);
-        }
-
-        #sendBtn {
-            background: linear-gradient(135deg, var(--bu-red), var(--bu-red-dark));
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        #sendBtn:hover:not(:disabled) {
-            transform: translateY(-2px);
-        }
-
-        #sendBtn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
+        
         .typing-indicator {
-            display: none;
-            padding: 10px 15px;
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            width: fit-content;
-            margin: 10px 0;
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
         }
-
-        .typing-indicator.active {
-            display: block;
-        }
-
-        .typing-dots {
-            display: flex;
-            gap: 4px;
-        }
-
-        .typing-dots span {
+        
+        .typing-dot {
             width: 8px;
             height: 8px;
+            margin: 0 2px;
+            background: #fff;
             border-radius: 50%;
-            background: #999;
-            animation: bounce 1.4s infinite ease-in-out both;
+            animation: typingAnimation 1.4s infinite ease-in-out;
         }
-
-        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes bounce {
-            0%, 80%, 100% { 
-                transform: scale(0);
+        
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typingAnimation {
+            0%, 80%, 100% {
+                transform: scale(0.8);
                 opacity: 0.5;
             }
-            40% { 
+            40% {
                 transform: scale(1);
                 opacity: 1;
             }
         }
-
-        .error-banner {
-            background: #fee;
-            color: #c00;
-            padding: 10px 20px;
-            margin: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            display: none;
+        
+        .card-hover {
+            transition: all 0.3s ease;
         }
-
-        .error-banner.show {
-            display: block;
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
-
-        .quick-actions {
-            display: flex;
-            gap: 8px;
-            padding: 15px 20px;
-            flex-wrap: wrap;
-            background: white;
-            border-bottom: 1px solid #e0e0e0;
+        
+        .gradient-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
         }
-
-        .quick-btn {
-            padding: 6px 12px;
-            background: white;
-            border: 2px solid var(--bu-red);
-            color: var(--bu-red);
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
+        
+        .gradient-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
         }
-
-        .quick-btn:hover {
-            background: var(--bu-red);
-            color: white;
+        
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5),
+                        0 0 40px rgba(102, 126, 234, 0.3),
+                        0 0 60px rgba(102, 126, 234, 0.1);
         }
-
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
-
-        .control-btn {
-            padding: 6px 12px;
-            background: var(--bu-light);
-            border: 1px solid #ddd;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 12px;
-            color: #555;
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
         }
-
-        .control-btn:hover {
-            background: #e0e0e0;
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
         }
-
-        /* Debug panel - hidden by default, shown when debug mode is on */
-        #debugPanel {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 300px;
-            max-height: 200px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.9);
-            color: #0f0;
-            padding: 10px;
-            font-family: monospace;
-            font-size: 10px;
-            border-radius: 5px;
-            z-index: 9999;
-        }
-
-        #debugPanel.active {
-            display: block;
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🎓 BU MET Course & Career Guide</h1>
-            <div class="subtitle">Master of Science in Computer Information Systems</div>
-        </div>
+    <div class="gradient-bg"></div>
+    <div class="animated-bg"></div>
+    <div id="root"></div>
 
-        <div class="status-bar">
-            <div class="status-indicator">
-                <div class="status-dot" id="statusDot"></div>
-                <span id="statusText">Connecting...</span>
-            </div>
-            <div style="font-size: 12px; color: #666;">
-                Session: <span id="sessionInfo">Not started</span>
-            </div>
-        </div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback } = React;
 
-        <div class="error-banner" id="errorBanner"></div>
-
-        <div class="quick-actions">
-            <button class="quick-btn" onclick="sendQuickMessage('Hello!')">👋 Greeting</button>
-            <button class="quick-btn" onclick="sendQuickMessage('I need help with course selection')">📚 Courses</button>
-            <button class="quick-btn" onclick="sendQuickMessage('I want career advice')">💼 Career</button>
-            <button class="quick-btn" onclick="sendQuickMessage('Help me plan my schedule')">📅 Schedule</button>
-        </div>
-
-        <div id="chatContainer">
-            <!-- Messages will appear here -->
-        </div>
-
-        <div class="input-area">
-            <div class="typing-indicator" id="typingIndicator">
-                <div class="typing-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </div>
-            <div class="input-container">
-                <input 
-                    type="text" 
-                    id="messageInput" 
-                    placeholder="Type your message here..."
-                    autocomplete="off"
-                >
-                <button id="sendBtn" onclick="sendMessage()">Send</button>
-            </div>
-            <div class="controls">
-                <button class="control-btn" onclick="clearChat()">Clear</button>
-                <button class="control-btn" onclick="toggleDebug()">Debug</button>
-                <button class="control-btn" onclick="testDisplay()">Test</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Debug panel -->
-    <div id="debugPanel"></div>
-
-    <script>
-        // Configuration
         const API_URL = 'http://localhost:8000';
-        let sessionId = null;
-        let messageCount = 0;
-        let debugMode = false;
-        
-        // Create a unique user ID for this session
-        const userId = 'bu_user_' + Date.now();
 
-        // Debug logging
-        function debug(msg) {
-            console.log(`[DEBUG] ${msg}`);
-            if (debugMode) {
-                const panel = document.getElementById('debugPanel');
-                const time = new Date().toLocaleTimeString();
-                panel.innerHTML = `[${time}] ${msg}<br>` + panel.innerHTML;
-            }
+        // Main App Component
+        function App() {
+            const [currentPage, setCurrentPage] = useState('landing');
+            const [darkMode, setDarkMode] = useState(false);
+            const [user, setUser] = useState(null);
+
+            const navigateToChat = () => {
+                setCurrentPage('chat');
+            };
+
+            const navigateToHome = () => {
+                setCurrentPage('landing');
+            };
+
+            return (
+                <div className={`min-h-screen ${darkMode ? 'dark' : ''}`}>
+                    {currentPage === 'landing' ? (
+                        <LandingPage onGetStarted={navigateToChat} />
+                    ) : (
+                        <ChatInterface onHome={navigateToHome} />
+                    )}
+                </div>
+            );
         }
 
-        // Toggle debug mode
-        function toggleDebug() {
-            debugMode = !debugMode;
-            document.getElementById('debugPanel').classList.toggle('active', debugMode);
-            debug('Debug mode: ' + (debugMode ? 'ON' : 'OFF'));
+        // Landing Page Component
+        function LandingPage({ onGetStarted }) {
+            const [isVisible, setIsVisible] = useState(false);
+
+            useEffect(() => {
+                setIsVisible(true);
+            }, []);
+
+            return (
+                <div className="min-h-screen flex flex-col">
+                    {/* Navigation */}
+                    <nav className="glass-morphism px-8 py-4 m-4 rounded-2xl slide-up">
+                        <div className="max-w-7xl mx-auto flex justify-between items-center">
+                            <div className="flex items-center space-x-2">
+                                <i className="fas fa-graduation-cap text-3xl text-white"></i>
+                                <span className="text-2xl font-bold text-white">BU Course Agent</span>
+                            </div>
+                            <div className="hidden md:flex space-x-8">
+                                <a href="#" className="text-white hover:text-opacity-80 transition">Home</a>
+                                <a href="#" className="text-white hover:text-opacity-80 transition">About</a>
+                                <a href="#" className="text-white hover:text-opacity-80 transition">Features</a>
+                                <a href="#" className="text-white hover:text-opacity-80 transition">Contact</a>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Hero Section */}
+                    <div className="flex-grow flex items-center justify-center px-8">
+                        <div className={`text-center max-w-4xl transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+                            <div className="floating mb-8">
+                                <i className="fas fa-robot text-8xl text-white opacity-90"></i>
+                            </div>
+                            <h1 className="text-6xl md:text-7xl font-black mb-6 hero-text">
+                                Your AI Academic Advisor
+                            </h1>
+                            <p className="text-xl md:text-2xl text-white opacity-90 mb-12 leading-relaxed">
+                                Get personalized course recommendations, schedule planning, and academic guidance 
+                                powered by advanced AI technology
+                            </p>
+                            
+                            {/* Feature Cards */}
+                            <div className="grid md:grid-cols-3 gap-6 mb-12">
+                                <div className="glass-morphism p-6 rounded-2xl card-hover">
+                                    <i className="fas fa-brain text-4xl text-white mb-4"></i>
+                                    <h3 className="text-xl font-bold text-white mb-2">Smart Recommendations</h3>
+                                    <p className="text-white opacity-80">AI-powered course suggestions based on your profile</p>
+                                </div>
+                                <div className="glass-morphism p-6 rounded-2xl card-hover">
+                                    <i className="fas fa-calendar-alt text-4xl text-white mb-4"></i>
+                                    <h3 className="text-xl font-bold text-white mb-2">Schedule Planning</h3>
+                                    <p className="text-white opacity-80">Optimize your academic schedule effortlessly</p>
+                                </div>
+                                <div className="glass-morphism p-6 rounded-2xl card-hover">
+                                    <i className="fas fa-chart-line text-4xl text-white mb-4"></i>
+                                    <h3 className="text-xl font-bold text-white mb-2">Progress Tracking</h3>
+                                    <p className="text-white opacity-80">Monitor your academic journey in real-time</p>
+                                </div>
+                            </div>
+
+                            <button 
+                                onClick={onGetStarted}
+                                className="gradient-button text-white px-12 py-5 rounded-full text-xl font-bold neon-glow hover:scale-105 transition-all duration-300"
+                            >
+                                Get Started
+                                <i className="fas fa-arrow-right ml-3"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Footer */}
+                    <footer className="glass-dark text-white py-6 px-8 m-4 rounded-2xl">
+                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+                            <div className="mb-4 md:mb-0">
+                                <p>&copy; 2024 BU Course Agent. All rights reserved.</p>
+                            </div>
+                            <div className="flex space-x-6">
+                                <a href="#" className="hover:text-opacity-80 transition">Terms of Service</a>
+                                <a href="#" className="hover:text-opacity-80 transition">Privacy Policy</a>
+                                <a href="#" className="hover:text-opacity-80 transition">Contact Us</a>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
         }
 
-        // CRITICAL FUNCTION: Add message to display
-        function addMessageToChat(text, type) {
-            debug(`Adding ${type} message: "${text}"`);
-            
-            const container = document.getElementById('chatContainer');
-            if (!container) {
-                debug('ERROR: Chat container not found!');
-                return;
-            }
+        // Chat Interface Component
+        function ChatInterface({ onHome }) {
+            const [messages, setMessages] = useState([]);
+            const [inputValue, setInputValue] = useState('');
+            const [isTyping, setIsTyping] = useState(false);
+            const [sessionId, setSessionId] = useState(null);
+            const [userId, setUserId] = useState(localStorage.getItem('userId') || `user_${Date.now()}`);
+            const [showSettings, setShowSettings] = useState(false);
+            const [uploadedTranscript, setUploadedTranscript] = useState(null);
+            const [recommendedCourses, setRecommendedCourses] = useState(null);
+            const [showNewChatConfirm, setShowNewChatConfirm] = useState(false);
+            const messagesEndRef = useRef(null);
+            const fileInputRef = useRef(null);
 
-            // Create message element
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `chat-message ${type}-message`;
-            
-            // Add header with timestamp
-            const header = document.createElement('div');
-            header.className = 'message-header';
-            header.textContent = `${type === 'user' ? 'You' : 'Agent'} • ${new Date().toLocaleTimeString()}`;
-            
-            // Add message text
-            const textDiv = document.createElement('div');
-            textDiv.textContent = text;
-            
-            msgDiv.appendChild(header);
-            msgDiv.appendChild(textDiv);
-            
-            // CRITICAL: Actually add to container
-            container.appendChild(msgDiv);
-            
-            // Scroll to bottom
-            container.scrollTop = container.scrollHeight;
-            
-            messageCount++;
-            debug(`Message ${messageCount} added successfully`);
-        }
+            useEffect(() => {
+                localStorage.setItem('userId', userId);
+                // Add welcome message
+                setMessages([{
+                    id: Date.now(),
+                    text: "Hello! I'm your BU Course Agent. I can help you with course recommendations, schedule planning, and academic guidance. How can I assist you today?",
+                    sender: 'agent',
+                    timestamp: new Date()
+                }]);
+            }, []);
 
-        // Send message function
-        async function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const message = input.value.trim();
-            
-            if (!message) {
-                debug('No message to send');
-                return;
-            }
-            
-            debug(`Sending: "${message}"`);
-            
-            // Clear input and disable
-            input.value = '';
-            input.disabled = true;
-            document.getElementById('sendBtn').disabled = true;
-            
-            // Show typing indicator
-            document.getElementById('typingIndicator').classList.add('active');
-            
-            // Add user message
-            addMessageToChat(message, 'user');
-            
-            try {
-                // Make API call
-                debug('Making API request...');
-                const response = await fetch(`${API_URL}/chat`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        user_id: userId,
-                        session_id: sessionId
-                    })
-                });
-                
-                debug(`Response status: ${response.status}`);
-                
-                const responseText = await response.text();
-                debug(`Response text: ${responseText.substring(0, 100)}...`);
-                
-                const data = JSON.parse(responseText);
-                
-                if (data.response) {
-                    // Add agent response
-                    addMessageToChat(data.response, 'agent');
+            useEffect(() => {
+                scrollToBottom();
+            }, [messages]);
+
+            const scrollToBottom = () => {
+                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            };
+
+            const sendMessage = async (text = null) => {
+                const messageText = text || inputValue.trim();
+                if (!messageText) return;
+
+                // Add user message
+                const userMessage = {
+                    id: Date.now(),
+                    text: messageText,
+                    sender: 'user',
+                    timestamp: new Date()
+                };
+                setMessages(prev => [...prev, userMessage]);
+                setInputValue('');
+                setIsTyping(true);
+
+                try {
+                    const response = await fetch(`${API_URL}/chat`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message: messageText,
+                            user_id: userId,
+                            session_id: sessionId
+                        })
+                    });
+
+                    const data = await response.json();
                     
-                    // Update session
-                    if (!sessionId) {
-                        sessionId = data.session_id;
-                        document.getElementById('sessionInfo').textContent = sessionId.substring(0, 20) + '...';
-                        debug(`Session ID set: ${sessionId}`);
+                    if (!sessionId && data.session_id) {
+                        setSessionId(data.session_id);
                     }
-                } else {
-                    throw new Error('No response from agent');
+
+                    // Add agent response
+                    const agentMessage = {
+                        id: Date.now() + 1,
+                        text: data.response || "I'm here to help with your course planning!",
+                        sender: 'agent',
+                        timestamp: new Date()
+                    };
+                    setMessages(prev => [...prev, agentMessage]);
+
+                    // Check for course recommendations in response
+                    if (data.courses) {
+                        setRecommendedCourses(data.courses);
+                    }
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    const errorMessage = {
+                        id: Date.now() + 1,
+                        text: "I'm having trouble connecting right now. Please try again in a moment.",
+                        sender: 'agent',
+                        timestamp: new Date()
+                    };
+                    setMessages(prev => [...prev, errorMessage]);
+                } finally {
+                    setIsTyping(false);
                 }
-                
-            } catch (error) {
-                debug(`Error: ${error.message}`);
-                console.error('Full error:', error);
-                addMessageToChat(`Error: ${error.message}`, 'agent');
-                showError(error.message);
-            } finally {
-                // Re-enable input
-                input.disabled = false;
-                document.getElementById('sendBtn').disabled = false;
-                document.getElementById('typingIndicator').classList.remove('active');
-                input.focus();
-            }
-        }
+            };
 
-        // Quick message buttons
-        function sendQuickMessage(text) {
-            document.getElementById('messageInput').value = text;
-            sendMessage();
-        }
-
-        // Clear chat
-        function clearChat() {
-            document.getElementById('chatContainer').innerHTML = '';
-            messageCount = 0;
-            debug('Chat cleared');
-        }
-
-        // Test display function
-        function testDisplay() {
-            addMessageToChat('Test user message at ' + new Date().toLocaleTimeString(), 'user');
-            setTimeout(() => {
-                addMessageToChat('Test agent response at ' + new Date().toLocaleTimeString(), 'agent');
-            }, 500);
-        }
-
-        // Show error
-        function showError(msg) {
-            const banner = document.getElementById('errorBanner');
-            banner.textContent = msg;
-            banner.classList.add('show');
-            setTimeout(() => banner.classList.remove('show'), 5000);
-        }
-
-        // Check API health
-        async function checkHealth() {
-            try {
-                const response = await fetch(`${API_URL}/health`);
-                if (response.ok) {
-                    document.getElementById('statusDot').classList.remove('disconnected');
-                    document.getElementById('statusText').textContent = 'Connected';
-                    debug('API health check: OK');
-                } else {
-                    throw new Error('API not responding');
+            const handleFileUpload = (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    setUploadedTranscript(file);
+                    sendMessage(`I've uploaded my transcript: ${file.name}`);
                 }
-            } catch (e) {
-                document.getElementById('statusDot').classList.add('disconnected');
-                document.getElementById('statusText').textContent = 'Disconnected';
-                debug('API health check: FAILED');
-            }
+            };
+
+            const handleNewChat = () => {
+                if (messages.length > 1) {
+                    setShowNewChatConfirm(true);
+                } else {
+                    startNewChat();
+                }
+            };
+
+            const startNewChat = () => {
+                setMessages([{
+                    id: Date.now(),
+                    text: "Hello! Starting a fresh conversation. How can I help you today?",
+                    sender: 'agent',
+                    timestamp: new Date()
+                }]);
+                setSessionId(null);
+                setRecommendedCourses(null);
+                setUploadedTranscript(null);
+                setShowNewChatConfirm(false);
+            };
+
+            const predefinedPrompts = [
+                { icon: 'fa-book', text: 'Recommend courses for Computer Science', action: 'Recommend courses for Computer Science major' },
+                { icon: 'fa-calendar', text: 'Plan my schedule', action: 'Help me plan my schedule for next semester' },
+                { icon: 'fa-star', text: 'Professor ratings', action: 'Show me highly rated professors for CS courses' },
+                { icon: 'fa-graduation-cap', text: 'Graduation requirements', action: 'What are the graduation requirements for my major?' },
+                { icon: 'fa-chart-line', text: 'Career guidance', action: 'What career paths are available for my major?' },
+                { icon: 'fa-clipboard-list', text: 'Prerequisites', action: 'Check prerequisites for advanced courses' }
+            ];
+
+            return (
+                <div className="min-h-screen flex">
+                    {/* Sidebar */}
+                    <div className="w-80 glass-dark p-6 m-4 rounded-2xl flex flex-col">
+                        <div className="flex items-center justify-between mb-8">
+                            <button onClick={onHome} className="text-white hover:opacity-80 transition">
+                                <i className="fas fa-home text-xl"></i>
+                            </button>
+                            <h2 className="text-xl font-bold text-white">BU Course Agent</h2>
+                            <button onClick={() => setShowSettings(!showSettings)} className="text-white hover:opacity-80 transition">
+                                <i className="fas fa-cog text-xl"></i>
+                            </button>
+                        </div>
+
+                        <button 
+                            onClick={handleNewChat}
+                            className="gradient-button text-white py-3 px-6 rounded-xl mb-6 font-semibold hover:scale-105 transition"
+                        >
+                            <i className="fas fa-plus mr-2"></i>
+                            New Chat
+                        </button>
+
+                        {/* Quick Actions */}
+                        <div className="flex-grow">
+                            <h3 className="text-white opacity-80 text-sm font-semibold mb-4">QUICK ACTIONS</h3>
+                            <div className="space-y-2">
+                                {predefinedPrompts.slice(0, 3).map((prompt, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => sendMessage(prompt.action)}
+                                        className="w-full text-left glass-morphism text-white p-3 rounded-lg hover:bg-white hover:bg-opacity-20 transition"
+                                    >
+                                        <i className={`fas ${prompt.icon} mr-3`}></i>
+                                        {prompt.text}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Upload Section */}
+                        <div className="mt-6">
+                            <input 
+                                type="file" 
+                                ref={fileInputRef}
+                                onChange={handleFileUpload}
+                                accept=".pdf,.txt,.doc,.docx"
+                                className="hidden"
+                            />
+                            <button 
+                                onClick={() => fileInputRef.current?.click()}
+                                className="w-full glass-morphism text-white py-3 px-6 rounded-xl font-semibold hover:bg-white hover:bg-opacity-20 transition"
+                            >
+                                <i className="fas fa-upload mr-2"></i>
+                                Upload Transcript
+                            </button>
+                            {uploadedTranscript && (
+                                <p className="text-white opacity-60 text-sm mt-2">
+                                    <i className="fas fa-file mr-1"></i>
+                                    {uploadedTranscript.name}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Main Chat Area */}
+                    <div className="flex-grow flex flex-col m-4">
+                        {/* Chat Header */}
+                        <div className="glass-morphism p-6 rounded-t-2xl">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center">
+                                    <div className="w-10 h-10 rounded-full gradient-button flex items-center justify-center mr-3">
+                                        <i className="fas fa-robot text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h2 className="text-white font-bold text-lg">Course Assistant</h2>
+                                        <p className="text-white opacity-60 text-sm">Always here to help</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <span className="w-2 h-2 bg-green-400 rounded-full pulse"></span>
+                                    <span className="text-white opacity-60 text-sm">Online</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Messages Container */}
+                        <div className="flex-grow glass-morphism p-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 280px)' }}>
+                            {messages.map(message => (
+                                <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} mb-4 message-bubble`}>
+                                    <div className={`max-w-2xl ${message.sender === 'user' ? 'order-1' : 'order-2'}`}>
+                                        <div className={`px-6 py-3 rounded-2xl ${
+                                            message.sender === 'user' 
+                                                ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white' 
+                                                : 'glass-dark text-white'
+                                        }`}>
+                                            <p className="text-sm opacity-80 mb-1">
+                                                {message.sender === 'user' ? 'You' : 'BU Agent'}
+                                            </p>
+                                            <p>{message.text}</p>
+                                            <p className="text-xs opacity-60 mt-2">
+                                                {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                                        message.sender === 'user' ? 'order-2 ml-3' : 'order-1 mr-3'
+                                    } ${message.sender === 'user' ? 'bg-blue-500' : 'gradient-button'}`}>
+                                        <i className={`fas ${message.sender === 'user' ? 'fa-user' : 'fa-robot'} text-white text-xs`}></i>
+                                    </div>
+                                </div>
+                            ))}
+                            
+                            {isTyping && (
+                                <div className="flex justify-start mb-4">
+                                    <div className="typing-indicator">
+                                        <div className="typing-dot"></div>
+                                        <div className="typing-dot"></div>
+                                        <div className="typing-dot"></div>
+                                    </div>
+                                </div>
+                            )}
+                            
+                            <div ref={messagesEndRef} />
+                        </div>
+
+                        {/* Course Recommendations Display */}
+                        {recommendedCourses && (
+                            <div className="glass-morphism p-4 mt-2 rounded-xl slide-up">
+                                <h3 className="text-white font-bold mb-3">
+                                    <i className="fas fa-list-alt mr-2"></i>
+                                    Recommended Courses
+                                </h3>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {recommendedCourses.map((course, index) => (
+                                        <div key={index} className="glass-dark p-3 rounded-lg">
+                                            <p className="text-white font-semibold">{course.code}</p>
+                                            <p className="text-white opacity-70 text-sm">{course.name}</p>
+                                            <p className="text-white opacity-50 text-xs mt-1">Credits: {course.credits}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Predefined Prompts */}
+                        <div className="glass-morphism p-4 rounded-xl mt-2">
+                            <div className="grid grid-cols-3 gap-2">
+                                {predefinedPrompts.slice(3).map((prompt, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => sendMessage(prompt.action)}
+                                        className="glass-dark text-white py-2 px-4 rounded-lg text-sm hover:bg-white hover:bg-opacity-20 transition"
+                                    >
+                                        <i className={`fas ${prompt.icon} mr-2`}></i>
+                                        {prompt.text}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Input Area */}
+                        <div className="glass-morphism p-4 rounded-b-2xl mt-2">
+                            <div className="flex items-center space-x-3">
+                                <button className="text-white opacity-60 hover:opacity-100 transition">
+                                    <i className="fas fa-paperclip text-xl"></i>
+                                </button>
+                                <input
+                                    type="text"
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                                    placeholder="Type a message..."
+                                    className="flex-grow bg-white bg-opacity-10 text-white placeholder-white placeholder-opacity-60 px-4 py-3 rounded-xl focus:outline-none focus:bg-opacity-20 transition"
+                                />
+                                <button 
+                                    onClick={() => sendMessage()}
+                                    className="gradient-button text-white px-6 py-3 rounded-xl hover:scale-105 transition"
+                                >
+                                    <i className="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* New Chat Confirmation Modal */}
+                    {showNewChatConfirm && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                            <div className="glass-dark p-8 rounded-2xl max-w-md">
+                                <h3 className="text-white text-xl font-bold mb-4">Start New Chat?</h3>
+                                <p className="text-white opacity-80 mb-6">
+                                    This will clear your current conversation. Are you sure you want to continue?
+                                </p>
+                                <div className="flex space-x-4">
+                                    <button 
+                                        onClick={startNewChat}
+                                        className="flex-1 gradient-button text-white py-2 rounded-lg"
+                                    >
+                                        Yes, Start New
+                                    </button>
+                                    <button 
+                                        onClick={() => setShowNewChatConfirm(false)}
+                                        className="flex-1 glass-morphism text-white py-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Settings Panel */}
+                    {showSettings && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                            <div className="glass-dark p-8 rounded-2xl max-w-lg w-full">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h3 className="text-white text-xl font-bold">Settings</h3>
+                                    <button 
+                                        onClick={() => setShowSettings(false)}
+                                        className="text-white opacity-60 hover:opacity-100 transition"
+                                    >
+                                        <i className="fas fa-times text-xl"></i>
+                                    </button>
+                                </div>
+                                
+                                <div className="space-y-4">
+                                    <div className="glass-morphism p-4 rounded-lg">
+                                        <label className="text-white block mb-2">Theme</label>
+                                        <select className="w-full bg-white bg-opacity-10 text-white px-4 py-2 rounded-lg">
+                                            <option value="purple">Purple Galaxy</option>
+                                            <option value="blue">Ocean Blue</option>
+                                            <option value="dark">Dark Mode</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div className="glass-morphism p-4 rounded-lg">
+                                        <label className="text-white block mb-2">Notification Sound</label>
+                                        <div className="flex items-center">
+                                            <input type="checkbox" className="mr-3" defaultChecked />
+                                            <span className="text-white opacity-80">Enable sound notifications</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="glass-morphism p-4 rounded-lg">
+                                        <label className="text-white block mb-2">Export Chat History</label>
+                                        <button className="gradient-button text-white px-6 py-2 rounded-lg">
+                                            <i className="fas fa-download mr-2"></i>
+                                            Export as PDF
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
         }
 
-        // Enter key handling
-        document.getElementById('messageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-
-        // Initialize on load
-        window.addEventListener('DOMContentLoaded', () => {
-            debug('Page loaded, initializing...');
-            checkHealth();
-            document.getElementById('messageInput').focus();
-            
-            // Check health every 30 seconds
-            setInterval(checkHealth, 30000);
-            
-            // Add welcome message
-            setTimeout(() => {
-                addMessageToChat('Welcome to BU MET Guide! How can I help you today?', 'agent');
-            }, 1000);
-        });
-
-        // Prevent accidental page unload
-        window.addEventListener('beforeunload', (e) => {
-            if (messageCount > 0) {
-                e.preventDefault();
-                e.returnValue = '';
-            }
-        });
+        // Render the app
+        ReactDOM.render(<App />, document.getElementById('root'));
     </script>
 </body>
 </html>

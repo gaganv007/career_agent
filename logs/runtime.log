@@ -17819,3 +17819,24 @@ guardrails.py @ __call__:69
 2025-10-20 21:32:48,098 - AgentLogger - INFO
 interactions.py @ query_agent:48
 ['User_ID: bu_user_1761010361197, Session_ID: session_bu_user_1761010361197_20251020213245', 'Event_Author: Greeter, Event_Type: Event', 'Query: Hello!, Response: Hello there! What can I assist you with today? Just a heads up, I am a bot that runs entirely in memory, so this conversation will not be saved once you leave or refresh the page.\n\nAre you seeking career advice today?\n']
+2025-10-20 21:38:39,939 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Greeter ---
+2025-10-20 21:38:39,939 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 8
+2025-10-20 21:38:39,939 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Greeter ---
+2025-10-20 21:38:40,764 - AgentLogger - INFO
+guardrails.py @ __call__:191
+--- Callback: token_limit_guardrail running for agent: Career_Advisor ---
+2025-10-20 21:38:40,764 - AgentLogger - INFO
+guardrails.py @ __call__:222
+Estimated token count: 3
+2025-10-20 21:38:40,765 - AgentLogger - INFO
+guardrails.py @ __call__:69
+--- Callback: block_keyword_guardrail running for agent: Career_Advisor ---
+2025-10-20 21:38:41,360 - AgentLogger - INFO
+interactions.py @ query_agent:48
+['User_ID: bu_user_1761010361197, Session_ID: session_bu_user_1761010361197_20251020213245', 'Event_Author: Career_Advisor, Event_Type: Event', 'Query: I need help with course selection, Response: Sure, I can help with that. What is your desired job title?\n']
