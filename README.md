@@ -42,7 +42,7 @@ To more easily manage the various versions of Python, we'll be using [pyenv](htt
     
     <span style="font-size: 11px; font-weight:bold">Copy and paste the command lines below into the Terminal window</span>
     ```
-    /bin/bash -c "$(curl -fsSL https[]()://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     ```
     </span>
 
