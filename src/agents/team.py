@@ -7,8 +7,7 @@ from agents.functions import _summarize_skills_for_job, _summarize_course_schedu
 from agents.functions import _summarize_web_search, _summarize_user_memory, _summarize_course_recommendations
 from agents.functions import _create_temporary_user_id, _store_user_memory, _get_user_memory_for_agent
 from google.adk.tools import google_search
-from agents.functions import ask_vertex_retrieval
-from google.genai import types
+#from agents.functions import ask_vertex_retrieval
 
 # LLM Constraints and Guardrails
 from setup.guardrails import QueryGuard, FunctionGuard, TokenGuard
@@ -60,6 +59,9 @@ SUB_AGENTS = {
             exclusively Computer Information Systems careers in the United States.",
             "All web searches, salary data, and employment trend analyses must focus on the United States job market. \
             Ignore or filter out international data unless explicitly requested for comparison purposes.",
+            "Use web search and google search to gather the latest information on CIS career trends, \
+            job postings, salary reports, and skills demand from credible U.S.-based sources such as \
+            the U.S. Bureau of Labor Statistics, LinkedIn, Glassdoor, Indeed, and industry reports.",
             "If the user provides a specific job title, conduct targeted research for that title. \
             If the user asks for career recommendations, identify U.S. CIS roles with the strongest \
             growth trends and suggest paths accordingly. If the user requests education or course recommendations, \
@@ -287,7 +289,7 @@ orchestrator = build_agent(
         "Use the 'Career_Agent' to provide career path recommendations based on user goals."
         "Use the 'Course_Agent' to map career skills to BU MET courses."
         "Use the 'Scheduling_Agent' to help the user build a class schedule \
-        based on course recommendations and the user's preferences and availability."
+        based on course recommendations and the user's preferences and availability.",
         "Never share with the user any internal agent names, processes, or technical details about how you operate.",
     ],
     sub_agents=list(SUB_AGENTS.values()),

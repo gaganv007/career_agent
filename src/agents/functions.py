@@ -1,36 +1,33 @@
 # pylint: disable=import-error
 import os
-import logging
 import json
-from typing import Any
 import uuid
+import logging
+
+from typing import Any, Optional
 from datetime import datetime
 
-from google.adk.tools.retrieval.vertex_ai_rag_retrieval import VertexAiRagRetrieval
 from vertexai.preview import rag
+from google.adk.tools.retrieval.vertex_ai_rag_retrieval import VertexAiRagRetrieval
 
-from typing import Optional
-from dotenv import load_dotenv
-
-load_dotenv()
 logger = logging.getLogger("AgentLogger")
 
-ask_vertex_retrieval = VertexAiRagRetrieval(
-    name="retrieve_rag_documentation",
-    description=(
-        "Use this tool to retrieve documentation and reference materials for the question from the RAG corpus,"
-    ),
-    rag_resources=[
-        rag.RagResource(
-            # please fill in your own rag corpus
-            # here is a sample rag corpus for testing purpose
-            # e.g. projects/123/locations/us-central1/ragCorpora/456
-            rag_corpus=os.environ.get("RAG_CORPUS")
-        )
-    ],
-    similarity_top_k=10,
-    vector_distance_threshold=0.6,
-)
+# ask_vertex_retrieval = VertexAiRagRetrieval(
+#     name="retrieve_rag_documentation",
+#     description=(
+#         "Use this tool to retrieve documentation and reference materials for the question from the RAG corpus,"
+#     ),
+#     rag_resources=[
+#         rag.RagResource(
+#             please fill in your own rag corpus
+#             here is a sample rag corpus for testing purpose
+#             e.g. projects/123/locations/us-central1/ragCorpora/456
+#             rag_corpus=os.environ.get("RAG_CORPUS")
+#         )
+#     ],
+#     similarity_top_k=10,
+#     vector_distance_threshold=0.6,
+# )
 
 
 def _summarize_course_recommendations(job_title: str, courses: list[dict[str, Any]]):
@@ -93,9 +90,9 @@ def _summarize_course_recommendations(job_title: str, courses: list[dict[str, An
                 "relevance_score": relevance,
                 "recommended_for": job_title,
             }
+            logger.debug("Summarized course recommendation for %s: %s", course, normalized)
             result["recommendations"].append(normalized)
 
-        # Return compact JSON string for easy parsing on frontend
         return json.dumps(result, ensure_ascii=False)
     except Exception as exc:
         logger.exception("Failed to summarize course recommendations: %s", exc)
@@ -156,6 +153,7 @@ def _summarize_course_schedule(course: str, schedule: list[dict[str, Any]]):
                 "notes": notes,
                 "sequence": idx,
             }
+            logger.debug("Summarized course schedule: %s", normalized)
             result["sessions"].append(normalized)
 
         return json.dumps(result, ensure_ascii=False)
@@ -217,6 +215,7 @@ def _summarize_skills_for_job(job_title: str, skills: list[dict[str, Any]]):
                 "notes": notes,
                 "relevance_score": relevance,
             }
+            logger.debug("Summarized skills for job %s: %s", job_title, normalized)
             result["skills"].append(normalized)
 
         return json.dumps(result, ensure_ascii=False)
@@ -278,8 +277,10 @@ def _summarize_career_path(job_title: str, path: list[dict[str, Any]]):
                 "next_positions": next_positions,
                 "sequence": idx,
             }
+            logger.debug("Summarized career path for job %s: %s", job_title, normalized)
             result["career_path"].append(normalized)
 
+        
         return json.dumps(result, ensure_ascii=False)
     except Exception as exc:
         logger.exception("Failed to summarize career path for job %s: %s", job_title, exc)
@@ -307,6 +308,8 @@ def _create_temporary_user_id(prefix: str = "tmp") -> str:
             "identifiers": {},
             "meta": {"created": iso_ts, "last_updated": iso_ts},
         }
+        logger.debug("Created temporary user_id %s with initial memory entry", user_id)
+
     return user_id
 
 def _summarize_user_memory(user_id: Optional[str], profile: dict[str, Any]):
@@ -373,6 +376,7 @@ def _summarize_user_memory(user_id: Optional[str], profile: dict[str, Any]):
             "identifiers": identifiers,
             "meta": meta,
         }
+        logger.debug("Summarized user memory for %s: %s", user_id, normalized)
         return json.dumps(normalized, ensure_ascii=False)
     except Exception as exc:
         logger.exception("Failed to summarize user memory for %s: %s", user_id, exc)
@@ -408,6 +412,8 @@ def _store_user_memory(user_id: str, profile: dict[str, Any]) -> bool:
             merged = existing.copy()
             merge_dict(merged, normalized)
             _MEMORY_STORE[user_id] = merged
+        
+        logger.debug("Stored user memory for %s: %s", user_id, _MEMORY_STORE[user_id])
         return True
     except Exception as exc:
         logger.exception("Failed to store user memory for %s: %s", user_id, exc)
@@ -427,6 +433,7 @@ def _get_user_memory_for_agent(user_id: str, fields: Optional[list[str]] = None)
             subset = {"user_id": user_id, "profile": {k: data.get(k) for k in fields}}
             return json.dumps(subset, ensure_ascii=False)
 
+        logger.debug("Retrieved full user memory for %s: %s", user_id, data)
         return json.dumps({"user_id": user_id, "profile": data}, ensure_ascii=False)
     except Exception as exc:
         logger.exception("Failed to retrieve user memory for %s: %s", user_id, exc)
@@ -501,6 +508,7 @@ def _summarize_web_search(query: str, results: list[dict[str, Any]], analysis: O
             "results": normalized_results,
             "analysis": analysis or None,
         }
+        logger.debug("Summarized web search for query '%s': %s", query, payload)
         return json.dumps(payload, ensure_ascii=False)
     except Exception as exc:
         logger.exception("Failed to summarize web search for query '%s': %s", query, exc)
