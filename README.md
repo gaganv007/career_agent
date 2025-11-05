@@ -68,6 +68,10 @@ To more easily manage the various versions of Python, we'll be using [pyenv](htt
     pyenv global 3.13.3
     ```
     <span style="font-size: 11px;"><b>Note:</b> You can change your preferred python instance to another version that's installed. See [here](https://realpython.com/intro-to-pyenv/) for more detailed instructions.</span>
+    <b>Note</b>If you are having problems initializing, try:
+    ```
+    eval "$(pyenv init --path)"
+    ```
 
 6. Proceed to [UV Install](#uv-install)
 
