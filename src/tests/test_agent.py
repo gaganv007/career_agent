@@ -2,7 +2,7 @@
 Automated test script for BU Agent API
 Tests various agent functionalities and responses
 """
-
+import pytest
 import asyncio
 import httpx
 import time
@@ -23,7 +23,7 @@ class Colors:
     RESET = "\033[0m"
     BOLD = "\033[1m"
 
-
+@pytest.mark.asyncio
 async def check_health() -> bool:
     """Check if the API server is running"""
     try:
@@ -34,7 +34,7 @@ async def check_health() -> bool:
         print(f"{Colors.RED}✗ Server health check failed: {e}{Colors.RESET}")
         return False
 
-
+@pytest.mark.asyncio
 async def send_message(message: str, session_id: str = None) -> Dict:
     """Send a message to the agent and get response"""
     try:
@@ -68,7 +68,7 @@ def print_test_result(passed: bool, message: str):
     )
     print(f"{symbol} {message}")
 
-
+@pytest.mark.asyncio
 async def test_greeting():
     """Test greeting functionality"""
     print_test_header("Greeting Agent Test")
@@ -94,7 +94,7 @@ async def test_greeting():
 
         await asyncio.sleep(1)
 
-
+@pytest.mark.asyncio
 async def test_farewell():
     """Test farewell functionality"""
     print_test_header("Farewell Agent Test")
@@ -120,7 +120,7 @@ async def test_farewell():
 
         await asyncio.sleep(1)
 
-
+@pytest.mark.asyncio
 async def test_career_advice():
     """Test career advice functionality"""
     print_test_header("Career Agent Test")
@@ -158,7 +158,7 @@ async def test_career_advice():
 
         await asyncio.sleep(1)
 
-
+@pytest.mark.asyncio
 async def test_schedule():
     """Test schedule/course recommendation functionality"""
     print_test_header("Schedule Agent Test")
@@ -188,7 +188,7 @@ async def test_schedule():
 
         await asyncio.sleep(1)
 
-
+@pytest.mark.asyncio
 async def test_session_persistence():
     """Test if session maintains context"""
     print_test_header("Session Persistence Test")
@@ -222,7 +222,7 @@ async def test_session_persistence():
         passed, "Context maintained" if passed else "Context not maintained"
     )
 
-
+@pytest.mark.asyncio
 async def test_guardrails():
     """Test security guardrails"""
     print_test_header("Guardrails Test")
@@ -254,7 +254,7 @@ async def test_guardrails():
 
         await asyncio.sleep(1)
 
-
+@pytest.mark.asyncio
 async def test_response_time():
     """Test response time performance"""
     print_test_header("Response Time Test")
@@ -285,7 +285,7 @@ async def test_response_time():
             passed, f"Performance {'acceptable' if passed else 'needs improvement'}"
         )
 
-
+@pytest.mark.asyncio
 async def run_all_tests():
     """Run all test suites"""
     print(f"\n{Colors.BOLD}{Colors.YELLOW}{'='*60}")

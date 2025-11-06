@@ -27,9 +27,22 @@ dependencies = [
     "pytest>=8.4.2",
     "react>=4.3.0",
     "spacy>=3.8.7",
- # front-end packages
+    # front-end packages
     "fastapi>=0.115.0",
     "uvicorn>=0.30.6",
     "httpx>=0.27.0",
-    "python-multipart>=0.0.9"
+    "python-multipart>=0.0.9",
+    "pytest-asyncio>=1.2.0",
+    "pytest-trio>=0.8.0",
+    "pytest-twisted>=1.14.3",
+    "pytest-tornasync>=0.6.0.post2",
+    "asyncio>=4.0.0",
+    "twisted>=25.5.0",
+    "anyio>=4.11.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+pythonpath = [
+  "./src/"
 ]

@@ -7,8 +7,7 @@ import logging
 from typing import Any, Optional
 from datetime import datetime
 
-from vertexai.preview import rag
-from google.adk.tools.retrieval.vertex_ai_rag_retrieval import VertexAiRagRetrieval
+#from google.adk.tools.retrieval.vertex_ai_rag_retrieval import VertexAiRagRetrieval
 
 logger = logging.getLogger("AgentLogger")
 
@@ -295,7 +294,7 @@ def _create_temporary_user_id(prefix: str = "tmp") -> str:
     and return the user_id. The ID is stable for the session and suitable to pass to sub-agents.
     """
     user_id = f"{prefix}_{uuid.uuid4().hex}"
-    iso_ts = datetime.utcnow().isoformat() + "Z"
+    iso_ts = datetime.now().isoformat() + "Z"
     # Initialize minimal profile entry if not present
     if user_id not in _MEMORY_STORE:
         _MEMORY_STORE[user_id] = {
@@ -468,7 +467,7 @@ def _summarize_web_search(query: str, results: list[dict[str, Any]], analysis: O
     }
     """
     try:
-        iso_ts = datetime.utcnow().isoformat() + "Z"
+        iso_ts = datetime.now().isoformat() + "Z"
         normalized_results = []
         for idx, item in enumerate(results or []):
             if top_k is not None and idx >= top_k:
