@@ -1,7 +1,5 @@
 import pytest
 import json
-import uuid
-from datetime import datetime
 from agents.functions import (
     _summarize_course_recommendations,
     _summarize_course_schedule,
