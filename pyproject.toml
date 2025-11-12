@@ -24,19 +24,20 @@ dependencies = [
     "networkx>=3.5",
     "openpyxl>=3.1.5",
     "pandas>=2.3.3",
-    "pytest>=8.4.2",
+    "asyncio>=4.0.0",
+    # front-end packages
     "react>=4.3.0",
     "spacy>=3.8.7",
-    # front-end packages
     "fastapi>=0.115.0",
     "uvicorn>=0.30.6",
     "httpx>=0.27.0",
     "python-multipart>=0.0.9",
+    # pytest packages
+    "pytest>=8.4.2",    
     "pytest-asyncio>=1.2.0",
     "pytest-trio>=0.8.0",
     "pytest-twisted>=1.14.3",
     "pytest-tornasync>=0.6.0.post2",
-    "asyncio>=4.0.0",
     "twisted>=25.5.0",
     "anyio>=4.11.0",
 ]
