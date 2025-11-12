@@ -29,38 +29,6 @@ from agents.team import orchestrator
 
 app = FastAPI(title="BU Agent API")
 
-
-# Rate limiting configuration
-## SS: Max number of sentences in a user prompt.
-class RateLimiter:
-    def __init__(self, max_requests=10, time_window=60):
-        self.max_requests = max_requests
-        self.time_window = time_window  # seconds
-        self.requests = deque()
-        self.lock = asyncio.Lock()
-
-    async def check_rate_limit(self):
-        async with self.lock:
-            now = time.time()
-            # Remove old requests outside the time window
-            while self.requests and self.requests[0] <= now - self.time_window:
-                self.requests.popleft()
-
-            # Check if we can make a new request
-            if len(self.requests) >= self.max_requests:
-                # Calculate wait time
-                oldest_request = self.requests[0]
-                wait_time = self.time_window - (now - oldest_request) + 1
-                return False, wait_time
-
-            # Add current request
-            self.requests.append(now)
-            return True, 0
-
-
-# Initialize rate limiter (8 requests per minute to be safe)
-rate_limiter = RateLimiter(max_requests=8, time_window=60)
-
 # Enable CORS for frontend communication
 ## SS: Resource sharing between ???
 app.add_middleware(
@@ -127,18 +95,6 @@ async def chat(request: ChatRequest):
     """
     Send a message to the BU Agent and get a response
     """
-    # Check rate limit first
-    allowed, wait_time = await rate_limiter.check_rate_limit()
-
-    if not allowed:
-        print(
-            f"\n⚠️  Rate limit exceeded. Wait {wait_time:.1f} seconds before next request."
-        )
-        raise HTTPException(
-            status_code=429,
-            detail=f"Rate limit exceeded. Please wait {wait_time:.1f} seconds before sending another message.",
-        )
-
     try:
         user_id = request.user_id
         session_id = (
