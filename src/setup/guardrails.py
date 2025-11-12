@@ -1,11 +1,15 @@
 # pylint: disable=import-error
+import logging
+import asyncio
+import time
+
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.models.llm_request import LlmRequest
 from google.adk.models.llm_response import LlmResponse
 
 from typing import Optional
 from google.genai import types
-import logging
+from collections import deque
 
 logger = logging.getLogger("AgentLogger")
 
@@ -221,3 +225,98 @@ class TokenGuard:
 
         logger.info(f"Estimated token count: {estimated_tokens}")
         return None
+
+# Rate limiting configuration
+class RateLimiter:
+    """
+    Guards against exceeding a specified rate limit of requests.
+
+    This class implements a rate limiting mechanism that tracks requests within a 
+    sliding time window. If the rate limit is exceeded, requests are blocked until
+    the rate drops below the limit.
+
+    Attributes:
+        max_requests (int): Maximum number of requests allowed in the time window
+        time_window (int): Time window in seconds
+        requests (deque): Queue to track request timestamps
+        lock (asyncio.Lock): Lock for thread-safe operations
+
+    Example:
+        ```python
+        # Initialize limiter with max 10 requests per minute
+        limiter = RateLimiter(max_requests=10, time_window=60)
+
+        # Add to agent configuration
+        agent = build_agent(
+            before_model_callback=limiter,
+            ...
+        )
+        ```
+    """
+    def __init__(self, max_requests=10, time_window=60):
+        """
+        Initialize the RateLimiter with request limits and time window.
+
+        Args:
+            max_requests (int, optional): Maximum requests allowed. Defaults to 10.
+            time_window (int, optional): Time window in seconds. Defaults to 60.
+        """
+        self.name = "RateLimiter"
+        self.max_requests = max_requests
+        self.time_window = time_window  # seconds
+        self.requests = deque()
+        self.lock = asyncio.Lock()
+
+    async def __call__(
+        self, callback_context: CallbackContext, llm_request: LlmRequest
+    ) -> Optional[LlmResponse]:
+        """
+        Checks if the current request would exceed the rate limit.
+
+        Args:
+            callback_context (CallbackContext): Context of the current callback,
+                containing agent information.
+            llm_request (LlmRequest): The request to be sent to the LLM.
+
+        Returns:
+            Optional[LlmResponse]: If rate limit is exceeded, returns a blocking
+                response with wait time information. Otherwise, returns None to
+                allow the request to proceed.
+
+        Logs:
+            INFO: When guard runs and which agent triggered it
+            WARNING: When rate limit is exceeded
+        """
+        agent_name = callback_context.agent_name
+        logger.info(
+            f"--- Callback: rate_limiter_guardrail running for agent: {agent_name} ---"
+        )
+
+        async with self.lock:
+            now = time.time()
+            # Remove old requests outside the time window
+            while self.requests and self.requests[0] <= now - self.time_window:
+                self.requests.popleft()
+
+            # Check if we can make a new request
+            if len(self.requests) >= self.max_requests:
+                # Calculate wait time
+                oldest_request = self.requests[0]
+                wait_time = int(self.time_window - (now - oldest_request) + 1)
+                logger.warning(
+                    f"Rate limit exceeded for agent {agent_name}. Need to wait {wait_time} seconds."
+                )
+                return LlmResponse(
+                    content=types.Content(
+                        role="model",
+                        parts=[
+                            types.Part(
+                                text=f"I'm receiving too many requests right now. Please wait {wait_time} seconds before trying again."
+                            )
+                        ],
+                    )
+                )
+
+            # Add current request
+            self.requests.append(now)
+            return None

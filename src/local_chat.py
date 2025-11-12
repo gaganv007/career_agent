@@ -7,7 +7,7 @@ from datetime import datetime
 from google.adk.sessions import InMemorySessionService  # pylint: disable=import-error
 from google.adk.runners import Runner  # pylint: disable=import-error
 
-from setup.logger_config import AgentLogger
+from setup.logger_config import AgentLogger, setup_logging
 from setup.interactions import query_agent, update_session_state, update_callback_state
 from agents.team import orchestrator
 
@@ -32,7 +32,7 @@ async def run_conversation(
     **kwargs,
 ):
 
-    logger = AgentLogger()
+    logger = setup_logging()
     service = InMemorySessionService()
     state = await build_session_state(**kwargs) if kwargs else None
 

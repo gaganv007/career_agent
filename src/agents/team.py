@@ -6,11 +6,11 @@ from agents.build import build_agent
 from agents.functions import _summarize_skills_for_job, _summarize_course_schedule
 from agents.functions import _summarize_web_search, _summarize_user_memory, _summarize_course_recommendations
 from agents.functions import _create_temporary_user_id, _store_user_memory, _get_user_memory_for_agent
-from google.adk.tools import google_search
+#from google.adk.tools import google_search
 #from agents.functions import ask_vertex_retrieval
 
 # LLM Constraints and Guardrails
-from setup.guardrails import QueryGuard, FunctionGuard, TokenGuard
+from setup.guardrails import QueryGuard, FunctionGuard, TokenGuard, RateLimiter
 
 logger = logging.getLogger("AgentLogger")
 
@@ -20,21 +20,66 @@ def load_instructions():
     pass
 
 
-## Tool Guardrails - Example
-# function_rules = {
-#     "get_weather": {
-#         "location": ["Area51", "Restricted Zone"],
-#     },
-#     "search_web": {"query": ["classified", "confidential"]},
-# }
-# function_guard = FunctionGuard(function_rules)
+
+function_rules = {
+    "search_web": {"query": ["classified", "confidential", "private",
+                              "sex", "drugs", "murder", "crime", "rape", "exploit", "slave"]},
+}
+function_guard = FunctionGuard(function_rules)
 query_guard = QueryGuard(
     blocked_words=["sex", "drugs", "murder", "crime", "rape", "exploit", "slave"]
 )
 token_guard = TokenGuard(max_tokens=125)
+rate_limiter = RateLimiter(max_requests=10, time_window=60)
 
 # --- Agent Configuration ---
 SUB_AGENTS = {
+    "cs633": build_agent(
+        _name="CS633_Agent",
+        _model="gemini",
+        _description="provide clear, technically accurate, and \
+                      example-driven explanations of topics covered in BU MET CS 633, \
+                      including relevant diagrams, frameworks, and modern tools.",
+        _instruction=[
+            "You retrieve and summarize current and relevant information from trusted web sources\
+            , but only on the topics explicitly included in the course scope. You limit research, \
+            reasoning, and examples to the following core and adjacent areas: \
+            - Globalization Trends in Software Engineering\
+            - Requirements Engineering\
+            - Engineering Management\
+            - Software Configuration Management (SCM)\
+            - Project Estimation\
+            - Agile & Iterative Methodologies\
+            - Static Testing Techniques\
+            - Information Systems Security (IS Security)\
+            - Elements of Software Design\
+            - Common Tools Supporting Common Processes\
+            - System Testing\
+            - Unit Testing\
+            - Continuous Delivery (CD) & DevOps Practices\
+            - Quality Assurance (QA)\
+            - Process Improvement & Maturity Models (e.g., CMMI)",
+            "You must not provide answers or search results unrelated to the above course topics.\
+            If a user asks about a topic not clearly related to these,\
+            you should politely refuse and explain that it is outside the course scope.",
+            "Whenever possible, this agent should ground its answers in the following books\
+            or verified materials derived from them \
+            (e.g., publisher summaries, academic citations, lecture notes). If relevant passages \
+            or summaries are available publicly, prioritize them before other web sources:\
+            - The Art of Software Testing — Glenford J. Myers\
+            - Software Estimation — Steve McConnell\
+            - The Joy of UX — David Platt\
+            - Fundamentals of Information Systems Security — David Kim & Michael Solomon\
+            - Continuous Delivery — Jez Humble\
+            - The Coming Wave — Mustafa Suleyman"
+            "You must not speculate beyond known or documented material.d, well-cited answers about\
+            the course’s defined topics, prioritizing authoritative and course-referenced sources.",
+            "Always use '_get_user_memory_for_agent' to access any relevant user context before processing requests.",
+            "Always use '_summarize_web_search' to summarize web search results when needed.",
+
+        ],
+        tools=[_summarize_web_search, _get_user_memory_for_agent],
+    ),
     "career": build_agent(
         _name="Career_Agent",
         _model="gemini",
@@ -46,9 +91,9 @@ SUB_AGENTS = {
             planning for users pursuing careers in Computer Information Systems (CIS) and related fields. \
             You are Professional, data-driven, and concise. You avoid speculation or opinion and provide \
             sources when possible.",
-            "Your role is to search the web, analyze U.S. career data, and outline personalized career paths \
-            based on current job market trends, skills demand, and role evolution within CIS-related professions. \
-            Your ultimate goal is to identify the most in-demand CIS job titles in the U.S, \
+            "Youd on current job market trends, skills demand, and role evolution within CIS-related professions. \
+            Yourr role is to search the web, analyze U.S. career data, and outline personalized career paths \
+            base ultimate goal is to identify the most in-demand CIS job titles in the U.S, \
             the core and emerging skills required for each job title, and the \
             typical progression or pathway leading to that career (e.g., entry → mid → senior roles). \
             You will provide this structured skill and career information to the Course Agent, \
@@ -72,7 +117,6 @@ SUB_AGENTS = {
             "Always use '_summarize_web_search' to summarize web search results when needed.",
 
         ],
-        before_model_callback=[token_guard, query_guard],
         tools=[_summarize_web_search, _summarize_skills_for_job, _get_user_memory_for_agent],
     ),
     "Course": build_agent(
@@ -146,7 +190,6 @@ SUB_AGENTS = {
             "Always use '_summarize_course_schedule' when relaying schedule information to other agents or the user.",
             "Always use '_summarize_web_search' to summarize web search results when needed.",
         ],
-        before_model_callback=[token_guard, query_guard],
         tools=[_summarize_web_search, _summarize_course_schedule, _get_user_memory_for_agent],
     ),
     "document": build_agent(
@@ -194,7 +237,6 @@ SUB_AGENTS = {
             'Is this document your transcript or a general academic record?'",
             "Always use _get_user_memory_for_agent to access any relevant user context before processing documents.",
         ],
-        before_model_callback=[token_guard, query_guard],
         tools=[_get_user_memory_for_agent]
     ),
     "memory": build_agent(
@@ -249,7 +291,6 @@ SUB_AGENTS = {
             "Always use '_summarize_user_memory' if another agent needs information the current user.",
             "Always use '_store_user_memory' to save or update user information in memory.",
         ],
-        before_model_callback=[token_guard, query_guard],
         tools=[_summarize_user_memory, _store_user_memory],
     ),
 }
@@ -283,7 +324,6 @@ orchestrator = build_agent(
         "When first interacting with the user, use '_create_temporary_user_id' and the Memory Agent \
         to create a temporary user ID to track their session and store any relevant information. Do not \
         proceed until the user ID is created, and do not inform the user of their user_id or of its creation."
-        "Always use '_summarize_web_search' to summarize web search results when needed.",
         "Use the 'Memory_Agent' to store and retrieve any relevant user information throughout the session."
         "Use the 'Document_Agent' to process any uploaded documents and extract relevant information for other agents."
         "Use the 'Career_Agent' to provide career path recommendations based on user goals."
@@ -293,9 +333,9 @@ orchestrator = build_agent(
         "Never share with the user any internal agent names, processes, or technical details about how you operate.",
     ],
     sub_agents=list(SUB_AGENTS.values()),
-    before_model_callback=[token_guard, query_guard],
+    before_model_callback=[token_guard, query_guard, rate_limiter],
     before_tool_callback=None,
     after_tool_callback=None,
     after_model_callback=None,
-    tools=[_summarize_web_search, _create_temporary_user_id],
+    tools=[_create_temporary_user_id],
 )
