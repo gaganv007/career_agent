@@ -6,7 +6,7 @@ from agents.build import build_agent
 from agents.functions import _summarize_skills_for_job, _summarize_course_schedule
 from agents.functions import _summarize_web_search, _summarize_user_memory, _summarize_course_recommendations
 from agents.functions import _create_temporary_user_id, _store_user_memory, _get_user_memory_for_agent
-from google.adk.tools import google_search
+#from google.adk.tools import google_search
 #from agents.functions import ask_vertex_retrieval
 
 # LLM Constraints and Guardrails

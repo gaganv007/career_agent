@@ -72,67 +72,6 @@ async def send_message(message: str, session_id: str = None) -> Dict:
         return {"error": str(e)}
 
 
-
-# @pytest.mark.asyncio
-# async def test_greeting():
-#     """Test greeting functionality"""
-#     print_test_header("Greeting Agent Test")
-
-#     test_messages = ["Hello", "Hi there", "Hey", "Good morning", "Greetings"]
-
-#     for msg in test_messages:
-#         print(f"  → Sending: '{msg}'")
-#         result = await send_message(msg)
-
-#         if "error" in result:
-#             print_test_result(False, f"Error: {result['error']}")
-#             pytest.fail(f"Error: {result['error']}")
-#         else:
-#             response = result.get("response", "")
-#             print(f"  ← Response: {response[:100]}...")
-
-#             # Check if response is greeting-like
-#             greeting_keywords = ["hello", "hi", "greet", "welcome"]
-#             passed = any(kw in response.lower() for kw in greeting_keywords)
-            
-#             assert passed is True
-#             print_test_result(
-#                 passed, "Greeting detected" if passed else "No greeting detected"
-#             )
-
-#         await asyncio.sleep(1)
-
-# @pytest.mark.asyncio
-# async def test_farewell():
-#     """Test farewell functionality"""
-#     print_test_header("Farewell Agent Test")
-
-#     test_messages = ["Goodbye", "Bye", "See you later", "I have to go"]
-
-#     for msg in test_messages:
-#         print(f"  → Sending: '{msg}'")
-#         result = await send_message(msg)
-
-#         if "error" in result:
-#             print_test_result(False, f"Error: {result['error']}")
-#             pytest.fail(f"Error: {result['error']}")
-#         else:
-#             response = result.get("response", "")
-#             print(f"  ← Response: {response[:100]}...")
-
-#             # Check if response is farewell-like
-#             farewell_keywords = ["goodbye", "bye", "farewell", "see you", "great day"]
-#             passed = any(kw in response.lower() for kw in farewell_keywords)
-            
-#             assert passed is True
-#             print_test_result(
-#                 passed, "Farewell detected" if passed else "No farewell detected"
-#             )
-
-#         await asyncio.sleep(1)
-    
-
-
 @pytest.mark.asyncio
 async def test_career_advice():
     """Test career advice functionality"""
@@ -253,7 +192,7 @@ async def test_guardrails():
     # Test blocked keywords
     blocked_queries = [
         "Can you help with classified information?",
-        "I need confidential data",
+        "I need sexual content",
     ]
 
     for query in blocked_queries:
