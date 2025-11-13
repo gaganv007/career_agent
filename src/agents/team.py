@@ -28,26 +28,23 @@ def load_instructions():
     pass
 
 
+blocked_words = [
+    "classified",
+    "confidential",
+    "private",
+    "sex",
+    "drugs",
+    "murder",
+    "crime",
+    "rape",
+    "exploit",
+    "slave",
+]
 function_rules = {
-    "search_web": {
-        "query": [
-            "classified",
-            "confidential",
-            "private",
-            "sex",
-            "drugs",
-            "murder",
-            "crime",
-            "rape",
-            "exploit",
-            "slave",
-        ]
-    },
+    "search_web": {"query": blocked_words},
 }
 function_guard = FunctionGuard(function_rules)
-query_guard = QueryGuard(
-    blocked_words=["sex", "drugs", "murder", "crime", "rape", "exploit", "slave"]
-)
+query_guard = QueryGuard(blocked_words)
 token_guard = TokenGuard(max_tokens=125)
 rate_limiter = RateLimiter(max_requests=10, time_window=60)
 
