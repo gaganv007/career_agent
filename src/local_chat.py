@@ -1,5 +1,5 @@
 ## Run this script to run a local chat
-## session with the orchestrator agent 
+## session with the orchestrator agent
 ## via the terminal in VS Code.
 
 import asyncio

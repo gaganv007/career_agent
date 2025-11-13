@@ -226,12 +226,13 @@ class TokenGuard:
         logger.info(f"Estimated token count: {estimated_tokens}")
         return None
 
+
 # Rate limiting configuration
 class RateLimiter:
     """
     Guards against exceeding a specified rate limit of requests.
 
-    This class implements a rate limiting mechanism that tracks requests within a 
+    This class implements a rate limiting mechanism that tracks requests within a
     sliding time window. If the rate limit is exceeded, requests are blocked until
     the rate drops below the limit.
 
@@ -253,6 +254,7 @@ class RateLimiter:
         )
         ```
     """
+
     def __init__(self, max_requests=10, time_window=60):
         """
         Initialize the RateLimiter with request limits and time window.

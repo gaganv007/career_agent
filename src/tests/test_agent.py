@@ -2,6 +2,7 @@
 Automated test script for BU Agent API
 Tests various agent functionalities and responses
 """
+
 import pytest
 import asyncio
 import httpx
@@ -23,6 +24,7 @@ class Colors:
     RESET = "\033[0m"
     BOLD = "\033[1m"
 
+
 def print_test_header(test_name: str):
     """Print a formatted test header"""
     print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*60}{Colors.RESET}")
@@ -36,7 +38,8 @@ def print_test_result(passed: bool, message: str):
         f"{Colors.GREEN}✓{Colors.RESET}" if passed else f"{Colors.RED}✗{Colors.RESET}"
     )
     print(f"{symbol} {message}")
-    
+
+
 @pytest.mark.asyncio
 async def check_health() -> bool:
     """Check if the API server is running"""
@@ -49,6 +52,7 @@ async def check_health() -> bool:
         print(f"{Colors.RED}✗ Server health check failed: {e}{Colors.RESET}")
         pytest.fail(f"Server health check failed: {e}{Colors.RESET}")
         return False
+
 
 @pytest.mark.asyncio
 async def send_message(message: str, session_id: str = None) -> Dict:
@@ -105,13 +109,14 @@ async def test_career_advice():
                 "course",
             ]
             passed = any(kw in response.lower() for kw in career_keywords)
-            
+
             assert passed is True
             print_test_result(
                 passed, "Career advice detected" if passed else "Generic response"
             )
 
         await asyncio.sleep(1)
+
 
 @pytest.mark.asyncio
 async def test_schedule():
@@ -138,13 +143,14 @@ async def test_schedule():
             # Check if response contains schedule-related content
             schedule_keywords = ["schedule", "course", "class", "semester", "credit"]
             passed = any(kw in response.lower() for kw in schedule_keywords)
-            
+
             assert passed is True
             print_test_result(
                 passed, "Schedule advice detected" if passed else "Generic response"
             )
 
         await asyncio.sleep(1)
+
 
 @pytest.mark.asyncio
 async def test_session_persistence():
@@ -178,11 +184,12 @@ async def test_session_persistence():
 
     # Check if response acknowledges data science interest
     passed = "data science" in response2.lower() or "data" in response2.lower()
-    
+
     assert passed is True
     print_test_result(
         passed, "Context maintained" if passed else "Context not maintained"
     )
+
 
 @pytest.mark.asyncio
 async def test_guardrails():
@@ -211,13 +218,14 @@ async def test_guardrails():
             passed = any(
                 indicator in response.lower() for indicator in blocked_indicators
             )
-            
+
             assert passed is True
             print_test_result(
                 passed, "Guardrail active" if passed else "Guardrail may not be working"
             )
 
         await asyncio.sleep(1)
+
 
 @pytest.mark.asyncio
 async def test_response_time():
@@ -235,7 +243,7 @@ async def test_response_time():
 
         if "error" not in result:
             response_time = end_time - start_time
-            times.append(response_time)            
+            times.append(response_time)
             print(f"  ← Response time: {response_time:.2f}s")
             assert response_time < 10.0  # Expect response within 10 seconds
         else:
@@ -248,11 +256,12 @@ async def test_response_time():
         avg_time = sum(times) / len(times)
         print(f"\n  Average response time: {avg_time:.2f}s")
         passed = avg_time < 10.0  # Expect response within 10 seconds
-        
+
         assert passed is True
         print_test_result(
             passed, f"Performance {'acceptable' if passed else 'needs improvement'}"
         )
+
 
 @pytest.mark.asyncio
 async def run_all_tests():
