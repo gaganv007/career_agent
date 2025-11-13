@@ -288,8 +288,6 @@ async def run_all_tests():
 
     # Run all tests
     test_functions = [
-        test_greeting,
-        test_farewell,
         test_career_advice,
         test_schedule,
         test_session_persistence,

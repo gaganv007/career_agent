@@ -41,11 +41,11 @@ async def query_agent(query: str, runner, user_id, session_id) -> str:
             # Add more checks here if needed (e.g., specific error codes)
             break
 
-    log_line = []
-    log_line.append(f"\nUser_ID: {user_id}, Session_ID: {session_id}")
-    log_line.append(f"\nEvent_Author: {event.author}, Event_Type: {type(event).__name__}")  # type: ignore
-    log_line.append(f"\nQuery: {query}, Response: {final_response_text}")  # type: ignore
-    logger.info("%s", [line for line in log_line])
+    logger.info(
+        "User_ID: {user_id}, Session_ID: {session_id}"
+        f"\nEvent_Author: {event.author}, Event_Type: {type(event).__name__}"
+        f"\nQuery: {query}, Response: {final_response_text}"
+    )
 
     logger.debug(f"🔚 DEBUG: Returning response: '{final_response_text[:100]}...'")
     return f"{final_response_text}"
