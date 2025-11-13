@@ -3,11 +3,19 @@ import logging
 from agents.build import build_agent
 
 # LLM Tools / Functions
-from agents.functions import _summarize_skills_for_job, _summarize_course_schedule
-from agents.functions import _summarize_web_search, _summarize_user_memory, _summarize_course_recommendations
-from agents.functions import _create_temporary_user_id, _store_user_memory, _get_user_memory_for_agent
-#from google.adk.tools import google_search
-#from agents.functions import ask_vertex_retrieval
+from agents.functions import (
+    _summarize_skills_for_job,
+    _summarize_course_schedule,
+    _summarize_web_search,
+    _summarize_user_memory,
+    _summarize_course_recommendations,
+    _create_temporary_user_id,
+    _store_user_memory,
+    _get_user_memory_for_agent,
+)
+
+# from google.adk.tools import google_search
+# from agents.functions import ask_vertex_retrieval
 
 # LLM Constraints and Guardrails
 from setup.guardrails import QueryGuard, FunctionGuard, TokenGuard, RateLimiter
@@ -20,10 +28,21 @@ def load_instructions():
     pass
 
 
-
 function_rules = {
-    "search_web": {"query": ["classified", "confidential", "private",
-                              "sex", "drugs", "murder", "crime", "rape", "exploit", "slave"]},
+    "search_web": {
+        "query": [
+            "classified",
+            "confidential",
+            "private",
+            "sex",
+            "drugs",
+            "murder",
+            "crime",
+            "rape",
+            "exploit",
+            "slave",
+        ]
+    },
 }
 function_guard = FunctionGuard(function_rules)
 query_guard = QueryGuard(
@@ -76,7 +95,6 @@ SUB_AGENTS = {
             the course’s defined topics, prioritizing authoritative and course-referenced sources.",
             "Always use '_get_user_memory_for_agent' to access any relevant user context before processing requests.",
             "Always use '_summarize_web_search' to summarize web search results when needed.",
-
         ],
         tools=[_summarize_web_search, _get_user_memory_for_agent],
     ),
@@ -115,9 +133,12 @@ SUB_AGENTS = {
             "Always use '_get_user_memory_for_agent' to access any relevant user context before processing requests.",
             "Always use '_summarize_skills_for_job' when sharing career information to other agents or the user.",
             "Always use '_summarize_web_search' to summarize web search results when needed.",
-
         ],
-        tools=[_summarize_web_search, _summarize_skills_for_job, _get_user_memory_for_agent],
+        tools=[
+            _summarize_web_search,
+            _summarize_skills_for_job,
+            _get_user_memory_for_agent,
+        ],
     ),
     "Course": build_agent(
         _name="Course_Agent",
@@ -151,7 +172,11 @@ SUB_AGENTS = {
             "Always use '_summarize_course_recommendations' when relaying course information to other agents or the user.",
             "Always use '_summarize_web_search' to summarize web search results when needed.",
         ],
-        tools=[_summarize_web_search, _summarize_course_recommendations, _get_user_memory_for_agent],
+        tools=[
+            _summarize_web_search,
+            _summarize_course_recommendations,
+            _get_user_memory_for_agent,
+        ],
     ),
     "schedule": build_agent(
         _name="Scheduling_Agent",
@@ -190,7 +215,11 @@ SUB_AGENTS = {
             "Always use '_summarize_course_schedule' when relaying schedule information to other agents or the user.",
             "Always use '_summarize_web_search' to summarize web search results when needed.",
         ],
-        tools=[_summarize_web_search, _summarize_course_schedule, _get_user_memory_for_agent],
+        tools=[
+            _summarize_web_search,
+            _summarize_course_schedule,
+            _get_user_memory_for_agent,
+        ],
     ),
     "document": build_agent(
         _name="Document_Agent",
@@ -237,7 +266,7 @@ SUB_AGENTS = {
             'Is this document your transcript or a general academic record?'",
             "Always use _get_user_memory_for_agent to access any relevant user context before processing documents.",
         ],
-        tools=[_get_user_memory_for_agent]
+        tools=[_get_user_memory_for_agent],
     ),
     "memory": build_agent(
         _name="Memory_Agent",

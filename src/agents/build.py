@@ -16,6 +16,7 @@ def select_model(model_name: str) -> str:
     else:
         raise ValueError(f"Unsupported model: {model_name}")
 
+
 def build_agent(
     _name: str,
     _model: str,
