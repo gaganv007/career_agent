@@ -61,6 +61,42 @@
             border-radius: 20px;
         }
         
+        /* Modal Styles */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         /* Rainbow Text */
         .rainbow-text {
             background: linear-gradient(45deg, #f72585, #b5179e, #7209b7, #560bad, #480ca8, #3a0ca3, #3f37c9, #4361ee, #4895ef, #4cc9f0);
@@ -317,7 +353,7 @@
                 { icon: 'fa-brain', title: 'AI-Powered Recommendations', description: 'Get personalized course suggestions based on your academic profile', color: 'from-purple-400 to-pink-600' },
                 { icon: 'fa-calendar-check', title: 'Smart Schedule Planning', description: 'Optimize your semester schedule with intelligent conflict resolution', color: 'from-blue-400 to-cyan-600' },
                 { icon: 'fa-graduation-cap', title: 'Degree Planning', description: 'Map out your academic path from enrollment to graduation', color: 'from-green-400 to-teal-600' },
-                { icon: 'fa-file-alt', title: 'Transcript Analysis', description: 'Upload your transcript for instant personalized recommendations', color: 'from-yellow-400 to-orange-600' }
+                { icon: 'fa-file-alt', title: 'Document Analysis', description: 'Upload transcripts, resumes, and job descriptions for tailored advice', color: 'from-yellow-400 to-orange-600' }
             ];
 
             return (
@@ -385,24 +421,132 @@
             );
         };
 
-        // Chat Page
-        const ChatPage = () => {
-            const [messages, setMessages] = useState([]);
-            const [inputValue, setInputValue] = useState('');
-            const [isTyping, setIsTyping] = useState(false);
-            const [sessionId, setSessionId] = useState(null);
-            const [userId] = useState(localStorage.getItem('userId') || `user_${Date.now()}`);
-            const messagesEndRef = useRef(null);
+        // Upload Modal Component
+        const UploadModal = ({ isOpen, onClose, onUpload }) => {
+            const [selectedFile, setSelectedFile] = useState(null);
+            const [documentType, setDocumentType] = useState('');
             const fileInputRef = useRef(null);
+
+            const documentTypes = [
+                { value: 'transcript', label: 'Academic Transcript', icon: 'fa-file-alt' },
+                { value: 'resume', label: 'Resume/CV', icon: 'fa-id-card' },
+                { value: 'job_description', label: 'Job Description', icon: 'fa-briefcase' },
+                { value: 'course_list', label: 'Course List', icon: 'fa-list' },
+                { value: 'other', label: 'Other Document', icon: 'fa-file' }
+            ];
+
+            const handleFileSelect = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    setSelectedFile(file);
+                }
+            };
+
+            const handleUpload = () => {
+                if (selectedFile && documentType) {
+                    onUpload(selectedFile, documentType);
+                    setSelectedFile(null);
+                    setDocumentType('');
+                    onClose();
+                }
+            };
+
+            if (!isOpen) return null;
+
+            return (
+                <div className="modal-backdrop">
+                    <div className="modal-content glass rounded-2xl p-8 max-w-lg w-full mx-4">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-2xl font-bold text-white">Upload Document</h2>
+                            <button onClick={onClose} className="text-white opacity-60 hover:opacity-100">
+                                <i className="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+
+                        {/* Document Type Selection */}
+                        <div className="mb-6">
+                            <label className="text-white mb-3 block">Select Document Type:</label>
+                            <div className="space-y-2">
+                                {documentTypes.map(type => (
+                                    <button
+                                        key={type.value}
+                                        onClick={() => setDocumentType(type.value)}
+                                        className={`w-full p-3 rounded-lg text-white text-left flex items-center transition-all ${
+                                            documentType === type.value 
+                                                ? 'bg-gradient-to-r from-blue-500 to-purple-600' 
+                                                : 'glass hover:bg-white hover:bg-opacity-10'
+                                        }`}
+                                    >
+                                        <i className={`fas ${type.icon} mr-3`}></i>
+                                        {type.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* File Selection */}
+                        {documentType && (
+                            <div className="mb-6">
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    onChange={handleFileSelect}
+                                    accept=".pdf,.doc,.docx,.txt"
+                                    className="hidden"
+                                />
+                                <button
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className="w-full glass p-4 rounded-lg text-white hover:bg-white hover:bg-opacity-10 transition-all"
+                                >
+                                    <i className="fas fa-cloud-upload-alt mr-3"></i>
+                                    {selectedFile ? selectedFile.name : 'Choose File'}
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Action Buttons */}
+                        <div className="flex space-x-3">
+                            <button
+                                onClick={handleUpload}
+                                disabled={!selectedFile || !documentType}
+                                className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
+                                    selectedFile && documentType
+                                        ? 'btn-animated'
+                                        : 'glass text-white opacity-50 cursor-not-allowed'
+                                }`}
+                            >
+                                Upload
+                            </button>
+                            <button
+                                onClick={onClose}
+                                className="flex-1 glass text-white py-3 rounded-lg font-semibold hover:bg-white hover:bg-opacity-10 transition-all"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Chat Page Component
+        const ChatPage = ({ messages, setMessages, inputValue, setInputValue, sessionId, setSessionId }) => {
+            const [isTyping, setIsTyping] = useState(false);
+            const [userId] = useState(localStorage.getItem('userId') || `user_${Date.now()}`);
+            const [uploadModalOpen, setUploadModalOpen] = useState(false);
+            const messagesEndRef = useRef(null);
 
             useEffect(() => {
                 localStorage.setItem('userId', userId);
-                setMessages([{
-                    id: Date.now(),
-                    text: "Hello! I'm your BU Course Agent. I can help you with:\n\n• Course recommendations\n• Schedule planning\n• Degree requirements\n• Academic guidance\n\nHow can I assist you today?",
-                    sender: 'agent',
-                    timestamp: new Date()
-                }]);
+                // Only add welcome message if chat is empty
+                if (messages.length === 0) {
+                    setMessages([{
+                        id: Date.now(),
+                        text: "Hello! I'm your BU Course Agent. I can help you with:\n\n• Course recommendations\n• Schedule planning\n• Degree requirements\n• Academic guidance\n\nYou can also upload documents like transcripts, resumes, or job descriptions for personalized advice!",
+                        sender: 'agent',
+                        timestamp: new Date()
+                    }]);
+                }
             }, []);
 
             useEffect(() => {
@@ -468,11 +612,16 @@
                 { text: '💡 Academic Advice', action: 'Give me academic advice for success' }
             ];
 
-            const handleFileUpload = (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    sendMessage(`I've uploaded my transcript: ${file.name}`);
-                }
+            const handleFileUpload = (file, documentType) => {
+                const typeLabels = {
+                    'transcript': 'transcript',
+                    'resume': 'resume',
+                    'job_description': 'job description',
+                    'course_list': 'course list',
+                    'other': 'document'
+                };
+                const message = `I've uploaded my ${typeLabels[documentType]}: ${file.name}`;
+                sendMessage(message);
             };
 
             const clearChat = () => {
@@ -505,6 +654,13 @@
 
             return (
                 <div className="min-h-screen pt-20 flex">
+                    {/* Upload Modal */}
+                    <UploadModal
+                        isOpen={uploadModalOpen}
+                        onClose={() => setUploadModalOpen(false)}
+                        onUpload={handleFileUpload}
+                    />
+
                     {/* Sidebar */}
                     <div className="w-80 glass m-4 rounded-2xl p-6">
                         <h3 className="text-xl font-bold text-white mb-4">Quick Actions</h3>
@@ -538,19 +694,12 @@
                         </div>
 
                         <div className="mt-auto">
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                onChange={handleFileUpload}
-                                accept=".pdf,.doc,.docx,.txt"
-                                className="hidden"
-                            />
                             <button 
-                                onClick={() => fileInputRef.current?.click()}
+                                onClick={() => setUploadModalOpen(true)}
                                 className="w-full glass p-3 rounded-lg text-white hover:bg-white hover:bg-opacity-10 transition-all"
                             >
                                 <i className="fas fa-upload mr-2"></i>
-                                Upload Transcript
+                                Upload Document
                             </button>
                         </div>
                     </div>
@@ -617,6 +766,13 @@
 
                         <div className="glass rounded-b-2xl p-4">
                             <div className="flex items-center space-x-3">
+                                <button 
+                                    onClick={() => setUploadModalOpen(true)}
+                                    className="text-white opacity-60 hover:opacity-100 transition" 
+                                    title="Upload Document"
+                                >
+                                    <i className="fas fa-paperclip text-xl"></i>
+                                </button>
                                 <input
                                     type="text"
                                     value={inputValue}
@@ -660,13 +816,19 @@
                                 <li className="flex items-start">
                                     <i className="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
                                     <div>
+                                        <strong>Document Analysis:</strong> Process transcripts, resumes, and job descriptions for tailored academic advice
+                                    </div>
+                                </li>
+                                <li className="flex items-start">
+                                    <i className="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
+                                    <div>
                                         <strong>Degree Requirements:</strong> Provides information about program requirements and graduation criteria
                                     </div>
                                 </li>
                                 <li className="flex items-start">
                                     <i className="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
                                     <div>
-                                        <strong>Academic Guidance:</strong> Offers general academic advice and study tips for success
+                                        <strong>Career Alignment:</strong> Matches course selections with career goals based on job descriptions
                                     </div>
                                 </li>
                             </ul>
@@ -697,12 +859,6 @@
                                     <i className="fas fa-exclamation-triangle text-yellow-400 mr-3 mt-1"></i>
                                     <div>
                                         <strong>Real-time Data:</strong> Does not have access to real-time course availability or enrollment numbers
-                                    </div>
-                                </li>
-                                <li className="flex items-start">
-                                    <i className="fas fa-exclamation-triangle text-yellow-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Professor Information:</strong> Currently does not include professor ratings or reviews
                                     </div>
                                 </li>
                             </ul>
@@ -779,12 +935,12 @@
                                         <i className="fas fa-user text-white text-xl"></i>
                                     </div>
                                     <div>
-                                        <h3 className="text-2xl font-bold text-white">Team Member</h3>
-                                        <p className="text-white opacity-80">Role</p>
+                                        <h3 className="text-2xl font-bold text-white">Brendan</h3>
+                                        <p className="text-white opacity-80">QA & Testing Lead</p>
                                     </div>
                                 </div>
                                 <p className="text-white opacity-90">
-                                    Contributed to testing, documentation, and quality assurance of the application.
+                                    Led quality assurance efforts, conducted comprehensive testing, and ensured application reliability and user experience.
                                 </p>
                             </div>
                         </div>
@@ -862,16 +1018,29 @@
             </div>
         );
 
-        // Main App
+        // Main App Component
         const App = () => {
             const [currentPage, setCurrentPage] = useState('home');
+            // Lifted chat state to App level so it persists across tab changes
+            const [messages, setMessages] = useState([]);
+            const [inputValue, setInputValue] = useState('');
+            const [sessionId, setSessionId] = useState(null);
 
             const renderPage = () => {
                 switch(currentPage) {
                     case 'home':
                         return <HomePage setCurrentPage={setCurrentPage} />;
                     case 'chat':
-                        return <ChatPage />;
+                        return (
+                            <ChatPage 
+                                messages={messages}
+                                setMessages={setMessages}
+                                inputValue={inputValue}
+                                setInputValue={setInputValue}
+                                sessionId={sessionId}
+                                setSessionId={setSessionId}
+                            />
+                        );
                     case 'features':
                         return <FeaturesPage />;
                     case 'about':
