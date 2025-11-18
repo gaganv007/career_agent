@@ -1,9 +1,13 @@
+## Run this script to run a local chat
+## session with the orchestrator agent
+## via the terminal in VS Code.
+
 import asyncio
 from datetime import datetime
 from google.adk.sessions import InMemorySessionService  # pylint: disable=import-error
 from google.adk.runners import Runner  # pylint: disable=import-error
 
-from setup.logger_config import AgentLogger
+from setup.logger_config import AgentLogger, setup_logging
 from setup.interactions import query_agent, update_session_state, update_callback_state
 from agents.team import orchestrator
 
@@ -12,11 +16,13 @@ APP_NAME = "BU MET 633 Fall 2025 Term Project"
 USER_ID = f"test_user_{start_time.strftime('%Y%m%d__%H%M%S')}"
 SESSION_ID = f"{USER_ID}_{start_time.strftime('%Y%m%d__%H%M%S')}"
 
+
 async def build_session_state(**kwargs):
     state = {}
     for key, value in kwargs.items():
         state[key] = value
     return state
+
 
 async def run_conversation(
     head_agent=orchestrator,
@@ -26,7 +32,7 @@ async def run_conversation(
     **kwargs,
 ):
 
-    logger = AgentLogger()
+    logger = setup_logging()
     service = InMemorySessionService()
     state = await build_session_state(**kwargs) if kwargs else None
 
@@ -40,8 +46,8 @@ async def run_conversation(
         session_service=service,
     )
 
-    #Set words to end session
-    exit_words = ['exit', 'quit', 'end session', 'goodbye']
+    # Set words to end session
+    exit_words = ["exit", "quit", "end session", "goodbye"]
     print("Chat with the agent (type 'exit' or 'quit' to end)")
     print("-" * 50)
 
@@ -55,10 +61,10 @@ async def run_conversation(
     print(f"\n{head_agent.name.replace("_", " ")}: {greeting}")
 
     while True:
-        if 'last_response' not in locals():
+        if "last_response" not in locals():
             prompt = input("\nYou: ").strip()
         else:
-            if '?' in last_response.strip(): #type: ignore
+            if "?" in last_response.strip():  # type: ignore
                 prompt = input("\nYou: ").strip()
             else:
                 prompt = "Please continue."
@@ -74,10 +80,10 @@ async def run_conversation(
             app_name=app_name, user_id=user_id, session_id=session_id
         )
         response = await query_agent(
-                query=prompt,
-                runner=head_runner,
-                user_id=user_id,
-                session_id=session_id,
+            query=prompt,
+            runner=head_runner,
+            user_id=user_id,
+            session_id=session_id,
         )
         print(f"\n{head_agent.name.replace("_", " ")}: {response}")
         last_response = response
