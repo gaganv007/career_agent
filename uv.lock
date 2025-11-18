@@ -1,6 +1,6 @@
 version = 1
 revision = 3
-requires-python = ">=3.13, <4.0"
+requires-python = ">=3.13.3, <4.0"
 resolution-markers = [
     "python_full_version >= '3.14'",
     "python_full_version < '3.14'",
@@ -1691,9 +1691,11 @@ source = { virtual = "." }
 dependencies = [
     { name = "black" },
     { name = "docker" },
+    { name = "fastapi" },
     { name = "firestore" },
     { name = "flask" },
     { name = "google-adk" },
+    { name = "httpx" },
     { name = "kubernetes" },
     { name = "litellm" },
     { name = "logging" },
@@ -1701,17 +1703,21 @@ dependencies = [
     { name = "openpyxl" },
     { name = "pandas" },
     { name = "pytest" },
+    { name = "python-multipart" },
     { name = "react" },
     { name = "spacy" },
+    { name = "uvicorn" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "black", specifier = ">=25.9.0" },
     { name = "docker", specifier = ">=7.1.0" },
+    { name = "fastapi", specifier = ">=0.115.0" },
     { name = "firestore", specifier = ">=0.0.8" },
     { name = "flask", specifier = ">=3.1.2" },
     { name = "google-adk", specifier = ">=1.15.1" },
+    { name = "httpx", specifier = ">=0.27.0" },
     { name = "kubernetes", specifier = ">=34.1.0" },
     { name = "litellm", specifier = ">=1.77.7" },
     { name = "logging", specifier = ">=0.4.9.6" },
@@ -1719,8 +1725,10 @@ requires-dist = [
     { name = "openpyxl", specifier = ">=3.1.5" },
     { name = "pandas", specifier = ">=2.3.3" },
     { name = "pytest", specifier = ">=8.4.2" },
+    { name = "python-multipart", specifier = ">=0.0.9" },
     { name = "react", specifier = ">=4.3.0" },
     { name = "spacy", specifier = ">=3.8.7" },
+    { name = "uvicorn", specifier = ">=0.30.6" },
 ]
 
 [[package]]
