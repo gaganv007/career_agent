@@ -18,25 +18,25 @@ def select_model(model_name: str) -> str:
 
 
 def build_agent(
-    _name: str,
-    _model: str,
-    _description: str,
-    _instruction: list[str],
+    name: str,
+    model: str,
+    description: str,
+    instruction: list[str],
     **kwargs,
 ) -> Agent:
 
     try:
         agent = Agent(
-            name=_name,
-            model=select_model(_model),
-            description=_description,
-            instruction=format_instruction(_instruction),
+            name=name,
+            model=select_model(model),
+            description=description,
+            instruction=format_instruction(instruction),
             **kwargs,
         )
-        agent.name = _name
-        logger.info(f"Agent '{_name}' created")
+        agent.name = name
+        logger.info(f"Agent '{name}' created")
 
         return agent
     except Exception as e:
-        logger.error(f"Error Creating Agent {_name}: {e}")
+        logger.error(f"Error Creating Agent {name}: {e}")
         raise e

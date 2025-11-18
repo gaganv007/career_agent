@@ -29,7 +29,7 @@ logger = logging.getLogger("AgentLogger")
 # )
 
 
-def _summarize_course_recommendations(job_title: str, courses: list[dict[str, Any]]):
+def summarize_course_recommendations(job_title: str, courses: list[dict[str, Any]]):
     """
     Normalize a list of course recommendation dicts into a stable JSON structure
     consumable by a front-end (HTML/React). Returns a JSON string.
@@ -117,7 +117,7 @@ def _summarize_course_recommendations(job_title: str, courses: list[dict[str, An
         )
 
 
-def _summarize_course_schedule(course: str, schedule: list[dict[str, Any]]):
+def summarize_course_schedule(course: str, schedule: list[dict[str, Any]]):
     """
     Normalize a course schedule into a stable JSON structure consumable by a front-end.
     Returns a JSON string.
@@ -196,7 +196,7 @@ def _summarize_course_schedule(course: str, schedule: list[dict[str, Any]]):
         return json.dumps({"course": course, "sessions": []}, ensure_ascii=False)
 
 
-def _summarize_skills_for_job(job_title: str, skills: list[dict[str, Any]]):
+def summarize_skills_for_job(job_title: str, skills: list[dict[str, Any]]):
     """
     Normalize a list of skills for a job into a stable JSON structure.
     Returns a JSON string.
@@ -274,7 +274,7 @@ def _summarize_skills_for_job(job_title: str, skills: list[dict[str, Any]]):
         return json.dumps({"job_title": job_title, "skills": []}, ensure_ascii=False)
 
 
-def _summarize_career_path(job_title: str, path: list[dict[str, Any]]):
+def summarize_career_path(job_title: str, path: list[dict[str, Any]]):
     """
     Normalize a career path for a job into a stable JSON structure.
     Returns a JSON string.
@@ -357,7 +357,7 @@ def _summarize_career_path(job_title: str, path: list[dict[str, Any]]):
 _MEMORY_STORE: dict[str, dict[str, Any]] = {}
 
 
-def _create_temporary_user_id(prefix: str = "tmp") -> str:
+def create_temporary_user_id(prefix: str = "tmp") -> str:
     """
     Create a temporary user_id for the session, initialize a minimal memory entry if missing,
     and return the user_id. The ID is stable for the session and suitable to pass to sub-agents.
@@ -381,7 +381,7 @@ def _create_temporary_user_id(prefix: str = "tmp") -> str:
     return user_id
 
 
-def _summarize_user_memory(user_id: Optional[str], profile: dict[str, Any]):
+def summarize_user_memory(user_id: Optional[str], profile: dict[str, Any]):
     """
     Normalize a user profile into a stable JSON structure for sharing with sub-agents.
     Returns a JSON string.
@@ -466,7 +466,7 @@ def _summarize_user_memory(user_id: Optional[str], profile: dict[str, Any]):
         return json.dumps({"user_id": user_id or None}, ensure_ascii=False)
 
 
-def _store_user_memory(user_id: str, profile: dict[str, Any]) -> bool:
+def store_user_memory(user_id: str, profile: dict[str, Any]) -> bool:
     """
     Merge incoming profile into the in-memory store for user_id.
     Returns True on success.
@@ -492,7 +492,7 @@ def _store_user_memory(user_id: str, profile: dict[str, Any]) -> bool:
             _MEMORY_STORE[user_id] = merged
         else:
             # normalize incoming freeform profile then merge
-            normalized_json = _summarize_user_memory(user_id, profile)
+            normalized_json = summarize_user_memory(user_id, profile)
             normalized = json.loads(normalized_json)
             merged = existing.copy()
             merge_dict(merged, normalized)
@@ -505,7 +505,7 @@ def _store_user_memory(user_id: str, profile: dict[str, Any]) -> bool:
         return False
 
 
-def _get_user_memory_for_agent(user_id: str, fields: Optional[list[str]] = None):
+def get_user_memory_for_agent(user_id: str, fields: Optional[list[str]] = None):
     """
     Retrieve the stored memory for user_id. If fields is provided, return only those top-level keys.
     Returns a JSON string.
@@ -526,7 +526,7 @@ def _get_user_memory_for_agent(user_id: str, fields: Optional[list[str]] = None)
         return json.dumps({"user_id": user_id, "profile": None}, ensure_ascii=False)
 
 
-def _summarize_web_search(
+def summarize_web_search(
     query: str,
     results: list[dict[str, Any]],
     analysis: Optional[str] = None,

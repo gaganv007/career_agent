@@ -4,14 +4,14 @@ from agents.build import build_agent
 
 # LLM Tools / Functions
 from agents.functions import (
-    _summarize_skills_for_job,
-    _summarize_course_schedule,
-    _summarize_web_search,
-    _summarize_user_memory,
-    _summarize_course_recommendations,
-    _create_temporary_user_id,
-    _store_user_memory,
-    _get_user_memory_for_agent,
+    summarize_skills_for_job,
+    summarize_course_schedule,
+    summarize_web_search,
+    summarize_user_memory,
+    summarize_course_recommendations,
+    create_temporary_user_id,
+    store_user_memory,
+    get_user_memory_for_agent,
 )
 
 # from google.adk.tools import google_search
@@ -51,12 +51,12 @@ rate_limiter = RateLimiter(max_requests=10, time_window=60)
 # --- Agent Configuration ---
 SUB_AGENTS = {
     "cs633": build_agent(
-        _name="CS633_Agent",
-        _model="gemini",
-        _description="provide clear, technically accurate, and"
+        name="CS633_Agent",
+        model="gemini",
+        description="provide clear, technically accurate, and"
         "example-driven explanations of topics covered in BU MET CS 633,"
         "including relevant diagrams, frameworks, and modern tools.",
-        _instruction=[
+        instruction=[
             "You are the CS633 Agent, an intelligent assistant specializing in"
             "the topics covered in Boston University Metropolitan College's"
             "CS 633: Software Quality, Testing Security Management course.",
@@ -98,15 +98,15 @@ SUB_AGENTS = {
             "Always use '_get_user_memory_for_agent' to access any relevant user context before processing requests.",
             "Always use '_summarize_web_search' to summarize web search results when needed.",
         ],
-        tools=[_summarize_web_search, _get_user_memory_for_agent],
+        tools=[summarize_web_search, get_user_memory_for_agent],
     ),
     "career": build_agent(
-        _name="Career_Agent",
-        _model="gemini",
-        _description="identify and define the key skills and trends for U.S.-based"
+        name="Career_Agent",
+        model="gemini",
+        description="identify and define the key skills and trends for U.S.-based"
         "Computer Information Systems careers, and to communicate those findings in a structured "
         "format that enables the Course Agent to map them to relevant academic programs at BU MET.",
-        _instruction=[
+        instruction=[
             "You are the Career Agent, an intelligent assistant specializing in career pathway"
             "planning for users pursuing careers in Computer Information Systems (CIS) and related fields."
             "You do not interact with the user directly; instead, you gather "
@@ -138,18 +138,18 @@ SUB_AGENTS = {
             "Always use '_summarize_web_search' to summarize web search results when needed.",
         ],
         tools=[
-            _summarize_web_search,
-            _summarize_skills_for_job,
-            _get_user_memory_for_agent,
+            summarize_web_search,
+            summarize_skills_for_job,
+            get_user_memory_for_agent,
         ],
     ),
     "Course": build_agent(
-        _name="Course_Agent",
-        _model="gemini",
-        _description="Maps career-relevant CIS skills identified by the Career_Agent "
+        name="Course_Agent",
+        model="gemini",
+        description="Maps career-relevant CIS skills identified by the Career_Agent "
         "to specific BU MET courses and programs, thereby enabling users to follow a clear, "
         "academically supported pathway toward their desired Computer Information Systems career.",
-        _instruction=[
+        instruction=[
             "You are the Course Agent, an intelligent assistant specializing in academic mapping and"
             "course recommendations for Boston University Metropolitan College (BU MET)."
             "You do not interact with the user directly; instead, you gather "
@@ -176,19 +176,19 @@ SUB_AGENTS = {
             "Always use '_summarize_web_search' to summarize web search results when needed.",
         ],
         tools=[
-            _summarize_web_search,
-            _summarize_course_recommendations,
-            _get_user_memory_for_agent,
+            summarize_web_search,
+            summarize_course_recommendations,
+            get_user_memory_for_agent,
         ],
     ),
     "schedule": build_agent(
-        _name="Scheduling_Agent",
-        _model="gemini",
-        _description="An agent to construct an optimized, conflict-free, and preference-aligned"
+        name="Scheduling_Agent",
+        model="gemini",
+        description="An agent to construct an optimized, conflict-free, and preference-aligned"
         "academic schedule for BU MET students based on course recommendations and"
         "user-provided schedules or preferences — ensuring a maximum of five"
         ":concurrent courses per term.",
-        _instruction=[
+        instruction=[
             "You are the Scheduling Agent, an intelligent assistant responsible",
             "for building optimized academic schedules for users enrolled at Boston University",
             "Metropolitan College (BU MET)."
@@ -221,19 +221,19 @@ SUB_AGENTS = {
             "Always use '_summarize_web_search' to summarize web search results when needed.",
         ],
         tools=[
-            _summarize_web_search,
-            _summarize_course_schedule,
-            _get_user_memory_for_agent,
+            summarize_web_search,
+            summarize_course_schedule,
+            get_user_memory_for_agent,
         ],
     ),
     "document": build_agent(
-        _name="Document_Agent",
-        _model="gemini",
-        _description="An agent to construct an optimized, conflict-free, and preference-aligned"
+        name="Document_Agent",
+        model="gemini",
+        description="An agent to construct an optimized, conflict-free, and preference-aligned"
         "academic schedule for BU MET students based on Course Agent recommendations and"
         "user-provided schedules or preferences — ensuring a maximum of five"
         "concurrent courses per term.",
-        _instruction=[
+        instruction=[
             "You are the Document Agent, an intelligent assistant responsible for reading, parsing,"
             "and interpreting user-provided documents to extract career-relevant and"
             "academic-relevant information."
@@ -270,15 +270,15 @@ SUB_AGENTS = {
             "'Is this document your transcript or a general academic record?'",
             "Always use _get_user_memory_for_agent to access any relevant user context before processing documents.",
         ],
-        tools=[_get_user_memory_for_agent],
+        tools=[get_user_memory_for_agent],
     ),
     "memory": build_agent(
-        _name="Memory_Agent",
-        _model="gemini",
-        _description="You act as a persistent, structured, and queryable memory system that"
+        name="Memory_Agent",
+        model="gemini",
+        description="You act as a persistent, structured, and queryable memory system that"
         "captures and maintains all relevant user data — ensuring personalized, consistent,"
         "and context-aware responses from every other agent in the academic advising ecosystem.",
-        _instruction=[
+        instruction=[
             "You are the Memory Agent, an intelligent assistant responsible for building,"
             "maintaining, and updating a structured memory profile of the user."
             "You do not interact with the user directly; instead, you gather "
@@ -326,20 +326,20 @@ SUB_AGENTS = {
             "Always use '_summarize_user_memory' if another agent needs information the current user.",
             "Always use '_store_user_memory' to save or update user information in memory.",
         ],
-        tools=[_summarize_user_memory, _store_user_memory],
+        tools=[summarize_user_memory, store_user_memory],
     ),
 }
 
 # Primary Orchestrator
 orchestrator = build_agent(
-    _name="BU_MET_Guide",
-    _model="gemini",
-    _description="An agent manage the end-to-end coordination of specialized agents —"
+    name="BU_MET_Guide",
+    model="gemini",
+    description="An agent manage the end-to-end coordination of specialized agents —"
     "ensuring smooth data flow, consistent memory, and cohesive responses —"
     "so that the user experiences a single, intelligent academic and career"
     "assistant capable of guiding them from career goal to personalized course"
     "and schedule recommendations.",
-    _instruction=[
+    instruction=[
         "You are the Orchestrator Agent, the central coordinator and manager of the multi-agent academic advising ecosystem.",
         "You fascilitate all interactions with the user; the user only interacts with you directly. You never expose"
         "the existence of sub-agents to the user and always present a unified interface.",
@@ -378,5 +378,5 @@ orchestrator = build_agent(
     before_tool_callback=None,
     after_tool_callback=None,
     after_model_callback=None,
-    tools=[_create_temporary_user_id],
+    tools=[create_temporary_user_id],
 )
