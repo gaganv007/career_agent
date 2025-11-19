@@ -71,7 +71,7 @@ async def startup_event():
     print("📚 API Docs: http://localhost:8000/docs")
     print(f"⚠️  Rate Limit: {query_per_min_limit} requests per minute")
     print(
-        f"💡 Tip: Wait at least {query_per_min_limit/60:.2f} seconds between messages"
+        f"💡 Tip: Wait at least {60/query_per_min_limit:.2f} seconds between messages"
     )
     print("=" * 60 + "\n")
 
