@@ -3,10 +3,11 @@
 ## to interact with the agent via the UI
 
 import sys
-from pathlib import Path
 import asyncio
-import time
-from collections import deque
+import uvicorn
+from pathlib import Path
+from datetime import datetime
+from typing import Optional
 
 # Add src directory to Python path
 project_root = Path(__file__).resolve().parent
@@ -14,21 +15,23 @@ src_path = project_root / "src"
 if str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
-from datetime import datetime, timedelta
+
+#Google ADK
 from google.adk.sessions import InMemorySessionService
 from google.adk.runners import Runner
-from typing import Optional
-import uvicorn
 
+#Custom modules
 from setup.logger_config import AgentLogger
 from setup.interactions import query_agent
 from agents.team import orchestrator
 
 app = FastAPI(title="BU Agent API")
+templates = Jinja2Templates(directory="src")
 
 # Enable CORS for frontend communication
 ## SS: Resource sharing between ???
@@ -184,9 +187,9 @@ async def delete_session(user_id: str, session_id: str):
         return {"message": f"Session {session_key} deleted"}
     return {"message": "Session not found"}
 
-
-static_dir = Path(__file__).parent / "."  # Points to src/
-app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
+@app.get("/", response_class=HTMLResponse)
+async def read_index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
