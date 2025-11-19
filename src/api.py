@@ -2,6 +2,7 @@
 ## Then open index.html through a web browser
 ## to interact with the agent via the UI
 
+import os
 import sys
 import asyncio
 import uvicorn
@@ -184,5 +185,7 @@ async def delete_session(user_id: str, session_id: str):
 
 
 app.mount("/static", StaticFiles(directory=str(Path(__file__).parent / "static"), html=True))
+
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
