@@ -18,38 +18,23 @@
             overflow-x: hidden;
         }
         
-        /* Animated Gradient Background */
+        /* Static Background - Colorblind Friendly */
         .animated-bg {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
             z-index: -1;
         }
         
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        /* Floating Orbs */
+        /* Static Orbs */
         .orb {
             position: absolute;
             border-radius: 50%;
-            filter: blur(40px);
-            opacity: 0.6;
-            animation: float 20s infinite ease-in-out;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -30px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
+            filter: blur(60px);
+            opacity: 0.3;
         }
         
         /* Glass Effect */
@@ -97,18 +82,12 @@
             }
         }
         
-        /* Rainbow Text */
+        /* Rainbow Text - Static Version */
         .rainbow-text {
-            background: linear-gradient(45deg, #f72585, #b5179e, #7209b7, #560bad, #480ca8, #3a0ca3, #3f37c9, #4361ee, #4895ef, #4cc9f0);
-            background-size: 200% auto;
+            background: linear-gradient(90deg, #5e72e4, #825ee4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: rainbow 3s linear infinite;
-        }
-        
-        @keyframes rainbow {
-            to { background-position: 200% center; }
         }
         
         /* Bounce Animation */
@@ -133,22 +112,10 @@
             50% { transform: translateY(-20px); }
         }
         
-        /* Neon Glow */
+        /* Neon Glow - Static Version */
         .neon-glow {
-            animation: neonPulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes neonPulse {
-            0%, 100% { 
-                box-shadow: 0 0 20px rgba(102, 126, 234, 0.8),
-                            0 0 40px rgba(102, 126, 234, 0.6),
-                            0 0 60px rgba(102, 126, 234, 0.4);
-            }
-            50% { 
-                box-shadow: 0 0 30px rgba(102, 126, 234, 1),
-                            0 0 50px rgba(102, 126, 234, 0.8),
-                            0 0 70px rgba(102, 126, 234, 0.6);
-            }
+            box-shadow: 0 0 20px rgba(94, 114, 228, 0.5),
+                        0 0 40px rgba(94, 114, 228, 0.3);
         }
         
         /* Card Hover */
@@ -162,9 +129,9 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
         
-        /* Button Animation */
+        /* Button - Static Gradient */
         .btn-animated {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #5e72e4, #825ee4);
             color: white;
             padding: 12px 32px;
             border-radius: 50px;
@@ -174,25 +141,9 @@
             transition: all 0.3s;
         }
         
-        .btn-animated::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: shimmer 2s infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        
         .btn-animated:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(94, 114, 228, 0.4);
         }
         
         /* Message Animation */
@@ -204,6 +155,39 @@
             0% { opacity: 0; transform: scale(0.8) translateY(20px); }
             50% { transform: scale(1.05) translateY(-5px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        
+        /* Better formatting for agent lists and recommendations */
+        .agent-message ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 12px;
+        }
+        
+        .agent-message li {
+            margin-bottom: 8px;
+            padding-left: 24px;
+            position: relative;
+        }
+        
+        .agent-message li:before {
+            content: '▸';
+            position: absolute;
+            left: 8px;
+            color: #a0aec0;
+        }
+        
+        .agent-message strong {
+            color: #e0e7ff;
+            font-weight: 600;
+        }
+        
+        .agent-message code {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
         }
         
         /* Typing Dots */
@@ -235,18 +219,20 @@
 <body>
     <div class="animated-bg"></div>
     
-    <!-- Floating Orbs -->
-    <div class="orb" style="width: 400px; height: 400px; top: -200px; left: -100px; background: radial-gradient(circle, rgba(102, 126, 234, 0.3), transparent);"></div>
-    <div class="orb" style="width: 300px; height: 300px; bottom: -150px; right: -100px; background: radial-gradient(circle, rgba(240, 147, 251, 0.3), transparent); animation-delay: -5s;"></div>
-    <div class="orb" style="width: 350px; height: 350px; top: 50%; left: 50%; background: radial-gradient(circle, rgba(118, 75, 162, 0.3), transparent); animation-delay: -10s;"></div>
+    <!-- Static Background Orbs -->
+    <div class="orb" style="width: 400px; height: 400px; top: -200px; left: -100px; background: radial-gradient(circle, rgba(94, 114, 228, 0.2), transparent);"></div>
+    <div class="orb" style="width: 300px; height: 300px; bottom: -150px; right: -100px; background: radial-gradient(circle, rgba(130, 94, 228, 0.2), transparent);"></div>
+    <div class="orb" style="width: 350px; height: 350px; top: 50%; left: 50%; background: radial-gradient(circle, rgba(94, 114, 228, 0.2), transparent);"></div>
     
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // API Configuration
-        const API_BASE_URL = 'http://localhost:8000';
+        // API Configuration - Use environment variable or fallback to localhost
+        const API_BASE_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:8000' 
+            : 'https://career-agent-9cif.onrender.com';
 
         // Navigation Component
         const Navigation = ({ currentPage, setCurrentPage }) => {
@@ -258,7 +244,121 @@
                     setIsScrolled(window.scrollY > 20);
                 };
                 window.addEventListener('scroll', handleScroll);
-                return () => window.removeEventListener('scroll', handleScroll);
+                // Format message text to handle lists, tables, and formatting
+            const formatMessageText = (text) => {
+                // Check if this is a structured response with ** markers
+                if (text.includes('**') && text.includes('**')) {
+                    // Parse sections with headers
+                    const sections = text.split(/\*\*\d+\.\s+/).filter(Boolean);
+                    
+                    return (
+                        <div className="formatted-content">
+                            {sections.map((section, idx) => {
+                                // Extract title and content
+                                const lines = section.split('\n').filter(line => line.trim());
+                                const titleMatch = section.match(/^([^:]+):\*\*/);
+                                const title = titleMatch ? titleMatch[1].replace(/\*\*/g, '') : '';
+                                
+                                // Parse subsections
+                                const items = [];
+                                lines.forEach(line => {
+                                    if (line.includes('**Purpose**:')) {
+                                        items.push({
+                                            label: 'Purpose',
+                                            content: line.replace(/.*\*\*Purpose\*\*:\s*/, '').replace(/\*\*/g, '')
+                                        });
+                                    } else if (line.includes('**Examples**:')) {
+                                        items.push({
+                                            label: 'Examples',
+                                            content: ''
+                                        });
+                                    } else if (line.match(/^\s*\*\s+\*\*([^:]+):\*\*/)) {
+                                        const match = line.match(/^\s*\*\s+\*\*([^:]+):\*\*\s*(.*)/);
+                                        if (match) {
+                                            items.push({
+                                                label: match[1],
+                                                content: match[2].replace(/\*\*/g, '')
+                                            });
+                                        }
+                                    }
+                                });
+                                
+                                return (
+                                    <div key={idx} className="mb-6">
+                                        {title && (
+                                            <h3 className="text-lg font-bold text-white mb-3 border-b border-white border-opacity-20 pb-2">
+                                                {idx + 1}. {title}
+                                            </h3>
+                                        )}
+                                        {items.length > 0 && (
+                                            <table className="w-full">
+                                                <tbody>
+                                                    {items.map((item, i) => (
+                                                        <tr key={i} className="border-b border-white border-opacity-10">
+                                                            <td className="py-2 px-3 font-semibold text-white opacity-80 align-top w-32">
+                                                                {item.label}:
+                                                            </td>
+                                                            <td className="py-2 px-3 text-white opacity-90">
+                                                                {item.content}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    );
+                }
+                
+                // Check if this looks like JSON or structured data
+                try {
+                    const jsonData = JSON.parse(text);
+                    if (typeof jsonData === 'object') {
+                        return (
+                            <div className="json-content">
+                                <pre className="bg-black bg-opacity-20 p-3 rounded-lg overflow-x-auto">
+                                    <code className="text-white text-sm">
+                                        {JSON.stringify(jsonData, null, 2)}
+                                    </code>
+                                </pre>
+                            </div>
+                        );
+                    }
+                } catch (e) {
+                    // Not JSON, continue with regular formatting
+                }
+                
+                // Handle bullet points and regular formatting
+                let formatted = text.replace(/^[•·▪▸]\s*/gm, '');
+                formatted = formatted.replace(/^[-*]\s+/gm, '• ');
+                formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+                
+                // Handle numbered lists
+                formatted = formatted.replace(/^\d+\.\s+/gm, (match) => `${match}`);
+                
+                // Handle line breaks for better readability
+                const lines = formatted.split('\n');
+                return (
+                    <div>
+                        {lines.map((line, idx) => {
+                            if (line.startsWith('• ')) {
+                                return <li key={idx} style={{marginLeft: '20px', marginBottom: '4px', listStyle: 'none'}}>{line.substring(2)}</li>;
+                            } else if (/^\d+\.\s/.test(line)) {
+                                return <li key={idx} style={{marginLeft: '20px', marginBottom: '4px', listStyle: 'none'}}>{line}</li>;
+                            } else if (line.trim() === '') {
+                                return <br key={idx} />;
+                            } else {
+                                return <div key={idx} dangerouslySetInnerHTML={{ __html: line }} />;
+                            }
+                        })}
+                    </div>
+                );
+            };
+
+            return () => window.removeEventListener('scroll', handleScroll);
             }, []);
 
             const navLinks = [
@@ -350,10 +450,10 @@
         // Home Page
         const HomePage = ({ setCurrentPage }) => {
             const features = [
-                { icon: 'fa-brain', title: 'AI-Powered Recommendations', description: 'Get personalized course suggestions based on your academic profile', color: 'from-purple-400 to-pink-600' },
-                { icon: 'fa-calendar-check', title: 'Smart Schedule Planning', description: 'Optimize your semester schedule with intelligent conflict resolution', color: 'from-blue-400 to-cyan-600' },
-                { icon: 'fa-graduation-cap', title: 'Degree Planning', description: 'Map out your academic path from enrollment to graduation', color: 'from-green-400 to-teal-600' },
-                { icon: 'fa-file-alt', title: 'Document Analysis', description: 'Upload transcripts, resumes, and job descriptions for tailored advice', color: 'from-yellow-400 to-orange-600' }
+                { icon: 'fa-brain', title: 'AI-Powered Recommendations', description: 'Get personalized course suggestions based on your academic profile', color: 'from-blue-500 to-blue-700' },
+                { icon: 'fa-calendar-check', title: 'Smart Schedule Planning', description: 'Optimize your semester schedule with intelligent conflict resolution', color: 'from-green-500 to-green-700' },
+                { icon: 'fa-graduation-cap', title: 'Degree Planning', description: 'Map out your academic path from enrollment to graduation', color: 'from-orange-500 to-orange-700' },
+                { icon: 'fa-file-alt', title: 'Document Analysis', description: 'Upload transcripts, resumes, and job descriptions for tailored advice', color: 'from-purple-500 to-purple-700' }
             ];
 
             return (
@@ -532,12 +632,22 @@
         // Chat Page Component
         const ChatPage = ({ messages, setMessages, inputValue, setInputValue, sessionId, setSessionId }) => {
             const [isTyping, setIsTyping] = useState(false);
-            const [userId] = useState(localStorage.getItem('userId') || `user_${Date.now()}`);
+            const [userId] = useState(() => {
+                try {
+                    return localStorage.getItem('userId') || `user_${Date.now()}`;
+                } catch (e) {
+                    return `user_${Date.now()}`;
+                }
+            });
             const [uploadModalOpen, setUploadModalOpen] = useState(false);
             const messagesEndRef = useRef(null);
 
             useEffect(() => {
-                localStorage.setItem('userId', userId);
+                try {
+                    localStorage.setItem('userId', userId);
+                } catch (e) {
+                    console.error('Could not save to localStorage:', e);
+                }
                 // Only add welcome message if chat is empty
                 if (messages.length === 0) {
                     setMessages([{
@@ -742,9 +852,9 @@
                                     <div className={`max-w-2xl px-6 py-3 rounded-2xl ${
                                         message.sender === 'user'
                                             ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
-                                            : 'glass text-white'
+                                            : 'glass text-white agent-message'
                                     }`}>
-                                        <p className="whitespace-pre-wrap">{message.text}</p>
+                                        {formatMessageText(message.text)}
                                         <p className="text-xs opacity-60 mt-2">
                                             {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </p>
