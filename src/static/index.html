@@ -246,7 +246,8 @@
         const { useState, useEffect, useRef } = React;
 
         // API Configuration
-        const API_BASE_URL = 'http://localhost:8000';
+        const port = process.env.PORT || 8000 
+        const API_BASE_URL = 'http://localhost:' + port;
 
         // Navigation Component
         const Navigation = ({ currentPage, setCurrentPage }) => {
@@ -596,7 +597,7 @@
                     console.error('Error:', error);
                     setMessages(prev => [...prev, {
                         id: Date.now() + 1,
-                        text: "I'm having trouble connecting right now. Please ensure the backend server is running on port 8000.",
+                        text: "I'm having trouble connecting right now. Please ensure the backend server is running.",
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
