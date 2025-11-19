@@ -14,9 +14,6 @@ from agents.functions import (
     _get_user_memory_for_agent,
 )
 
-# from google.adk.tools import google_search
-# from agents.functions import ask_vertex_retrieval
-
 # LLM Constraints and Guardrails
 from setup.guardrails import QueryGuard, FunctionGuard, TokenGuard, RateLimiter
 
@@ -28,6 +25,7 @@ def load_instructions():
     pass
 
 
+# --- Guardrail Configurations ---
 blocked_words = [
     "classified",
     "confidential",
@@ -46,7 +44,8 @@ function_rules = {
 function_guard = FunctionGuard(function_rules)
 query_guard = QueryGuard(blocked_words)
 token_guard = TokenGuard(max_tokens=125)
-rate_limiter = RateLimiter(max_requests=10, time_window=60)
+query_per_min_limit = 10
+rate_limiter = RateLimiter(max_requests=query_per_min_limit, time_window=60)
 
 # --- Agent Configuration ---
 SUB_AGENTS = {
