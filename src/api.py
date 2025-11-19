@@ -29,8 +29,6 @@ from setup.interactions import query_agent
 from agents.team import orchestrator
 
 app = FastAPI(title="BU Agent API")
-static_dir = Path(__file__).parent / "."  # Points to src/
-app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
 
 # Enable CORS for frontend communication
 ## SS: Resource sharing between ???
@@ -186,6 +184,9 @@ async def delete_session(user_id: str, session_id: str):
         return {"message": f"Session {session_key} deleted"}
     return {"message": "Session not found"}
 
+
+static_dir = Path(__file__).parent / "."  # Points to src/
+app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
