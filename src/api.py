@@ -15,26 +15,25 @@ src_path = project_root / "src"
 if str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from fastapi import FastAPI, HTTPException, Request
+# Fast API imports
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-#Google ADK
+# Google ADK
 from google.adk.sessions import InMemorySessionService
 from google.adk.runners import Runner
 
-#Custom modules
-from setup.logger_config import AgentLogger
+# Custom modules
+from setup.logger_config import setup_logging
 from setup.interactions import query_agent
-from agents.team import orchestrator
+from agents.team import orchestrator, query_per_min_limit
 
 app = FastAPI(title="BU Agent API")
-templates = Jinja2Templates(directory="src")
 
 # Enable CORS for frontend communication
-## SS: Resource sharing between ???
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -64,28 +63,24 @@ class ChatResponse(BaseModel):
 @app.on_event("startup")
 async def startup_event():
     """Initialize logger on startup"""
-    AgentLogger()
+    logger = setup_logging()
     print("\n" + "=" * 60)
     print("BU Agent API Server Started")
     print("=" * 60)
     print("📍 API URL: http://localhost:8000")
     print("📚 API Docs: http://localhost:8000/docs")
-    print("⚠️  Rate Limit: 8 requests per minute")
-    print("💡 Tip: Wait at least 8 seconds between messages")
+    print(f"⚠️  Rate Limit: {query_per_min_limit} requests per minute")
+    print(
+        f"💡 Tip: Wait at least {query_per_min_limit/60:.2f} seconds between messages"
+    )
     print("=" * 60 + "\n")
 
 
 @app.get("/")
 async def root():
-    return {
-        "message": "BU Agent API is running",
-        "rate_limit": "8 requests per minute",
-        "endpoints": {
-            "/chat": "POST - Send a message to the agent",
-            "/health": "GET - Check server health",
-            "/sessions": "GET - List active sessions",
-        },
-    }
+    # Serve the main frontend
+    index_path = Path(__file__).parent / "static" / "index.html"
+    return FileResponse(index_path)
 
 
 @app.get("/health")
@@ -187,9 +182,7 @@ async def delete_session(user_id: str, session_id: str):
         return {"message": f"Session {session_key} deleted"}
     return {"message": "Session not found"}
 
-@app.get("/", response_class=HTMLResponse)
-async def read_index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
 
+app.mount("/static", StaticFiles(directory=str(Path(__file__).parent / "static"), html=True))
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
