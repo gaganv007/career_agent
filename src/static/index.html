@@ -245,10 +245,11 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // API Configuration
-        const port = process.env.PORT || 8000 
-        const API_BASE_URL = 'http://localhost:' + port;
-
+        // API Configuration - Dynamic based on environment
+        const API_BASE_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:8000'
+            : `${window.location.protocol}//${window.location.host}`;
+        
         // Navigation Component
         const Navigation = ({ currentPage, setCurrentPage }) => {
             const [isScrolled, setIsScrolled] = useState(false);
@@ -597,7 +598,7 @@
                     console.error('Error:', error);
                     setMessages(prev => [...prev, {
                         id: Date.now() + 1,
-                        text: "I'm having trouble connecting right now. Please ensure the backend server is running.",
+                        text: "I'm having trouble connecting right now. Please ensure the backend server is running",
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
