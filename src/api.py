@@ -16,6 +16,7 @@ if str(src_path) not in sys.path:
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from datetime import datetime, timedelta
 from google.adk.sessions import InMemorySessionService
@@ -28,6 +29,8 @@ from setup.interactions import query_agent
 from agents.team import orchestrator
 
 app = FastAPI(title="BU Agent API")
+static_dir = Path(__file__).parent / "."  # Points to src/
+app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
 
 # Enable CORS for frontend communication
 ## SS: Resource sharing between ???
