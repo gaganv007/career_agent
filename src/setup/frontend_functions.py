@@ -1,6 +1,8 @@
 """
 Module defining web-facing functions for normalizing and summarizing data
 into stable JSON structures consumable by front-end applications.
+
+!!!!!WIP!!!!!
 """
 
 # pylint: disable=import-error

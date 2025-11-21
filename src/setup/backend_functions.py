@@ -1,7 +1,9 @@
 """
 Module defining back-end utility functions for managing user memory,
-retreiving information, processing documents, and 
+retreiving information, processing documents, and
 extracting structured information.
+
+!!!!!WIP!!!!!
 """
 
 # pylint: disable=import-error
@@ -19,7 +21,7 @@ from google.genai import types
 from typing import Any, Optional
 from datetime import datetime
 
-from setup.web_funcs import _summarize_user_memory
+from setup.frontend_functions import _summarize_user_memory
 
 logger = logging.getLogger("AgentLogger")
 

@@ -1,6 +1,6 @@
 """
-Primary API server for the BU Agent application. Run this module 
-to start the FastAPI server that handles  chat requests from the frontend. 
+Primary API server for the BU Agent application. Run this module
+to start the FastAPI server that handles  chat requests from the frontend.
 Open 'index.html' in a browser to interact with the agent.
 """
 
