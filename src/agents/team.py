@@ -11,15 +11,9 @@ from setup.frontend_functions import (
     _summarize_skills_for_job,
     _summarize_course_schedule,
     _summarize_web_search,
-    _summarize_user_memory,
     _summarize_course_recommendations,
 )
-from setup.backend_functions import (
-    _process_uploaded_document,
-    _create_temporary_user_id,
-    _store_user_memory,
-    _get_user_memory_for_agent,
-)
+
 from setup.guardrails import QueryGuard, FunctionGuard, TokenGuard, RateLimiter
 
 logger = logging.getLogger("AgentLogger")
@@ -71,12 +65,8 @@ SUB_AGENTS = {
     ),
     "document": build_agent(
         name="Document_Agent",
-        tools=[_process_uploaded_document],
-    ),
-    "session": build_agent(
-        name="Session_Agent",
-        tools=[_summarize_user_memory, _store_user_memory],
-    ),
+        tools=[],
+    )
 }
 
 # Primary Orchestrator
@@ -84,5 +74,4 @@ orchestrator = build_agent(
     name="BU_MET_Guide",
     sub_agents=list(SUB_AGENTS.values()),
     before_model_callback=[token_guard, query_guard, rate_limiter],
-    tools=[_create_temporary_user_id, _get_user_memory_for_agent],
 )
