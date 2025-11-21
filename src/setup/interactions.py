@@ -1,3 +1,7 @@
+"""
+Module for managing interaction between the user and LLM agents.
+"""
+
 # pylint: disable=import-error
 import logging
 import inspect

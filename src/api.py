@@ -1,6 +1,8 @@
-## Use this script to run the chat API Server
-## Then open index.html through a web browser
-## to interact with the agent via the UI
+"""
+Primary API server for the BU Agent application. Run this module 
+to start the FastAPI server that handles  chat requests from the frontend. 
+Open 'index.html' in a browser to interact with the agent.
+"""
 
 import os
 import sys
@@ -184,7 +186,9 @@ async def delete_session(user_id: str, session_id: str):
     return {"message": "Session not found"}
 
 
-app.mount("/static", StaticFiles(directory=str(Path(__file__).parent / "static"), html=True))
+app.mount(
+    "/static", StaticFiles(directory=str(Path(__file__).parent / "static"), html=True)
+)
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))

@@ -1,8 +1,13 @@
 .DS_Store
+~*
+
 *.pyc
-__pycache__/
+*.log
+.pytest_cache
+
 .venv/ 
 .vscode/
 .env
+
 /logs
-*.log
+__pycache__/

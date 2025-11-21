@@ -1,15 +1,18 @@
 import pytest
 import json
-from agents.functions import (
+from setup.web_funcs import (
     _summarize_course_recommendations,
     _summarize_course_schedule,
     _summarize_skills_for_job,
     _summarize_career_path,
-    _create_temporary_user_id,
     _summarize_user_memory,
+    _summarize_web_search,
+)
+
+from setup.util_funcs import (
+    _create_temporary_user_id,
     _store_user_memory,
     _get_user_memory_for_agent,
-    _summarize_web_search,
 )
 
 

@@ -1,6 +1,7 @@
-## Run this script to run a local chat
-## session with the orchestrator agent
-## via the terminal in VS Code.
+"""
+Moduel for running local chat conversations with the BU Agent
+via a terminal interface.
+"""
 
 import asyncio
 from datetime import datetime

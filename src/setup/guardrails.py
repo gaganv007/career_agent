@@ -1,3 +1,8 @@
+"""
+Module for implementing constraints to functions for LLM agents.
+Used in team.py configurations to enforce limitations on queries.
+"""
+
 # pylint: disable=import-error
 import logging
 import asyncio

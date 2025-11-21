@@ -7,11 +7,14 @@ import pytest
 import asyncio
 import httpx
 import time
+import logging
 from typing import List, Dict
 from datetime import datetime
 
 API_URL = "http://localhost:8000"
 TEST_USER_ID = f"test_user_{int(time.time())}"
+
+logger = logging.getLogger("AgentLogger")
 
 
 class Colors:
@@ -91,6 +94,7 @@ async def test_career_advice():
         print(f"  → Sending: '{query}'")
         result = await send_message(query)
 
+        logger.debug(f"Test Career Advice\nQuery: {query}; Result: {result}")
         if "error" in result:
             print_test_result(False, f"Error: {result['error']}")
             pytest.fail(f"Error: {result['error']}")
@@ -133,6 +137,7 @@ async def test_schedule():
         print(f"  → Sending: '{query}'")
         result = await send_message(query)
 
+        logger.debug(f"Test Schedule Advice\nQuery: {query}; Result: {result}")
         if "error" in result:
             print_test_result(False, f"Error: {result['error']}")
             pytest.fail(f"API error: {result['error']}")
@@ -158,8 +163,10 @@ async def test_session_persistence():
     print_test_header("Session Persistence Test")
 
     print("  → Step 1: Sending initial message")
-    result1 = await send_message("My name is Alice and I'm interested in data science")
+    query = "My name is Alice and I'm interested in data science"
+    result1 = await send_message(query)
 
+    logger.debug(f"Test Persistance 1\nQuery: {query}; Result: {result1}")
     if "error" in result1:
         print_test_result(False, f"Error in step 1: {result1['error']}")
         pytest.fail(f"Error in step 1: {result1['error']}")
@@ -172,8 +179,10 @@ async def test_session_persistence():
     await asyncio.sleep(1)
 
     print("\n  → Step 2: Sending follow-up (should remember context)")
-    result2 = await send_message("What courses do you recommend for me?", session_id)
+    query2 = "What courses do you recommend for me?"
+    result2 = await send_message(query2, session_id)
 
+    logger.debug(f"Test Persistance 1\nQuery: {query2}; Result: {result2}")
     if "error" in result2:
         print_test_result(False, f"Error in step 2: {result2['error']}")
         pytest.fail(f"Error in step 2: {result2['error']}")
@@ -206,6 +215,7 @@ async def test_guardrails():
         print(f"  → Sending blocked query: '{query}'")
         result = await send_message(query)
 
+        logger.debug(f"Test Guardrails\nQuery: {query}; Result: {result}")
         if "error" in result:
             print_test_result(False, f"Error: {result['error']}")
             pytest.fail(f"Error: {result['error']}")
@@ -241,6 +251,9 @@ async def test_response_time():
         result = await send_message(test_message)
         end_time = time.time()
 
+        logger.debug(
+            f"Test Response Time\nQuery: {test_message}; Result: {result} -> Time: {end_time - start_time}s"
+        )
         if "error" not in result:
             response_time = end_time - start_time
             times.append(response_time)
@@ -263,7 +276,6 @@ async def test_response_time():
         )
 
 
-@pytest.mark.asyncio
 async def run_all_tests():
     """Run all test suites"""
     print(f"\n{Colors.BOLD}{Colors.YELLOW}{'='*60}")

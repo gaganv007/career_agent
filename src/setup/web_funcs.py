@@ -1,32 +1,15 @@
-# pylint: disable=import-error
-import os
-import json
-import uuid
-import logging
+"""
+Module defining web-facing functions for normalizing and summarizing data
+into stable JSON structures consumable by front-end applications.
+"""
 
+# pylint: disable=import-error
+import json
+import logging
 from typing import Any, Optional
 from datetime import datetime
 
-# from google.adk.tools.retrieval.vertex_ai_rag_retrieval import VertexAiRagRetrieval
-
 logger = logging.getLogger("AgentLogger")
-
-# ask_vertex_retrieval = VertexAiRagRetrieval(
-#     name="retrieve_rag_documentation",
-#     description=(
-#         "Use this tool to retrieve documentation and reference materials for the question from the RAG corpus,"
-#     ),
-#     rag_resources=[
-#         rag.RagResource(
-#             please fill in your own rag corpus
-#             here is a sample rag corpus for testing purpose
-#             e.g. projects/123/locations/us-central1/ragCorpora/456
-#             rag_corpus=os.environ.get("RAG_CORPUS")
-#         )
-#     ],
-#     similarity_top_k=10,
-#     vector_distance_threshold=0.6,
-# )
 
 
 def _summarize_course_recommendations(job_title: str, courses: list[dict[str, Any]]):
@@ -353,34 +336,6 @@ def _summarize_career_path(job_title: str, path: list[dict[str, Any]]):
         )
 
 
-# simple in-memory store for Memory_Agent (keeps structured user profiles)
-_MEMORY_STORE: dict[str, dict[str, Any]] = {}
-
-
-def _create_temporary_user_id(prefix: str = "tmp") -> str:
-    """
-    Create a temporary user_id for the session, initialize a minimal memory entry if missing,
-    and return the user_id. The ID is stable for the session and suitable to pass to sub-agents.
-    """
-    user_id = f"{prefix}_{uuid.uuid4().hex}"
-    iso_ts = datetime.now().isoformat() + "Z"
-    # Initialize minimal profile entry if not present
-    if user_id not in _MEMORY_STORE:
-        _MEMORY_STORE[user_id] = {
-            "personal": {},
-            "academic": {},
-            "career_goals": {},
-            "schedule": {},
-            "completed_coursework": [],
-            "professional": {},
-            "identifiers": {},
-            "meta": {"created": iso_ts, "last_updated": iso_ts},
-        }
-        logger.debug("Created temporary user_id %s with initial memory entry", user_id)
-
-    return user_id
-
-
 def _summarize_user_memory(user_id: Optional[str], profile: dict[str, Any]):
     """
     Normalize a user profile into a stable JSON structure for sharing with sub-agents.
@@ -464,66 +419,6 @@ def _summarize_user_memory(user_id: Optional[str], profile: dict[str, Any]):
     except Exception as exc:
         logger.exception("Failed to summarize user memory for %s: %s", user_id, exc)
         return json.dumps({"user_id": user_id or None}, ensure_ascii=False)
-
-
-def _store_user_memory(user_id: str, profile: dict[str, Any]) -> bool:
-    """
-    Merge incoming profile into the in-memory store for user_id.
-    Returns True on success.
-    """
-    try:
-        existing = _MEMORY_STORE.get(user_id, {})
-
-        # shallow merge: prefer incoming non-None values, merge dictionaries conservatively
-        def merge_dict(dst: dict, src: dict):
-            for k, v in (src or {}).items():
-                if v is None:
-                    continue
-                if isinstance(v, dict) and isinstance(dst.get(k), dict):
-                    merge_dict(dst[k], v)
-                else:
-                    dst[k] = v
-
-        # convert summarized profile into structured form before storing
-        # if profile already appears to be normalized (has 'personal' or 'academic'), merge directly
-        if "personal" in profile or "academic" in profile:
-            merged = existing.copy()
-            merge_dict(merged, profile)
-            _MEMORY_STORE[user_id] = merged
-        else:
-            # normalize incoming freeform profile then merge
-            normalized_json = _summarize_user_memory(user_id, profile)
-            normalized = json.loads(normalized_json)
-            merged = existing.copy()
-            merge_dict(merged, normalized)
-            _MEMORY_STORE[user_id] = merged
-
-        logger.debug("Stored user memory for %s: %s", user_id, _MEMORY_STORE[user_id])
-        return True
-    except Exception as exc:
-        logger.exception("Failed to store user memory for %s: %s", user_id, exc)
-        return False
-
-
-def _get_user_memory_for_agent(user_id: str, fields: Optional[list[str]] = None):
-    """
-    Retrieve the stored memory for user_id. If fields is provided, return only those top-level keys.
-    Returns a JSON string.
-    """
-    try:
-        data = _MEMORY_STORE.get(user_id)
-        if not data:
-            return json.dumps({"user_id": user_id, "profile": None}, ensure_ascii=False)
-
-        if fields:
-            subset = {"user_id": user_id, "profile": {k: data.get(k) for k in fields}}
-            return json.dumps(subset, ensure_ascii=False)
-
-        logger.debug("Retrieved full user memory for %s: %s", user_id, data)
-        return json.dumps({"user_id": user_id, "profile": data}, ensure_ascii=False)
-    except Exception as exc:
-        logger.exception("Failed to retrieve user memory for %s: %s", user_id, exc)
-        return json.dumps({"user_id": user_id, "profile": None}, ensure_ascii=False)
 
 
 def _summarize_web_search(
