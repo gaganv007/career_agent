@@ -552,8 +552,7 @@
                 { value: 'transcript', label: 'Academic Transcript', icon: 'fa-file-alt' },
                 { value: 'resume', label: 'Resume/CV', icon: 'fa-id-card' },
                 { value: 'job_description', label: 'Job Description', icon: 'fa-briefcase' },
-                { value: 'course_list', label: 'Course List', icon: 'fa-list' },
-                { value: 'other', label: 'Other Document', icon: 'fa-file' }
+                { value: 'course_list', label: 'Course List', icon: 'fa-list' }
             ];
 
             const handleFileSelect = (e) => {
@@ -737,22 +736,101 @@
             };
 
             const quickActions = [
+                { text: '📄 CS633 Help', action: 'Help me study for topics covered in BU MET CS633' },
                 { text: '📚 Course Recommendations', action: 'What courses should I take next semester?' },
                 { text: '📅 Schedule Planning', action: 'Help me plan my class schedule' },
-                { text: '🎯 Degree Requirements', action: 'What are my remaining degree requirements?' },
-                { text: '💡 Academic Advice', action: 'Give me academic advice for success' }
+                { text: '🎓 Degree Requirements', action: 'What are my remaining degree requirements?' },
+                { text: '🙋 Academic Advice', action: 'Give me academic advice for success' }
             ];
 
-            const handleFileUpload = (file, documentType) => {
-                const typeLabels = {
-                    'transcript': 'transcript',
-                    'resume': 'resume',
-                    'job_description': 'job description',
-                    'course_list': 'course list',
-                    'other': 'document'
-                };
-                const message = `I've uploaded my ${typeLabels[documentType]}: ${file.name}`;
-                sendMessage(message);
+            const handleFileUpload = async (file, documentType) => {
+                try {
+                    // Create FormData to send the file
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('document_type', documentType);
+                    
+                    // Show uploading message
+                    setIsTyping(true);
+                    setMessages(prev => [...prev, {
+                        id: Date.now(),
+                        text: `📤 Uploading ${documentType}...`,
+                        sender: 'agent',
+                        timestamp: new Date()
+                    }]);
+                    
+                    // Upload to backend
+                    const response = await fetch(`${API_BASE_URL}/upload-document`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || 'Upload failed');
+                    }
+                    
+                    const uploadResult = await response.json();
+                    
+                    // Update success message (without showing the full document text)
+                    setMessages(prev => prev.map((m, idx) => 
+                        idx === prev.length - 1 
+                            ? {
+                                ...m,
+                                text: `✅ Successfully uploaded ${documentType}`,
+                                sender: 'agent'
+                            }
+                            : m
+                    ));
+                    
+                    // Send the extracted text directly to the agent API without displaying in chat
+                    const typeLabels = {
+                        'transcript': 'transcript',
+                        'resume': 'resume',
+                        'job_description': 'job description',
+                        'course_list': 'course list',
+                        'other': 'document'
+                    };
+                    const fullMessage = `Please analyze my uploaded ${typeLabels[documentType]}:\n\n${uploadResult.extracted_text}`;
+                    
+                    // Send to agent backend directly without displaying to user
+                    const chatResponse = await fetch(`${API_BASE_URL}/chat`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message: fullMessage,
+                            user_id: userId,
+                            session_id: sessionId,
+                            is_document_upload: true
+                        })
+                    });
+                    
+                    const chatData = await chatResponse.json();
+                    
+                    if (!sessionId && chatData.session_id) {
+                        setSessionId(chatData.session_id);
+                    }
+                    
+                    // Only display the agent's response, not the user's message with the full document
+                    const agentMessage = {
+                        id: Date.now() + 1,
+                        text: chatData.response || "I've analyzed your document.",
+                        sender: 'agent',
+                        timestamp: new Date()
+                    };
+                    setMessages(prev => [...prev, agentMessage]);
+                    setIsTyping(false);
+                    
+                } catch (error) {
+                    console.error('File upload error:', error);
+                    setMessages(prev => [...prev, {
+                        id: Date.now(),
+                        text: `❌ Upload failed: ${error.message}`,
+                        sender: 'agent',
+                        timestamp: new Date()
+                    }]);
+                    setIsTyping(false);
+                }
             };
 
             const clearChat = () => {

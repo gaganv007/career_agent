@@ -332,7 +332,8 @@ def _summarize_career_path(job_title: str, path: list[dict[str, Any]]):
         return json.dumps(
             {"job_title": job_title, "career_path": []}, ensure_ascii=False
         )
-    
+
+
 def _summarize_web_search(
     query: str,
     results: list[dict[str, Any]],

@@ -165,18 +165,31 @@ class TokenGuard:
     """
     Guards against queries that would exceed a specified token limit.
     Uses a simple estimation method of ~4 chars per token.
+    Supports dynamic limits based on query source (document upload vs direct user message).
     """
 
-    def __init__(self, max_tokens: int = 125):
+    def __init__(self, max_tokens: int = 200, document_upload_max_tokens: int = 5000):
         """
         Initialize with maximum allowed tokens.
 
         Args:
-            max_tokens (int): Maximum number of tokens allowed per query
+            max_tokens (int): Maximum number of tokens for direct user messages. Defaults to 200.
+            document_upload_max_tokens (int): Maximum tokens for document uploads. Defaults to 5000.
         """
         self.name = "TokenGuard"
         self.max_tokens = max_tokens
+        self.document_upload_max_tokens = document_upload_max_tokens
         self.chars_per_token = 4  # Approximate ratio for English text
+        self.is_document_upload = False
+
+    def set_document_mode(self, is_document: bool):
+        """
+        Set whether the current query is from a document upload.
+
+        Args:
+            is_document (bool): True if query stems from document upload, False for direct user input
+        """
+        self.is_document_upload = is_document
 
     async def __call__(
         self, callback_context: CallbackContext, llm_request: LlmRequest
@@ -205,25 +218,35 @@ class TokenGuard:
                         last_user_message_text = content.parts[0].text
                         break
 
+        # Determine which token limit to use
+        token_limit = (
+            self.document_upload_max_tokens
+            if self.is_document_upload
+            else self.max_tokens
+        )
+
         # Estimate tokens (length / 4 is a rough approximation)
         estimated_tokens = len(last_user_message_text) // self.chars_per_token
 
-        if estimated_tokens > self.max_tokens:
+        if estimated_tokens > token_limit:
             logger.warning(
-                f"Query exceeded token limit: {estimated_tokens} tokens (limit: {self.max_tokens})"
+                f"Query exceeded token limit: {estimated_tokens} tokens (limit: {token_limit})"
+            )
+            query_type = (
+                "document upload" if self.is_document_upload else "direct message"
             )
             return LlmResponse(
                 content=types.Content(
                     role="model",
                     parts=[
                         types.Part(
-                            text=f"I cannot process this request as it exceeds the token limit of {self.max_tokens}. Please try a shorter query."
+                            text=f"I cannot process this {query_type} as it exceeds the token limit of {token_limit}. Please try a shorter input."
                         )
                     ],
                 )
             )
 
-        logger.info(f"Estimated token count: {estimated_tokens}")
+        logger.info(f"Estimated token count: {estimated_tokens} (limit: {token_limit})")
         return None
 
 
