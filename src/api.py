@@ -17,7 +17,7 @@ if str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
 # Fast API imports
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -30,7 +30,8 @@ from google.adk.runners import Runner
 # Custom modules
 from setup.logger_config import setup_logging
 from setup.interactions import query_agent
-from agents.team import orchestrator, query_per_min_limit
+from agents.team import orchestrator, query_per_min_limit, token_guard
+from agents.backend_fx import parse_document
 
 app = FastAPI(title="BU Agent API")
 
@@ -53,12 +54,20 @@ class ChatRequest(BaseModel):
     message: str
     user_id: Optional[str] = "web_user"
     session_id: Optional[str] = None
+    is_document_upload: Optional[bool] = False
 
 
 class ChatResponse(BaseModel):
     response: str
     session_id: str
     user_id: str
+
+
+class DocumentUploadResponse(BaseModel):
+    success: bool
+    message: str
+    extracted_text: str
+    character_count: int
 
 
 @app.on_event("startup")
@@ -103,6 +112,12 @@ async def chat(request: ChatRequest):
         )
 
         print(f"\n📨 Processing message from {user_id}: '{request.message[:50]}...'")
+
+        # Set token guard mode based on query source
+        token_guard.set_document_mode(request.is_document_upload or False)
+        print(
+            f"   Query type: {'document upload' if request.is_document_upload else 'direct message'}"
+        )
 
         # Create or get existing session
         session_key = f"{user_id}_{session_id}"
@@ -174,6 +189,62 @@ async def list_sessions():
     return {"active_sessions": len(sessions), "sessions": list(sessions.keys())}
 
 
+@app.post("/upload-document", response_model=DocumentUploadResponse)
+async def upload_document(file: UploadFile = File(...), document_type: str = ""):
+    """
+    Upload and parse a document (PDF, DOCX, or TXT).
+    The extracted text will be processed by the Document Agent.
+    """
+    try:
+        # Read the uploaded file
+        file_content = await file.read()
+
+        # Determine file type from either the provided parameter or file extension
+        if not document_type:
+            file_ext = file.filename.split(".")[-1].lower() if file.filename else ""
+            document_type = file_ext
+
+        # Validate file type
+        supported_types = ["pdf", "docx", "txt", "text"]
+        if document_type.lower() not in supported_types:
+            raise ValueError(
+                f"Unsupported file type: {document_type}. Supported types: {', '.join(supported_types)}"
+            )
+
+        # Parse the document
+        extracted_text = parse_document(file_content, document_type)
+
+        if not extracted_text or len(extracted_text.strip()) == 0:
+            raise ValueError(
+                "Document appears to be empty or no text could be extracted"
+            )
+
+        char_count = len(extracted_text)
+        print(f"\n📄 Document uploaded and parsed: {file.filename}")
+        print(f"   Type: {document_type}, Characters extracted: {char_count}")
+
+        return DocumentUploadResponse(
+            success=True,
+            message=f"Successfully parsed {document_type.upper()} document",
+            extracted_text=extracted_text,
+            character_count=char_count,
+        )
+
+    except ValueError as e:
+        error_msg = str(e)
+        print(f"\n⚠️  Document upload validation error: {error_msg}")
+        raise HTTPException(status_code=400, detail=error_msg)
+
+    except Exception as e:
+        import traceback
+
+        error_msg = f"Error processing document: {str(e)}"
+        print(
+            f"\n❌ Error in /upload-document endpoint:\n{error_msg}\n{traceback.format_exc()}"
+        )
+        raise HTTPException(status_code=500, detail=error_msg)
+
+
 @app.delete("/session/{user_id}/{session_id}")
 async def delete_session(user_id: str, session_id: str):
     """Delete a specific session"""
@@ -184,7 +255,9 @@ async def delete_session(user_id: str, session_id: str):
     return {"message": "Session not found"}
 
 
-app.mount("/static", StaticFiles(directory=str(Path(__file__).parent / "static"), html=True))
+app.mount(
+    "/static", StaticFiles(directory=str(Path(__file__).parent / "static"), html=True)
+)
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
