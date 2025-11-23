@@ -1,8 +1,16 @@
+~*
+
 .DS_Store
 *.pyc
 __pycache__/
+
 .venv/ 
 .vscode/
 .env
+
 /logs
 *.log
+
+ideas/
+idea*
+wip*

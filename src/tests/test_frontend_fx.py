@@ -1,14 +1,10 @@
 import pytest
 import json
-from agents.functions import (
+from agents.frontend_fx import (
     _summarize_course_recommendations,
     _summarize_course_schedule,
     _summarize_skills_for_job,
     _summarize_career_path,
-    _create_temporary_user_id,
-    _summarize_user_memory,
-    _store_user_memory,
-    _get_user_memory_for_agent,
     _summarize_web_search,
 )
 
@@ -127,57 +123,6 @@ def test_summarize_career_path():
     assert step["title"] == "Junior Developer"
     assert step["expected_duration"] == "2 years"
     assert step["sequence"] == 0
-
-
-def test_create_temporary_user_id():
-    user_id = _create_temporary_user_id()
-    assert user_id.startswith("tmp_")
-    assert len(user_id) > 10  # Ensure UUID part is present
-
-
-def test_summarize_user_memory():
-    user_id = "test_user"
-    profile = {
-        "name": "John Doe",
-        "email": "john@example.com",
-        "declared_major": "Computer Science",
-        "gpa": "3.8",
-        "target_titles": ["Software Engineer"],
-        "current_courses": ["CS633", "CS521"],
-        "skills": ["Python", "Java"],
-    }
-
-    result = _summarize_user_memory(user_id, profile)
-    result_dict = json.loads(result)
-
-    assert result_dict["user_id"] == "test_user"
-    assert result_dict["personal"]["name"] == "John Doe"
-    assert result_dict["academic"]["declared_major"] == "Computer Science"
-
-
-def test_store_and_get_user_memory():
-    user_id = "test_store_user"
-    profile = {
-        "personal": {"name": "Jane Doe", "email": "jane@example.com"},
-        "academic": {"declared_major": "Computer Science"},
-    }
-
-    # Test storing
-    success = _store_user_memory(user_id, profile)
-    assert success is True
-
-    # Test retrieving
-    result = _get_user_memory_for_agent(user_id)
-    result_dict = json.loads(result)
-
-    assert result_dict["user_id"] == user_id
-    assert result_dict["profile"]["personal"]["name"] == "Jane Doe"
-
-    # Test retrieving specific fields
-    fields_result = _get_user_memory_for_agent(user_id, ["personal"])
-    fields_dict = json.loads(fields_result)
-    assert "academic" not in fields_dict["profile"]
-    assert fields_dict["profile"]["personal"]["name"] == "Jane Doe"
 
 
 def test_summarize_web_search():
