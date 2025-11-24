@@ -19,7 +19,7 @@ def slow_down_tests():
 
 def pytest_collection_modifyitems(items):
     """Modify collected test in place to ensure test modules run in a specific order."""
-    MODULE_ORDER = ["tests.test_frontend_fx", "tests.test_agent"]
+    MODULE_ORDER = ["tests.test_agent"]
     module_mapping = {item: item.module.__name__ for item in items}
 
     sorted_items = items.copy()
