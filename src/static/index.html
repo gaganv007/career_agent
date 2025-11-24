@@ -750,12 +750,12 @@
                     formData.append('file', file);
                     formData.append('document_type', documentType);
                     
-                    // Show uploading message
+                    // Show uploading message (on the right side as user message)
                     setIsTyping(true);
                     setMessages(prev => [...prev, {
                         id: Date.now(),
                         text: `📤 Uploading ${documentType}...`,
-                        sender: 'agent',
+                        sender: 'user',
                         timestamp: new Date()
                     }]);
                     
@@ -778,7 +778,7 @@
                             ? {
                                 ...m,
                                 text: `✅ Successfully uploaded ${documentType}`,
-                                sender: 'agent'
+                                sender: 'user'
                             }
                             : m
                     ));
