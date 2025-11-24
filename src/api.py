@@ -10,6 +10,7 @@ import logging
 from pathlib import Path
 from datetime import datetime
 from typing import Optional
+from pydantic import BaseModel
 
 # Add src directory to Python path
 project_root = Path(__file__).resolve().parent
@@ -22,7 +23,6 @@ from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from pydantic import BaseModel
 
 # Google ADK
 from google.genai import types
@@ -30,7 +30,7 @@ from google.adk.sessions import InMemorySessionService
 from google.adk.runners import Runner
 
 # Custom modules
-from setup.functions import parse_document
+from setup.api_functions import parse_document
 from setup.logger_config import setup_logging
 from agents.team import orchestrator, query_per_min_limit, token_guard
 
