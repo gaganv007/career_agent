@@ -13,9 +13,7 @@ from agents.config import LLM_MODEL
 logger = logging.getLogger("AgentLogger")
 
 
-def load_excel_instructions(
-    excel_file_name: str = "agent_instructions.xlsx",
-) -> pd.DataFrame:
+def load_excel_instructions(excel_file_name: str) -> pd.DataFrame:
     """Load agent instructions from an Excel file."""
 
     excel_file_path = Path(__file__).parent / excel_file_name
@@ -35,15 +33,15 @@ def format_instructions(instruction_list: list[str]) -> str:
     return str(" ".join(instruction_list))
 
 
-def get_instructions(agent_name: str, data_type: str) -> list[str] | str:
+def get_instructions(
+    agent_name: str, data_type: str, excel_file_name: str = "agent_instructions.xlsx"
+) -> list[str] | str:
     """Retrieve instructions or description for a given agent from the Excel file."""
     try:
-        df = load_excel_instructions()
+        df = load_excel_instructions(excel_file_name)
         agent_row = df[df["AgentName"] == agent_name]
         if agent_row.empty:
-            raise ValueError(
-                f"Agent '{agent_name}' not found in agent_instructions.xlsx"
-            )
+            raise ValueError(f"Agent '{agent_name}' not found in '{excel_file_name}'")
 
         return format_instructions(agent_row[data_type.capitalize()].values[0])
     except Exception as e:
@@ -57,16 +55,19 @@ def build_agent(
     model: str = str(LLM_MODEL),
     **kwargs,
 ) -> Agent:
+    """Build and return an agent with specified configurations."""
+
+    excel_file_name = kwargs.pop("excel_file_name", "agent_instructions.xlsx")      
 
     try:
         agent = LlmAgent(
             name=name,
             model=model,
             description=kwargs.pop(
-                "description", str(get_instructions(name, "description"))
+                "description", str(get_instructions(name, "description", excel_file_name))
             ),
             instruction=kwargs.pop(
-                "instructions", get_instructions(name, "instructions")
+                "instructions", get_instructions(name, "instructions", excel_file_name)
             ),
             **kwargs,
         )
