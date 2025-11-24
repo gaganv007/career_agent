@@ -30,9 +30,9 @@ from google.adk.sessions import InMemorySessionService
 from google.adk.runners import Runner
 
 # Custom modules
+from setup.functions import parse_document
 from setup.logger_config import setup_logging
 from agents.team import orchestrator, query_per_min_limit, token_guard
-from agents.functions import parse_document
 
 
 app = FastAPI(title="BU Agent API")
