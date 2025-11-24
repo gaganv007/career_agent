@@ -8,7 +8,7 @@ import logging
 import pandas as pd
 from pathlib import Path
 from google.adk.agents import Agent, LlmAgent
-from setup.config import LLM_MODEL
+from src.agents.config import LLM_MODEL
 
 logger = logging.getLogger("AgentLogger")
 
