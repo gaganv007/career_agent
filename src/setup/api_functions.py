@@ -1,10 +1,12 @@
+"""
+Utility functions for the API, such as document parsing and processing.
+"""
+
 # pylint: disable=import-error
 import logging
 import PyPDF2
 import docx
 from io import BytesIO
-from typing import Optional
-from google.adk.tools.retrieval.vertex_ai_rag_retrieval import VertexAiRagRetrieval
 
 logger = logging.getLogger("AgentLogger")
 
