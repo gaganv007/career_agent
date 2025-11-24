@@ -96,9 +96,7 @@ def build_agent(
             instruction=kwargs.pop(
                 "instructions", get_instructions(name, "instructions", excel_file_name)
             ),
-            generate_content_config=kwargs.pop(
-                "generate_content_config", setup_content_config(**kwargs)
-            )
+            generate_content_config=setup_content_config(**kwargs),
             ** kwargs,
         )
         agent.name = name
