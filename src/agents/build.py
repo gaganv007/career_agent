@@ -7,7 +7,12 @@ Includes functions to load instructions, format them, and create an agent.
 import logging
 import pandas as pd
 from pathlib import Path
+
+# LLM Tools / Functions
 from google.adk.agents import Agent, LlmAgent
+from google.genai import types
+
+# Configuration
 from agents.config import LLM_MODEL
 
 logger = logging.getLogger("AgentLogger")
@@ -50,6 +55,27 @@ def get_instructions(
         raise Exception(error)
 
 
+def setup_content_config(**kwargs) -> types.GenerateContentConfig:
+    """Setup content generation to configure response settings for the agent."""
+    config = types.GenerateContentConfig(
+        temperature=kwargs.pop("tempurature", 0.2),
+        max_output_tokens=kwargs.pop("max_output_tokens", 500),
+        top_p=kwargs.pop("top_p", 0.8),
+        top_k=kwargs.pop("top_k", 150),
+        safety_settings=kwargs.pop(
+            "safety_settings",
+            [
+                types.SafetySetting(
+                    category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                    threshold=types.HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+                )
+            ],
+        ),
+    )
+
+    return config
+
+
 def build_agent(
     name: str,
     model: str = str(LLM_MODEL),
@@ -57,18 +83,20 @@ def build_agent(
 ) -> Agent:
     """Build and return an agent with specified configurations."""
 
-    excel_file_name = kwargs.pop("excel_file_name", "agent_instructions.xlsx")      
+    excel_file_name = kwargs.pop("excel_file_name", "agent_instructions.xlsx")
 
     try:
         agent = LlmAgent(
             name=name,
             model=model,
             description=kwargs.pop(
-                "description", str(get_instructions(name, "description", excel_file_name))
+                "description",
+                str(get_instructions(name, "description", excel_file_name)),
             ),
             instruction=kwargs.pop(
                 "instructions", get_instructions(name, "instructions", excel_file_name)
             ),
+            generate_content_config=setup_content_config(**kwargs),
             **kwargs,
         )
         agent.name = name
