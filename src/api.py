@@ -6,6 +6,7 @@ import os
 import sys
 import asyncio
 import uvicorn
+import logging
 from pathlib import Path
 from datetime import datetime
 from typing import Optional
@@ -24,14 +25,15 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 # Google ADK
+from google.genai import types
 from google.adk.sessions import InMemorySessionService
 from google.adk.runners import Runner
 
 # Custom modules
 from setup.logger_config import setup_logging
-from setup.interactions import query_agent
 from agents.team import orchestrator, query_per_min_limit, token_guard
-from agents.backend_fx import parse_document
+from agents.functions import parse_document
+
 
 app = FastAPI(title="BU Agent API")
 
@@ -48,6 +50,9 @@ app.add_middleware(
 APP_NAME = "BU MET 633 Fall 2025 Term Project"
 service = InMemorySessionService()
 sessions = {}  # Store user sessions
+
+logger = setup_logging()
+logging.getLogger("google_genai.types").setLevel(logging.ERROR)
 
 
 class ChatRequest(BaseModel):
@@ -68,6 +73,47 @@ class DocumentUploadResponse(BaseModel):
     message: str
     extracted_text: str
     character_count: int
+
+
+async def query_agent(query: str, runner, user_id, session_id) -> str:
+    content = types.Content(role="user", parts=[types.Part(text=query)])
+    final_response_text = "Agent did not produce a final response."
+
+    logger.debug(f"\n🔍 DEBUG: Starting query_agent with message: '{query}'")
+
+    # Key Concept: run_async executes the agent logic and yields Events.
+    async for event in runner.run_async(
+        user_id=user_id, session_id=session_id, new_message=content
+    ):
+        logger.debug(f"📊 DEBUG: Got event type: {type(event).__name__}")
+
+        # Key Concept: is_final_response() marks the concluding message for the turn.
+        if event.is_final_response():
+            logger.debug(f"✅ DEBUG: Got final response event")
+
+            if event.content and event.content.parts:
+                final_response_text = event.content.parts[0].text
+                print(f"📝 DEBUG: Response text: '{final_response_text[:100]}...'")
+            elif (
+                event.actions and event.actions.escalate
+            ):  # Handle potential errors/escalations
+                final_response_text = (
+                    f"Agent escalated: {event.error_message or 'No specific message.'}"
+                )
+                print(f"⚠️ DEBUG: Agent escalated: {final_response_text}")
+            else:
+                print(f"❌ DEBUG: Final response has no content!")
+            # Add more checks here if needed (e.g., specific error codes)
+            break
+
+    logger.info(
+        "User_ID: {user_id}, Session_ID: {session_id}"
+        f"\nEvent_Author: {event.author}, Event_Type: {type(event).__name__}"
+        f"\nQuery: {query}, Response: {final_response_text}"
+    )
+
+    logger.debug(f"🔚 DEBUG: Returning response: '{final_response_text[:100]}...'")
+    return f"{final_response_text}"
 
 
 @app.on_event("startup")
