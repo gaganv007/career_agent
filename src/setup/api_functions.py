@@ -47,7 +47,7 @@ def _parse_pdf(file_content: bytes) -> str:
         pdf_reader = PyPDF2.PdfReader(pdf_file)
 
         text_content = []
-        
+
         # Try to extract text from all pages
         for page_num, page in enumerate(pdf_reader.pages):
             try:
@@ -55,12 +55,16 @@ def _parse_pdf(file_content: bytes) -> str:
                 if text and text.strip():
                     text_content.append(text)
             except Exception as page_error:
-                logger.warning(f"Could not extract text from page {page_num}: {str(page_error)}")
+                logger.warning(
+                    f"Could not extract text from page {page_num}: {str(page_error)}"
+                )
                 # Continue with next page instead of failing completely
                 continue
 
         if not text_content:
-            raise ValueError("No text could be extracted from the PDF. The file may be image-based or corrupted.")
+            raise ValueError(
+                "No text could be extracted from the PDF. The file may be image-based or corrupted."
+            )
 
         extracted_text = "\n".join(text_content)
         logger.info(
