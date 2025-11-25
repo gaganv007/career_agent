@@ -4,12 +4,14 @@ Module to setup agents with specific functions and constraints.
 
 # pylint: disable=import-error
 import logging
-from agents.build import build_agent
 
 # LLM Tools / Functions
 from google.adk.tools import AgentTool
 from google.adk.agents import SequentialAgent
 from setup.guardrails import QueryGuard, FunctionGuard, TokenGuard, RateLimiter
+
+# Custom Agent Builder
+from agents.build import build_agent, setup_content_config
 
 logger = logging.getLogger("AgentLogger")
 
