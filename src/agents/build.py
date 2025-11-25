@@ -71,6 +71,7 @@ def setup_content_config(**kwargs) -> types.GenerateContentConfig:
                 )
             ],
         ),
+        **kwargs
     )
 
     return config
@@ -97,7 +98,7 @@ def build_agent(
                 "instructions", get_instructions(name, "instructions", excel_file_name)
             ),
             generate_content_config=setup_content_config(**kwargs),
-            ** kwargs,
+            **kwargs,
         )
         agent.name = name
         logger.info(f"Agent '{name}' created")
