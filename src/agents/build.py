@@ -61,7 +61,7 @@ def setup_content_config(**kwargs) -> types.GenerateContentConfig:
         temperature=kwargs.pop("tempurature", 0.2),
         max_output_tokens=kwargs.pop("max_output_tokens", 500),
         top_p=kwargs.pop("top_p", 0.8),
-        top_k=kwargs.pop("top_k", 200),
+        top_k=kwargs.pop("top_k", 250),
         safety_settings=kwargs.pop(
             "safety_settings",
             [
@@ -71,7 +71,7 @@ def setup_content_config(**kwargs) -> types.GenerateContentConfig:
                 )
             ],
         ),
-        **kwargs
+        **kwargs,
     )
 
     return config
@@ -80,11 +80,15 @@ def setup_content_config(**kwargs) -> types.GenerateContentConfig:
 def build_agent(
     name: str,
     model: str = str(LLM_MODEL),
+    content_config: types.GenerateContentConfig | None = None,
     **kwargs,
 ) -> Agent:
     """Build and return an agent with specified configurations."""
 
     excel_file_name = kwargs.pop("excel_file_name", "agent_instructions.xlsx")
+    content_config = (
+        setup_content_config() if content_config is None else content_config
+    )
 
     try:
         agent = LlmAgent(
@@ -97,12 +101,9 @@ def build_agent(
             instruction=kwargs.pop(
                 "instructions", get_instructions(name, "instructions", excel_file_name)
             ),
-            generate_content_config=setup_content_config(**kwargs),
+            generate_content_config=content_config,
             **kwargs,
         )
-        agent.name = name
-        logger.info(f"Agent '{name}' created")
-
         return agent
     except Exception as e:
         error = f"Error Creating Agent {name}: {e}"

@@ -308,6 +308,7 @@ app.mount(
 if __name__ == "__main__":
     # Load environment variables from .env file
     from dotenv import load_dotenv
+
     load_dotenv()
 
     port = int(os.getenv("PORT", 8000))
