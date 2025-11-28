@@ -20,7 +20,6 @@ logger = logging.getLogger("AgentLogger")
 blocked_words = [
     "classified",
     "confidential",
-    "private",
     "sex",
     "drugs",
     "murder",
