@@ -4,17 +4,10 @@ from pathlib import Path
 
 
 class AgentLogger:
-    simple_formatter = logging.Formatter("%(levelname)s: %(message)s")
-
-    detailed_line_1 = "%(asctime)s - %(name)s - %(levelname)s"
-    detailed_line_2 = "%(filename)s @ %(funcName)s:%(lineno)d\n%(message)s"
-    detailed_formatter = logging.Formatter(f"{detailed_line_1}\n{detailed_line_2}")
-    name = "AgentLogger"
-
     def __init__(
         self,
         log_dir: str = "logs",
-        console_level: int = logging.INFO,
+        console_level: int = logging.DEBUG,
         file_level: int = logging.DEBUG,
         log_file: str = "runtime.log",
         max_bytes: int = 10 * 1024 * 1024,
@@ -25,16 +18,19 @@ class AgentLogger:
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self.log_file = self.log_dir / log_file
 
-        self.logger = logging.getLogger(AgentLogger.name)
+        self.logger = logging.getLogger("AgentLogger")
         self.logger.setLevel(console_level)
         self.logger.propagate = False
 
         self.logger.handlers.clear()
+        detailed_formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s@%(lineno)d: %(message)s"
+        )
+        simple_formatter = logging.Formatter(
+            "%(asctime)s - %(levelname)s - %(message)s"
+        )
 
-        line_1 = "%(asctime)s - %(name)s - %(levelname)s"
-        line_2 = "%(filename)s @ %(funcName)s:%(lineno)d\n%(message)s"
-        detailed_formatter = logging.Formatter(f"{line_1}\n{line_2}")
-
+        # File Handler
         file_handler = logging.handlers.RotatingFileHandler(
             filename=self.log_file,
             maxBytes=max_bytes,
@@ -45,16 +41,22 @@ class AgentLogger:
         file_handler.setFormatter(detailed_formatter)
         self.logger.addHandler(file_handler)
 
+        # Console Handler
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(console_level)
+        console_handler.setFormatter(detailed_formatter)
+        self.logger.addHandler(console_handler)
+
     def get_logger(self):
         return self.logger
 
-    def get_log_file_path(self):
+    def get_log_file_path(self) -> str:
         return str(self.log_file)
 
 
 def setup_logging(
     log_dir: str = "logs",
-    console_level: int = logging.INFO,
+    console_level: int = logging.DEBUG,
     file_level: int = logging.DEBUG,
     max_bytes: int = 10 * 1024 * 1024,
     backup_count: int = 5,
