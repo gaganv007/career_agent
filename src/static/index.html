@@ -697,6 +697,24 @@
                 setInputValue('');
                 setIsTyping(true);
 
+                // Set up 3-second timeout to show a status update
+                let statusUpdateTimeout;
+                let statusMessageShown = false;
+
+                const showStatusUpdate = () => {
+                    if (!statusMessageShown) {
+                        statusMessageShown = true;
+                        setMessages(prev => [...prev, {
+                            id: Date.now() + 0.3,
+                            text: "Please hold one moment, as I'm still gathering some research materials to analyze.",
+                            sender: 'agent',
+                            timestamp: new Date()
+                        }]);
+                    }
+                };
+
+                statusUpdateTimeout = setTimeout(showStatusUpdate, 3000);
+
                 try {
                     const response = await fetch(`${API_BASE_URL}/chat`, {
                         method: 'POST',
@@ -707,6 +725,8 @@
                             session_id: sessionId
                         })
                     });
+
+                    clearTimeout(statusUpdateTimeout);
 
                     const data = await response.json();
                     
@@ -720,9 +740,20 @@
                         sender: 'agent',
                         timestamp: new Date()
                     };
-                    setMessages(prev => [...prev, agentMessage]);
+                    
+                    // If status message was shown, replace it with the final response
+                    if (statusMessageShown) {
+                        setMessages(prev => {
+                            // Remove the status update message and add the final response
+                            const filtered = prev.filter(msg => msg.id !== Date.now() + 0.5);
+                            return [...filtered, agentMessage];
+                        });
+                    } else {
+                        setMessages(prev => [...prev, agentMessage]);
+                    }
 
                 } catch (error) {
+                    clearTimeout(statusUpdateTimeout);
                     console.error('Error:', error);
                     setMessages(prev => [...prev, {
                         id: Date.now() + 1,
@@ -731,6 +762,7 @@
                         timestamp: new Date()
                     }]);
                 } finally {
+                    clearTimeout(statusUpdateTimeout);
                     setIsTyping(false);
                 }
             };
@@ -878,7 +910,7 @@
                             onClick={() => {
                                 setMessages([{
                                     id: Date.now(),
-                                    text: "Starting a new conversation. How can I help you?",
+                                    text: "Hello! I'm your BU Course Agent. I can help you with:\n\n• Course recommendations\n• Schedule planning\n• Degree requirements\n• Academic guidance\n\nYou can also upload documents like transcripts, resumes, or job descriptions for personalized advice!",
                                     sender: 'agent',
                                     timestamp: new Date()
                                 }]);
@@ -894,7 +926,12 @@
                             {quickActions.map((action, index) => (
                                 <button
                                     key={index}
-                                    onClick={() => sendMessage(action.action)}
+                                    onClick={() => {
+                                        setMessages([]);
+                                        setSessionId(null);
+                                        sendMessage(action.action);
+                                    }}
+                                    
                                     className="w-full text-left glass p-3 rounded-lg text-white hover:bg-white hover:bg-opacity-10 transition-all"
                                 >
                                     {action.text}

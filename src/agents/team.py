@@ -7,7 +7,7 @@ import logging
 
 # LLM Tools / Functions
 from google.adk.tools import AgentTool
-from google.adk.agents import SequentialAgent
+from google.adk.agents import SequentialAgent, LoopAgent
 from setup.guardrails import QueryGuard, FunctionGuard, TokenGuard, RateLimiter
 
 # Custom Agent Builder
@@ -68,9 +68,10 @@ advisor = build_agent(
 validator_agent = build_agent(name="Validator_Agent", tools=[])
 
 # --- Primary Agent for User Interactions ---
-orchestrator = SequentialAgent(
+orchestrator = LoopAgent(
     name="Validation_Sequence",
-    description="Orchestrator that verfies the {final_response} is relevant to the user's "
-    "query before forwarding the response to the user.",
+    description="Orchestrator that verfies the Advisor_Agent's {final_response} is relevant to the user's "
+    "query before forwarding the Advisor_Agent's {final_response} to the user.",
     sub_agents=[advisor, validator_agent],
+    max_iterations=3,
 )
