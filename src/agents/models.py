@@ -6,7 +6,6 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 ## API Models
-
 class ChatRequest(BaseModel):
     message: str
     user_id: Optional[str] = "web_user"
@@ -26,8 +25,19 @@ class DocumentUploadResponse(BaseModel):
     extracted_text: str
     character_count: int
 
-## Agent Models
 
+class CourseResponse(BaseModel):
+    # These fields MUST match the attribute names in your models.py file
+    course_number: str
+    course_name: str
+    course_details: str
+    # Note: 'id' is excluded here, but is used by SQLAlchemy
+
+    class Config:
+        # Allows Pydantic to read ORM objects (SQLAlchemy models)
+        from_attributes = True
+
+## Database Models
 class Course(Base):
     __tablename__ = "courses" 
 
@@ -46,13 +56,3 @@ class Course(Base):
     #    Header: Course_Details
     course_details = Column(Text)
 
-class CourseResponse(BaseModel):
-    # These fields MUST match the attribute names in your models.py file
-    course_number: str
-    course_name: str
-    course_details: str
-    # Note: 'id' is excluded here, but is used by SQLAlchemy
-
-    class Config:
-        # Allows Pydantic to read ORM objects (SQLAlchemy models)
-        from_attributes = True

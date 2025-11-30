@@ -32,9 +32,9 @@ from google.adk.sessions import InMemorySessionService
 from google.adk.runners import Runner
 
 # Custom modules
-from setup.api_functions import parse_document
 from setup.logger_config import setup_logging
-from setup.database import get_db
+from setup.api_functions import parse_document
+from setup.agent_functions import get_db_connection
 from agents.models import ChatRequest, ChatResponse, DocumentUploadResponse, CourseResponse, Course
 from agents.team import orchestrator, query_per_min_limit, token_guard
 
@@ -284,7 +284,7 @@ async def upload_document(file: UploadFile = File(...), document_type: str = "")
         raise HTTPException(status_code=500, detail=error_msg)
 
 @app.get("/courses/", response_model=List[CourseResponse])
-def read_courses(db: Session = Depends(get_db)):
+def read_courses(db: Session = Depends(get_db_connection)):
     """
     Retrieves all courses from the PostgreSQL database.
     """
