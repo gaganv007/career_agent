@@ -102,6 +102,8 @@ def run_agent_conversation(prompt: str):
     print(f"\n✨ Final Answer: {response.text}")
 
 if __name__ == "__main__":
+    load_dotenv() 
+    
     # --- EXECUTION STEPS ---
     
     # 1. Make sure your FastAPI server is running in a separate terminal!

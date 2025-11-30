@@ -14,9 +14,6 @@ from google.adk.tools.retrieval.vertex_ai_rag_retrieval import VertexAiRagRetrie
 
 logger = logging.getLogger("AgentLogger")
 
-# The base URL of your running FastAPI application
-API_URL = "http://127.0.0.1:8001"
-
 # Dependency function for FastAPI
 def get_db_connection():
     DATABASE_URL = os.getenv("DATABASE_URL") 
@@ -31,7 +28,7 @@ def get_db_connection():
     finally:
         db.close()
 
-def get_all_courses_tool():
+def get_all_courses_tool(API_URL):
     """
     REQUIRED: This function MUST be called immediately when the user asks for any list,
     summary, or catalog of courses, as this tool holds the ONLY current course data.
@@ -59,7 +56,7 @@ def get_all_courses_tool():
         })
 
 
-def get_course_details_tool(course_number: str) -> str:
+def get_course_details_tool(API_URL, course_number: str) -> str:
     """
     REQUIRED: This function MUST be called when the user asks for the FULL DESCRIPTION,
     prerequisites, or specific content for a SINGLE course. The course_number 
