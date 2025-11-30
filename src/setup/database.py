@@ -1,13 +1,9 @@
 # database.py
 
 import os
-from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-
-# Load environment variables FIRST
-load_dotenv() 
 
 # 1. Get the URL from your .env file
 # This will be None if the .env file is not found or key is missing
@@ -28,6 +24,7 @@ Base = declarative_base()
 
 # Dependency function for FastAPI
 def get_db():
+    
     db = SessionLocal()
     try:
         yield db

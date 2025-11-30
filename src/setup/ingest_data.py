@@ -2,17 +2,13 @@
 
 import os
 import pandas as pd
-from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
 # Import your local files
-from database import Base, engine, SessionLocal
-from models import Course 
-
-# Load environment variables
-load_dotenv() 
+from src.setup.database import Base, engine, SessionLocal
+from src.agents.models import Course 
 
 # --- Configuration ---
 # [PERSONAL INFO] Replace with your actual Spreadsheet ID

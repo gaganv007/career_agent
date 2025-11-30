@@ -6,8 +6,8 @@ from typing import List
 from pydantic import BaseModel
 
 # Import your database components and models
-from database import get_db, Base, engine 
-from models import Course 
+from setup.database import get_db, Base, engine 
+from agents.models import Course 
 
 # --- 1. Define the API Schema (Pydantic Model) ---
 class CourseResponse(BaseModel):

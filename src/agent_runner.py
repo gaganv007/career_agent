@@ -7,7 +7,7 @@ from google import genai
 from google.genai import types
 
 # 1. Import your tool functions from the tools.py file
-from src.agents.tools import get_all_courses_tool, get_course_details_tool
+from agents.tools import get_all_courses_tool, get_course_details_tool
 
 SYSTEM_INSTRUCTION = (
     "You are the authoritative Course Catalog Agent. Your task is to provide current and accurate course data. "

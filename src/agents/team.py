@@ -12,6 +12,7 @@ from setup.guardrails import QueryGuard, FunctionGuard, TokenGuard, RateLimiter
 
 # Custom Agent Builder
 from agents.build import build_agent, setup_content_config
+from setup.agent_functions import get_all_courses_tool, get_course_details_tool
 
 logger = logging.getLogger("AgentLogger")
 
@@ -45,7 +46,7 @@ rate_limiter = RateLimiter(max_requests=query_per_min_limit, time_window=60)
 # Career advice agent
 career = build_agent(name="Career_Agent", tools=[])
 # Course recommendation agent
-course = build_agent(name="Course_Agent", tools=[])
+course = build_agent(name="Course_Agent", tools=[get_all_courses_tool, get_course_details_tool])
 # Schedule planning agent
 schedule = build_agent(name="Scheduling_Agent", tools=[])
 # CS633 help agent
@@ -73,5 +74,5 @@ orchestrator = LoopAgent(
     description="Orchestrator that verfies the Advisor_Agent's {final_response} is relevant to the user's "
     "query before forwarding the Advisor_Agent's {final_response} to the user.",
     sub_agents=[advisor, validator_agent],
-    max_iterations=3,
+    max_iterations=2,
 )

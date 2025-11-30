@@ -9,8 +9,7 @@ import uvicorn
 import logging
 from pathlib import Path
 from datetime import datetime
-from typing import Optional
-from pydantic import BaseModel
+from typing import List
 
 # Add src directory to Python path
 project_root = Path(__file__).resolve().parent
@@ -19,10 +18,13 @@ if str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
 # Fast API imports
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+
+# SQL Alchemy imports
+from sqlalchemy.orm import Session
 
 # Google ADK
 from google.genai import types
@@ -32,6 +34,8 @@ from google.adk.runners import Runner
 # Custom modules
 from setup.api_functions import parse_document
 from setup.logger_config import setup_logging
+from setup.database import get_db
+from agents.models import ChatRequest, ChatResponse, DocumentUploadResponse, CourseResponse, Course
 from agents.team import orchestrator, query_per_min_limit, token_guard
 
 
@@ -53,26 +57,6 @@ sessions = {}  # Store user sessions
 
 logger = setup_logging()
 logging.getLogger("google_genai.types").setLevel(logging.ERROR)
-
-
-class ChatRequest(BaseModel):
-    message: str
-    user_id: Optional[str] = "web_user"
-    session_id: Optional[str] = None
-    is_document_upload: Optional[bool] = False
-
-
-class ChatResponse(BaseModel):
-    response: str
-    session_id: str
-    user_id: str
-
-
-class DocumentUploadResponse(BaseModel):
-    success: bool
-    message: str
-    extracted_text: str
-    character_count: int
 
 
 async def query_agent(query: str, runner, user_id, session_id) -> str:
@@ -235,6 +219,15 @@ async def list_sessions():
     return {"active_sessions": len(sessions), "sessions": list(sessions.keys())}
 
 
+@app.delete("/session/{user_id}/{session_id}")
+async def delete_session(user_id: str, session_id: str):
+    """Delete a specific session"""
+    session_key = f"{user_id}_{session_id}"
+    if session_key in sessions:
+        del sessions[session_key]
+        return {"message": f"Session {session_key} deleted"}
+    return {"message": "Session not found"}
+
 @app.post("/upload-document", response_model=DocumentUploadResponse)
 async def upload_document(file: UploadFile = File(...), document_type: str = ""):
     """
@@ -290,16 +283,16 @@ async def upload_document(file: UploadFile = File(...), document_type: str = "")
         )
         raise HTTPException(status_code=500, detail=error_msg)
 
-
-@app.delete("/session/{user_id}/{session_id}")
-async def delete_session(user_id: str, session_id: str):
-    """Delete a specific session"""
-    session_key = f"{user_id}_{session_id}"
-    if session_key in sessions:
-        del sessions[session_key]
-        return {"message": f"Session {session_key} deleted"}
-    return {"message": "Session not found"}
-
+@app.get("/courses/", response_model=List[CourseResponse])
+def read_courses(db: Session = Depends(get_db)):
+    """
+    Retrieves all courses from the PostgreSQL database.
+    """
+    # Query the database for all records in the 'courses' table
+    courses = db.query(Course).all()
+    
+    # Returns the list of Course objects, serialized by CourseResponse
+    return courses
 
 app.mount(
     "/static", StaticFiles(directory=str(Path(__file__).parent / "static"), html=True)
