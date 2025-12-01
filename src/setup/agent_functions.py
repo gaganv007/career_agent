@@ -4,74 +4,131 @@ Module to define agent-related functions, such as database reads
 
 # pylint: disable=import-error
 import os
-import requests
 import json
 import logging
+from typing import List
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from google.adk.tools.retrieval.vertex_ai_rag_retrieval import VertexAiRagRetrieval
+import psycopg2
+from psycopg2.extras import Json
+from psycopg2.extensions import register_adapter
+from agents.models import CourseResponse
 
 logger = logging.getLogger("AgentLogger")
 
-# Dependency function for FastAPI
+
 def get_db_connection():
-    DATABASE_URL = os.getenv("DATABASE_URL") 
-    if DATABASE_URL is None:
-        raise ValueError("DATABASE_URL not found in .env file. Please check your .env setup.")
+    db_host = os.getenv("DB_HOST")
+    db_name = os.getenv("DB_NAME")
+    db_user = os.getenv("DB_USER")
+    db_password = os.getenv("DB_PASSWORD")
 
-    engine = create_engine(DATABASE_URL)
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    db = SessionLocal()
     try:
-        yield db
-    finally:
-        db.close()
+        return psycopg2.connect(
+            database=db_name,
+            user=db_user,
+            password=db_password,
+            host=db_host,
+            port=5432,
+        )
+    except:
+        return False
 
-def get_all_courses_tool(API_URL):
+
+def query_database(table_name: str, conditions: str | None):
     """
-    REQUIRED: This function MUST be called immediately when the user asks for any list,
-    summary, or catalog of courses, as this tool holds the ONLY current course data.
-    It returns a JSON list of all course numbers and titles.
+    Function to query a Postgresql Database
+
+    Args:
+        table_name (str): Name of the database to query; parameter get's inserted into the statement string
+        col_names (str): the column names from 'table_name' to return; parameter get's inserted into the statement string
+        conditions (str): the conditions to filter for 'table_name'; parameter get's inserted into the statement string
+
+    Returns:
+        json: the results from the database in json format
     """
+    logger.debug(f"--- Database Call to {table_name} ---\nconditions: {conditions}")
+
     try:
-        # Check that API_URL is pointing to the correct port (e.g., 8001)
-        response = requests.get(f"{API_URL}/courses/") 
-        
-        # This catches 4xx and 5xx HTTP errors
-        response.raise_for_status() 
-        
-        course_data = response.json()
-        
-        # Return only the most relevant fields (number and name) for a summary answer
-        summary_data = [{"course_number": c['course_number'], "course_name": c['course_name']} for c in course_data]
-        return json.dumps(summary_data)
-        
-    except requests.exceptions.RequestException as e:
-        # --- FIX IS HERE: Return the error as a structured JSON string ---
-        print(f"🚨 Connection/API Error in tool: {e}") # Keep this for terminal debugging!
-        return json.dumps({
-            "error": "API_CONNECTION_FAILURE", 
-            "message": f"Could not connect to the local course server. Please ensure the backend is running and accessible: {e}"
-        })
+        conn = get_db_connection()
+        if conn:
+            print("Connection to the PostgreSQL established successfully.")
+        else:
+            raise Exception("Connection to the PostgreSQL encountered an error.")
+
+        curr = conn.cursor()
+        statement = f"SELECT * FROM {table_name}"
+        if conditions is not None and len(conditions) > 0:
+            statement += f" WHERE {conditions}"
+        statement += ";"
+
+        curr.execute(statement)
+        data = curr.fetchall()
+        curr.close()
+
+        logger.debug(f"--- Database results -> {data}")
+        return data
+    except Exception as e:
+        logger.error(f"Error retrieving courses from database: {e}")
+        raise
 
 
-def get_course_details_tool(API_URL, course_number: str) -> str:
+def get_courses(conditions: str) -> List[CourseResponse]:
     """
-    REQUIRED: This function MUST be called when the user asks for the FULL DESCRIPTION,
-    prerequisites, or specific content for a SINGLE course. The course_number 
-    (e.g., 'MA401') must be provided by the user.
+    Function to query a Postgresql Database for course information and return as CourseResponse models
+
+    Args:
+        conditions (str): the conditions to filter by; should be formatted for use in a postgresql statement
+
+    Returns:
+        List[CourseResponse]: list of CourseResponse models containing course information
     """
+    logger.debug(f"--- Function Call {__name__} ---\nconditions: {conditions}")
+
     try:
-        # Call the new FastAPI endpoint we created
-        response = requests.get(f"{API_URL}/courses/{course_number}")
-        
-        if response.status_code == 404:
-            return json.dumps({"error": f"Course number '{course_number}' was not found in the catalog."})
-            
-        response.raise_for_status()
-        
-        return response.text # Returns the full JSON object of the course
-        
-    except requests.exceptions.RequestException as e:
-        return f"Error connecting to API to retrieve course details: {e}"
+        rows = query_database(table_name="courses", conditions=conditions)
+
+        # Convert raw database rows to CourseResponse model instances
+        courses = []
+        for row in rows:
+            course = CourseResponse(
+                course_number=row[0], course_name=row[1], course_details=row[2]
+            )
+            courses.append(course)
+
+        logger.debug(f"Retrieved {len(courses)} courses from database")
+        return courses
+
+    except Exception as e:
+        logger.error(f"Error retrieving courses from database: {e}")
+        raise
+
+
+def get_schedule(conditions: str):
+    """
+    Function to query a Postgresql Database for course information
+
+    Args:
+        conditions (str): the conditions to filter by; should be formatted for use in a postgresql statement
+
+    Returns:
+        json: schedule information BU MET Classes
+    """
+    logger.debug(f"--- Function Call {__name__} ---\nconditions: {conditions}")
+
+    try:
+        rows = query_database(table_name="schedule", conditions=conditions)
+
+        # Convert raw database rows to CourseResponse model instances
+        courses = []
+        for row in rows:
+            course = CourseResponse(
+                course_number=row[0], course_name=row[1], course_details=row[2]
+            )
+            courses.append(course)
+
+        logger.debug(f"Retrieved {len(courses)} courses from database")
+        return courses
+
+    except Exception as e:
+        logger.error(f"Error retrieving courses from database: {e}")
+        raise

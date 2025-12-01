@@ -58,10 +58,10 @@ def get_instructions(
 def setup_content_config(**kwargs) -> types.GenerateContentConfig:
     """Setup content generation to configure response settings for the agent."""
     config = types.GenerateContentConfig(
-        temperature=kwargs.pop("temperature", 1),
-        max_output_tokens=kwargs.pop("max_output_tokens", 500),
-        top_p=kwargs.pop("top_p", 0.9),
-        top_k=kwargs.pop("top_k", 500),
+        temperature=kwargs.pop("temperature", 0.25),
+        max_output_tokens=kwargs.pop("max_output_tokens", 750),
+        top_p=kwargs.pop("top_p", 0.8),
+        top_k=kwargs.pop("top_k", 350),
         safety_settings=kwargs.pop(
             "safety_settings",
             [

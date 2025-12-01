@@ -34,8 +34,7 @@ from google.adk.runners import Runner
 # Custom modules
 from setup.logger_config import setup_logging
 from setup.api_functions import parse_document
-from setup.agent_functions import get_db_connection
-from agents.models import ChatRequest, ChatResponse, DocumentUploadResponse, CourseResponse, Course
+from agents.models import ChatRequest, ChatResponse, DocumentUploadResponse
 from agents.team import orchestrator, query_per_min_limit, token_guard
 
 
@@ -228,6 +227,7 @@ async def delete_session(user_id: str, session_id: str):
         return {"message": f"Session {session_key} deleted"}
     return {"message": "Session not found"}
 
+
 @app.post("/upload-document", response_model=DocumentUploadResponse)
 async def upload_document(file: UploadFile = File(...), document_type: str = ""):
     """
@@ -283,16 +283,6 @@ async def upload_document(file: UploadFile = File(...), document_type: str = "")
         )
         raise HTTPException(status_code=500, detail=error_msg)
 
-@app.get("/courses/", response_model=List[CourseResponse])
-def read_courses(db: Session = Depends(get_db_connection)):
-    """
-    Retrieves all courses from the PostgreSQL database.
-    """
-    # Query the database for all records in the 'courses' table
-    courses = db.query(Course).all()
-    
-    # Returns the list of Course objects, serialized by CourseResponse
-    return courses
 
 app.mount(
     "/static", StaticFiles(directory=str(Path(__file__).parent / "static"), html=True)
