@@ -52,7 +52,7 @@ course = build_agent(name="Course_Agent", tools=[get_courses])
 # Schedule planning agent
 schedule = build_agent(name="Scheduling_Agent", tools=[get_schedule])
 # CS633 help agent
-cs633 = build_agent(name="CS633_Agent", tools=[])
+cs633 = build_agent(name="CS633_Agent")
 
 # --- Convert Agents into Tools for Orchestrator ---
 agent_tools = []
@@ -68,14 +68,13 @@ advisor = build_agent(
 )
 
 # --- Validator Agent to ensure Advisor's Response is Relevant ---
-validator_agent = build_agent(name="Validator_Agent", tools=[])
+validator_agent = build_agent(name="Validator_Agent")
 
 # --- Primary Agent for User Interactions ---
-orchestrator = LoopAgent(
+orchestrator = SequentialAgent(
     name="Validation_Sequence",
     description="Orchestrator that uses the 'Validator_Agent' to verify that the {final_response} "
     "by the 'Advisor_Agent'  is relevant to the user's "
     "query before forwarding the {final_response} to the user.",
-    sub_agents=[advisor, validator_agent],
-    max_iterations=2,
+    sub_agents=[advisor, validator_agent]
 )
