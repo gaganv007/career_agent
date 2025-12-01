@@ -205,6 +205,7 @@ async def chat(request: ChatRequest):
 
     except Exception as e:
         import traceback
+
         error_detail = f"Error: {str(e)}"
         logger.error(error_detail)
         print(

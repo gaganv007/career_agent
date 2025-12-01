@@ -118,10 +118,10 @@ def get_schedule(conditions: str) -> List[ScheduleResponse]:
         sessions = []
         for row in rows:
             session = ScheduleResponse(
-                session_number=row[0], 
-                course_number=row[1], 
+                session_number=row[0],
+                course_number=row[1],
                 day_of_week=row[2],
-                location=row[3]
+                location=row[3],
             )
             sessions.append(session)
 

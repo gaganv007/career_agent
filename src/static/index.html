@@ -699,18 +699,16 @@
 
                 // Set up 3-second timeout to show a status update
                 let statusUpdateTimeout;
-                let statusMessageShown = false;
+                let statusMessageId = null;
 
                 const showStatusUpdate = () => {
-                    if (!statusMessageShown) {
-                        statusMessageShown = true;
-                        setMessages(prev => [...prev, {
-                            id: Date.now() + 0.3,
-                            text: "Please hold one moment, as I'm still gathering some research materials to analyze.",
-                            sender: 'agent',
-                            timestamp: new Date()
-                        }]);
-                    }
+                    statusMessageId = Date.now() + 0.3;
+                    setMessages(prev => [...prev, {
+                        id: statusMessageId,
+                        text: "Please hold one moment as I'm gathering some materials to analyze...",
+                        sender: 'agent',
+                        timestamp: new Date()
+                    }]);
                 };
 
                 statusUpdateTimeout = setTimeout(showStatusUpdate, 3000);
@@ -742,11 +740,12 @@
                     };
                     
                     // If status message was shown, replace it with the final response
-                    if (statusMessageShown) {
+                    if (statusMessageId) {
                         setMessages(prev => {
-                            // Remove the status update message and add the final response
-                            const filtered = prev.filter(msg => msg.id !== Date.now() + 0.5);
-                            return [...filtered, agentMessage];
+                            // Replace the status update message with the final response
+                            return prev.map(msg => 
+                                msg.id === statusMessageId ? agentMessage : msg
+                            );
                         });
                     } else {
                         setMessages(prev => [...prev, agentMessage]);
