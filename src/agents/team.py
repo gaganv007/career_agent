@@ -7,11 +7,12 @@ import logging
 
 # LLM Tools / Functions
 from google.adk.tools import AgentTool
-from google.adk.agents import SequentialAgent
+from google.adk.agents import SequentialAgent, LoopAgent
 from setup.guardrails import QueryGuard, FunctionGuard, TokenGuard, RateLimiter
 
 # Custom Agent Builder
 from agents.build import build_agent, setup_content_config
+from setup.agent_functions import get_courses, get_schedule
 
 logger = logging.getLogger("AgentLogger")
 
@@ -43,11 +44,13 @@ rate_limiter = RateLimiter(max_requests=query_per_min_limit, time_window=60)
 
 # --- Agent Configuration ---
 # Career advice agent
-career = build_agent(name="Career_Agent", tools=[])
+career = build_agent(
+    name="Career_Agent", tools=[], content_config=setup_content_config(temperature=0.1)
+)
 # Course recommendation agent
-course = build_agent(name="Course_Agent", tools=[])
+course = build_agent(name="Course_Agent", tools=[get_courses])
 # Schedule planning agent
-schedule = build_agent(name="Scheduling_Agent", tools=[])
+schedule = build_agent(name="Scheduling_Agent", tools=[get_schedule])
 # CS633 help agent
 cs633 = build_agent(name="CS633_Agent", tools=[])
 
@@ -68,9 +71,11 @@ advisor = build_agent(
 validator_agent = build_agent(name="Validator_Agent", tools=[])
 
 # --- Primary Agent for User Interactions ---
-orchestrator = SequentialAgent(
+orchestrator = LoopAgent(
     name="Validation_Sequence",
-    description="Orchestrator that verfies the {final_response} is relevant to the user's "
-    "query before forwarding the response to the user.",
+    description="Orchestrator that uses the 'Validator_Agent' to verify that the {final_response} "
+    "by the 'Advisor_Agent'  is relevant to the user's "
+    "query before forwarding the {final_response} to the user.",
     sub_agents=[advisor, validator_agent],
+    max_iterations=2,
 )

@@ -341,7 +341,6 @@ class RateLimiter:
                         ],
                     )
                 )
-
             # Add current request
             self.requests.append(now)
             return None
