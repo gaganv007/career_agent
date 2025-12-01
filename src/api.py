@@ -205,27 +205,10 @@ async def chat(request: ChatRequest):
 
     except Exception as e:
         import traceback
-
         error_detail = f"Error: {str(e)}"
-
-        # Check if it's a Google API rate limit error
-        if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
-            print(f"\n⚠️  Google API Rate Limit Hit!")
-            print("Solutions:")
-            print("1. Wait 1 minute for quota to reset")
-            print("2. Switch to a different model in .env")
-            print("3. Reduce request frequency\n")
-
-            raise HTTPException(
-                status_code=429,
-                detail="Google API quota exceeded. Please wait 60 seconds before trying again.",
-            )
-
+        logger.error(error_detail)
         print(
             f"\n{'='*60}\nERROR in /chat endpoint:\n{error_detail}\n\nTraceback:\n{traceback.format_exc()}\n{'='*60}\n"
-        )
-        raise HTTPException(
-            status_code=500, detail=f"Error processing request: {str(e)}"
         )
 
 
