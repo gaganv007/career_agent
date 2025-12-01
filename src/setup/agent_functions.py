@@ -42,7 +42,6 @@ def query_database(table_name: str, conditions: str | None):
     Returns:
         the results from the database in json format
     """
-    logger.debug(f"--- Database Call to {table_name} ---\nWHERE {conditions}")
 
     try:
         conn = get_db_connection()
@@ -57,11 +56,12 @@ def query_database(table_name: str, conditions: str | None):
             statement += f" WHERE {conditions}"
         statement += ";"
 
+        logger.debug(f"--- EXECUTING SQL ---\n{statement}")
         curr.execute(statement)
         data = curr.fetchall()
         curr.close()
 
-        logger.debug(f"--- Database results -> {data}")
+        logger.debug(f"--- Results -> {data}")
         return data
     except Exception as e:
         logger.error(f"Error retrieving courses from database: {e}")
@@ -78,16 +78,17 @@ def get_courses(conditions: str) -> List[CourseResponse]:
     Returns:
         List[CourseResponse]: list of CourseResponse models containing course information
     """
-    logger.debug(f"--- Function Call 'get_courses' ---\nWHERE {conditions}")
+    logger.debug(f"--- Function Call 'get_courses' ---")
 
     try:
         rows = query_database(table_name="courses", conditions=conditions)
 
-        # Convert raw database rows to CourseResponse model instances
         courses = []
         for row in rows:
             course = CourseResponse(
-                course_number=row[0], course_name=row[1], course_details=row[2]
+                course_number=row[0], 
+                course_name=row[1], 
+                course_details=row[2]
             )
             courses.append(course)
 
@@ -109,12 +110,11 @@ def get_schedule(conditions: str) -> List[ScheduleResponse]:
     Returns:
         List[ScheduleResponse]: list of CourseResponse models containing course information
     """
-    logger.debug(f"--- Function Call 'get_schedule' ---\nWHERE {conditions}")
+    logger.debug(f"--- Function Call 'get_schedule' ---")
 
     try:
         rows = query_database(table_name="schedule", conditions=conditions)
 
-        # Convert raw database rows to CourseResponse model instances
         sessions = []
         for row in rows:
             session = ScheduleResponse(
