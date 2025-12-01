@@ -8,7 +8,7 @@ import logging
 from typing import List
 
 import psycopg2
-from setup.schemas import CourseResponse
+from setup.schemas import CourseResponse, ScheduleResponse
 
 logger = logging.getLogger("AgentLogger")
 
@@ -37,13 +37,12 @@ def query_database(table_name: str, conditions: str | None):
 
     Args:
         table_name (str): Name of the database to query; parameter get's inserted into the statement string
-        col_names (str): the column names from 'table_name' to return; parameter get's inserted into the statement string
         conditions (str): the conditions to filter for 'table_name'; parameter get's inserted into the statement string
 
     Returns:
-        json: the results from the database in json format
+        the results from the database in json format
     """
-    logger.debug(f"--- Database Call to {table_name} ---\nconditions: {conditions}")
+    logger.debug(f"--- Database Call to {table_name} ---\nWHERE {conditions}")
 
     try:
         conn = get_db_connection()
@@ -79,7 +78,7 @@ def get_courses(conditions: str) -> List[CourseResponse]:
     Returns:
         List[CourseResponse]: list of CourseResponse models containing course information
     """
-    logger.debug(f"--- Function Call {__name__} ---\nconditions: {conditions}")
+    logger.debug(f"--- Function Call 'get_courses' ---\nWHERE {conditions}")
 
     try:
         rows = query_database(table_name="courses", conditions=conditions)
@@ -100,7 +99,7 @@ def get_courses(conditions: str) -> List[CourseResponse]:
         raise
 
 
-def get_schedule(conditions: str):
+def get_schedule(conditions: str) -> List[ScheduleResponse]:
     """
     Function to query a Postgresql Database for course information
 
@@ -108,24 +107,27 @@ def get_schedule(conditions: str):
         conditions (str): the conditions to filter by; should be formatted for use in a postgresql statement
 
     Returns:
-        json: schedule information BU MET Classes
+        List[ScheduleResponse]: list of CourseResponse models containing course information
     """
-    logger.debug(f"--- Function Call {__name__} ---\nconditions: {conditions}")
+    logger.debug(f"--- Function Call 'get_schedule' ---\nWHERE {conditions}")
 
     try:
         rows = query_database(table_name="schedule", conditions=conditions)
 
         # Convert raw database rows to CourseResponse model instances
-        courses = []
+        sessions = []
         for row in rows:
-            course = CourseResponse(
-                course_number=row[0], course_name=row[1], course_details=row[2]
+            session = ScheduleResponse(
+                session_number=row[0], 
+                course_number=row[1], 
+                day_of_week=row[2],
+                location=row[3]
             )
-            courses.append(course)
+            sessions.append(session)
 
-        logger.debug(f"Retrieved {len(courses)} courses from database")
-        return courses
+        logger.debug(f"Retrieved {len(sessions)} class sessions from database")
+        return sessions
 
     except Exception as e:
-        logger.error(f"Error retrieving courses from database: {e}")
+        logger.error(f"Error retrieving class sessions from database: {e}")
         raise
