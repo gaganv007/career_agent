@@ -75,52 +75,10 @@ class DocumentUploadResponse(BaseModel):
     character_count: int
 
 
-async def query_agent(query: str, runner, user_id, session_id) -> str:
-    content = types.Content(role="user", parts=[types.Part(text=query)])
-    final_response_text = "Agent did not produce a final response."
-
-    logger.debug(f"\n🔍 DEBUG: Starting query_agent with message: '{query}'")
-
-    # Key Concept: run_async executes the agent logic and yields Events.
-    async for event in runner.run_async(
-        user_id=user_id, session_id=session_id, new_message=content
-    ):
-        logger.debug(f"📊 DEBUG: Got event type: {type(event).__name__}")
-
-        # Key Concept: is_final_response() marks the concluding message for the turn.
-        if event.is_final_response():
-            logger.debug(f"✅ DEBUG: Got final response event")
-
-            if event.content and event.content.parts:
-                final_response_text = event.content.parts[0].text
-                print(f"📝 DEBUG: Response text: '{final_response_text[:100]}...'")
-            elif (
-                event.actions and event.actions.escalate
-            ):  # Handle potential errors/escalations
-                final_response_text = (
-                    f"Agent escalated: {event.error_message or 'No specific message.'}"
-                )
-                print(f"⚠️ DEBUG: Agent escalated: {final_response_text}")
-            else:
-                print(f"❌ DEBUG: Final response has no content!")
-            # Add more checks here if needed (e.g., specific error codes)
-            break
-
-    logger.info(
-        "User_ID: {user_id}, Session_ID: {session_id}"
-        f"\nEvent_Author: {event.author}, Event_Type: {type(event).__name__}"
-        f"\nQuery: {query}, Response: {final_response_text}"
-    )
-
-    logger.debug(f"🔚 DEBUG: Returning response: '{final_response_text[:100]}...'")
-    return f"{final_response_text}"
-
-
 @app.on_event("startup")
 async def startup_event():
     """Initialize logger on startup"""
     logger = setup_logging()
-    print("\n" + "=" * 60)
     print("BU Agent API Server Started")
     print("=" * 60)
     print("📍 API URL: http://localhost:8000")
@@ -157,11 +115,13 @@ async def chat(request: ChatRequest):
             or f"session_{user_id}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
         )
 
-        print(f"\n📨 Processing message from {user_id}: '{request.message[:50]}...'")
+        logger.debug(
+            f"\n📨 Processing Message from {user_id}: '{request.message[:50]}...'"
+        )
 
         # Set token guard mode based on query source
         token_guard.set_document_mode(request.is_document_upload or False)
-        print(
+        logger.debug(
             f"   Query type: {'document upload' if request.is_document_upload else 'direct message'}"
         )
 
@@ -180,7 +140,7 @@ async def chat(request: ChatRequest):
                 session_service=service,
             )
             sessions[session_key] = runner
-            print(f"✅ Created new session: {session_key}")
+            logger.info(f"✅ Created new session: {session_key}")
         else:
             runner = sessions[session_key]
 
@@ -195,7 +155,7 @@ async def chat(request: ChatRequest):
             session_id=session_id,
         )
 
-        print(f"✅ Response sent successfully")
+        logger.info(f"✅ Response sent successfully")
 
         return ChatResponse(response=response, session_id=session_id, user_id=user_id)
 
@@ -208,9 +168,44 @@ async def chat(request: ChatRequest):
 
         error_detail = f"Error: {str(e)}"
         logger.error(error_detail)
-        print(
+        logger.info(
             f"\n{'='*60}\nERROR in /chat endpoint:\n{error_detail}\n\nTraceback:\n{traceback.format_exc()}\n{'='*60}\n"
         )
+
+
+async def query_agent(query: str, runner, user_id, session_id) -> str:
+    content = types.Content(role="user", parts=[types.Part(text=query)])
+    final_response_text = "Agent did not produce a final response."
+
+    logger.info(f"⚙️ User_ID: {user_id}, Session_ID: {session_id}")
+    logger.debug(f"✏️ {user_id} sent: '{query}'")
+
+    # Key Concept: run_async executes the agent logic and yields Events.
+    async for event in runner.run_async(
+        user_id=user_id, session_id=session_id, new_message=content
+    ):
+        logger.info(f"📊 Event Triggered (type: {type(event).__name__})")
+
+        # Key Concept: is_final_response() marks the concluding message for the turn.
+        if event.is_final_response():
+            logger.info(f"✅ Received Final Response")
+
+            if event.content and event.content.parts:
+                final_response_text = event.content.parts[0].text
+            elif (
+                event.actions and event.actions.escalate
+            ):  # Handle potential errors/escalations
+                final_response_text = (
+                    f"Agent escalated: {event.error_message or 'No specific message.'}"
+                )
+                logger.warning(f"⚠️ Agent Escalated: {final_response_text}")
+            else:
+                logger.error(f"❌ Final Response has No Content!")
+            # Add more checks here if needed (e.g., specific error codes)
+            break
+
+    logger.debug(f"🔚 {event.author} replied: '{final_response_text}'")
+    return f"{final_response_text}"
 
 
 @app.get("/sessions")
@@ -250,8 +245,8 @@ async def upload_document(file: UploadFile = File(...), document_type: str = "")
             )
 
         char_count = len(extracted_text)
-        print(f"\n📄 Document uploaded and parsed: {file.filename}")
-        print(f"   Type: {document_type}, Characters extracted: {char_count}")
+        logger.info(f"\n📄 Document uploaded and parsed: {file.filename}")
+        logger.info(f"   Type: {document_type}, Characters extracted: {char_count}")
 
         return DocumentUploadResponse(
             success=True,
@@ -262,14 +257,14 @@ async def upload_document(file: UploadFile = File(...), document_type: str = "")
 
     except ValueError as e:
         error_msg = str(e)
-        print(f"\n⚠️  Document upload validation error: {error_msg}")
+        logger.info(f"\n⚠️  Document upload validation error: {error_msg}")
         raise HTTPException(status_code=400, detail=error_msg)
 
     except Exception as e:
         import traceback
 
         error_msg = f"Error processing document: {str(e)}"
-        print(
+        logger.info(
             f"\n❌ Error in /upload-document endpoint:\n{error_msg}\n{traceback.format_exc()}"
         )
         raise HTTPException(status_code=500, detail=error_msg)
@@ -292,6 +287,7 @@ app.mount(
 if __name__ == "__main__":
     # Load environment variables from .env file
     from dotenv import load_dotenv
+
     load_dotenv()
 
     port = int(os.getenv("PORT", 8000))

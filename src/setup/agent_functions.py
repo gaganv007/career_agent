@@ -5,10 +5,10 @@ Module to define agent-related functions, such as database reads
 # pylint: disable=import-error
 import os
 import logging
+import psycopg2 as psy
 from typing import List
-
-import psycopg2
 from setup.schemas import CourseResponse, ScheduleResponse
+
 
 logger = logging.getLogger("AgentLogger")
 
@@ -20,89 +20,66 @@ def get_db_connection():
     db_password = os.getenv("DB_PASSWORD")
 
     try:
-        return psycopg2.connect(
+        return psy.connect(
             database=db_name,
             user=db_user,
             password=db_password,
             host=db_host,
             port=5432,
         )
-    except:
-        return False
-
-
-def query_database(table_name: str, conditions: str | None):
-    """
-    Function to query a Postgresql Database
-
-    Args:
-        table_name (str): Name of the database to query; parameter get's inserted into the statement string
-        conditions (str): the conditions to filter for 'table_name'; parameter get's inserted into the statement string
-
-    Returns:
-        the results from the database in json format
-    """
-
-    try:
-        conn = get_db_connection()
-        if conn:
-            print("Connection to the PostgreSQL established successfully.")
-        else:
-            raise Exception("Connection to the PostgreSQL encountered an error.")
-
-        curr = conn.cursor()
-        statement = f"SELECT * FROM {table_name}"
-        if conditions is not None and len(conditions) > 0:
-            statement += f" WHERE {conditions}"
-        statement += ";"
-
-        logger.debug(f"--- EXECUTING SQL ---\n{statement}")
-        curr.execute(statement)
-        data = curr.fetchall()
-        curr.close()
-
-        logger.debug(f"--- Results -> {data}")
-        return data
     except Exception as e:
-        logger.error(f"Error retrieving courses from database: {e}")
+        logger.error(f"❌ Failed to Connect to Cloud SQL: {e}")
         raise
 
 
 def get_courses(conditions: str) -> List[CourseResponse]:
     """
-    Function to query a Postgresql Database for course information and return as CourseResponse models
+    Function to query a the 'courses' table for course information and return as Course models
+    Information returned includes the course number, course title, and course description.
+    Course descriptions can analyzed to determine the key skills learned and developed within the course.
 
     Args:
         conditions (str): the conditions to filter by; should be formatted for use in a postgresql statement
 
     Returns:
-        List[CourseResponse]: list of CourseResponse models containing course information
+        List[Course]: list of Course models containing course information
     """
-    logger.debug(f"--- Function Call 'get_courses' ---")
+    logger.debug(f"\t📢 Function call for 'get_courses'")
+
+    conn = get_db_connection()
+    logger.info("\t✅ Connection to Cloud SQL Successful")
 
     try:
-        rows = query_database(table_name="courses", conditions=conditions)
+        curr = conn.cursor()
 
+        statement = f"SELECT * FROM courses"
+        if conditions is not None and len(conditions) > 0:
+            statement += f" WHERE {conditions}"
+        statement += ";"
+
+        logger.debug(f"\t📝 Executing Statement: '{statement}'")
+        curr.execute(statement)
+        data = curr.fetchall()
+        logger.debug(f"\tℹ️ Pulled from database:\n'{data[100:]}...'")
+        curr.close()
+
+        # Format and Return Results
         courses = []
-        for row in rows:
-            course = CourseResponse(
-                course_number=row[0], 
-                course_name=row[1], 
-                course_details=row[2]
+        for row in data:
+            session = CourseResponse(
+                course_number=row[0], course_name=row[1], course_details=row[2]
             )
-            courses.append(course)
+            courses.append(session)
 
-        logger.debug(f"Retrieved {len(courses)} courses from database")
         return courses
-
     except Exception as e:
-        logger.error(f"Error retrieving courses from database: {e}")
+        logger.error(f"\t❌ Error Retreiving Courses: {e}")
         raise
 
 
 def get_schedule(conditions: str) -> List[ScheduleResponse]:
     """
-    Function to query a Postgresql Database for course information
+    Function to query a the 'schedule' table for schedule information and return as CourseResponse models
 
     Args:
         conditions (str): the conditions to filter by; should be formatted for use in a postgresql statement
@@ -110,13 +87,28 @@ def get_schedule(conditions: str) -> List[ScheduleResponse]:
     Returns:
         List[ScheduleResponse]: list of CourseResponse models containing course information
     """
-    logger.debug(f"--- Function Call 'get_schedule' ---")
+    logger.debug(f"\t📢 Function call for 'get_schedule'")
+    conn = get_db_connection()
+    logger.info(f"\t✅ Connection to Cloud SQL Successful")
 
     try:
-        rows = query_database(table_name="schedule", conditions=conditions)
+        curr = conn.cursor()
 
+        # Create SELECT Statement
+        statement = f"SELECT * FROM schedule"
+        if conditions is not None and len(conditions) > 0:
+            statement += f" WHERE {conditions}"
+        statement += ";"
+        
+        logger.debug(f"\t📝 Executing Statement: '{statement}'")
+        curr.execute(statement)
+        data = curr.fetchall()
+        logger.debug(f"\tℹ️ Pulled from database:\n'{data[100:]}...'")
+        curr.close()
+
+        # Format and Return Results
         sessions = []
-        for row in rows:
+        for row in data:
             session = ScheduleResponse(
                 session_number=row[0],
                 course_number=row[1],
@@ -124,10 +116,8 @@ def get_schedule(conditions: str) -> List[ScheduleResponse]:
                 location=row[3],
             )
             sessions.append(session)
-
-        logger.debug(f"Retrieved {len(sessions)} class sessions from database")
         return sessions
 
     except Exception as e:
-        logger.error(f"Error retrieving class sessions from database: {e}")
+        logger.error(f"\t❌ Error Retrieving Schedule: {e}")
         raise
