@@ -99,11 +99,11 @@ def get_schedule(conditions: str) -> List[ScheduleResponse]:
         if conditions is not None and len(conditions) > 0:
             statement += f" WHERE {conditions}"
         statement += ";"
-        
+
         logger.debug(f"📝 Executing Statement: '{statement}'")
         curr.execute(statement)
         data = curr.fetchall()
-        logger.debug(f"ℹ️ Pulled from database: '{data[100:]}...'")
+        logger.debug(f"ℹ️ Pulled from database:\n'{data[100:]}...'")
         curr.close()
 
         # Format and Return Results
