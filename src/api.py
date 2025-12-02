@@ -9,8 +9,6 @@ import uvicorn
 import logging
 from pathlib import Path
 from datetime import datetime
-from typing import Optional
-from pydantic import BaseModel
 
 # Add src directory to Python path
 project_root = Path(__file__).resolve().parent
@@ -161,7 +159,7 @@ async def query_agent(query: str, runner, user_id, session_id) -> str:
         user_id=user_id, session_id=session_id, new_message=content
     ):
         logger.debug(
-            f"📊 Event Triggered: {event} (type: {type(event).__name__})"
+            f"🌐 Event Triggered! (type: {type(event).__name__})"
         )
 
         # Key Concept: is_final_response() marks the concluding message for the turn.

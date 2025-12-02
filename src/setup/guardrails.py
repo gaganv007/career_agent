@@ -70,7 +70,7 @@ class QueryGuard:
             INFO: When a blocked keyword is found (includes truncated message)
         """
         agent_name = callback_context.agent_name
-        logger.info(f"🛡️ {agent_name} running Query Guardrail")
+        logger.info(f"🛡️  {agent_name} running Query Guardrail")
 
         last_user_message_text = ""
         if llm_request.contents:
