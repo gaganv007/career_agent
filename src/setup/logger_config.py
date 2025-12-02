@@ -6,12 +6,12 @@ from pathlib import Path
 class AgentLogger:
     def __init__(
         self,
-        log_dir: str = "logs",
-        console_level: int = logging.DEBUG,
-        file_level: int = logging.DEBUG,
+        log_dir: str,
+        console_level: int,
+        file_level: int,
+        max_bytes: int,
+        backup_count: int,
         log_file: str = "runtime.log",
-        max_bytes: int = 10 * 1024 * 1024,
-        backup_count: int = 5,
     ) -> None:
 
         self.log_dir = Path(log_dir)
@@ -24,10 +24,10 @@ class AgentLogger:
 
         self.logger.handlers.clear()
         detailed_formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s@%(lineno)d: %(message)s"
+            "%(asctime)s: %(funcName)s@%(lineno)d - %(levelname)s -  %(message)s"
         )
         simple_formatter = logging.Formatter(
-            "%(asctime)s - %(levelname)s - %(message)s"
+            "%(asctime)s: %(funcName)s@%(lineno)d\t%(message)s"
         )
 
         # File Handler
@@ -44,7 +44,7 @@ class AgentLogger:
         # Console Handler
         console_handler = logging.StreamHandler()
         console_handler.setLevel(console_level)
-        console_handler.setFormatter(detailed_formatter)
+        console_handler.setFormatter(simple_formatter)
         self.logger.addHandler(console_handler)
 
     def get_logger(self):

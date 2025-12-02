@@ -33,13 +33,8 @@ def load_excel_instructions(excel_file_name: str) -> pd.DataFrame:
         raise Exception(error)
 
 
-def format_instructions(instruction_list: list[str]) -> str:
-    """Format a list of instructions into a single string."""
-    return str(" ".join(instruction_list))
-
-
 def get_instructions(
-    agent_name: str, data_type: str, excel_file_name: str = "agent_instructions.xlsx"
+    agent_name: str, data_type: str, excel_file_name: str
 ) -> list[str] | str:
     """Retrieve instructions or description for a given agent from the Excel file."""
     try:
@@ -48,7 +43,10 @@ def get_instructions(
         if agent_row.empty:
             raise ValueError(f"Agent '{agent_name}' not found in '{excel_file_name}'")
 
-        return format_instructions(agent_row[data_type.capitalize()].values[0])
+        instructions = str(agent_row[data_type.capitalize()].values[0])
+        logger.debug(f"==Instructions Loded for {agent_name}==\n{instructions}")
+        return instructions
+
     except Exception as e:
         error = f"Error loading instructions for agent '{agent_name}': {e}"
         logger.error(error)
@@ -58,10 +56,10 @@ def get_instructions(
 def setup_content_config(**kwargs) -> types.GenerateContentConfig:
     """Setup content generation to configure response settings for the agent."""
     config = types.GenerateContentConfig(
-        temperature=kwargs.pop("temperature", 1),
-        max_output_tokens=kwargs.pop("max_output_tokens", 500),
-        top_p=kwargs.pop("top_p", 0.9),
-        top_k=kwargs.pop("top_k", 500),
+        temperature=kwargs.pop("temperature", 0.5),
+        max_output_tokens=kwargs.pop("max_output_tokens", 700),
+        top_p=kwargs.pop("top_p", 0.8),
+        top_k=kwargs.pop("top_k", 400),
         safety_settings=kwargs.pop(
             "safety_settings",
             [
@@ -84,22 +82,23 @@ def build_agent(
     **kwargs,
 ) -> Agent:
     """Build and return an agent with specified configurations."""
-
-    excel_file_name = kwargs.pop("excel_file_name", "agent_instructions.xlsx")
     content_config = (
         setup_content_config() if content_config is None else content_config
     )
 
+    file_loc = kwargs.pop("excel_location", "versions")
+    file_name = kwargs.pop("file_name", "agent_instructions.xlsx")
+    instruction_file = f"{file_loc}/{file_name}"
     try:
         agent = LlmAgent(
             name=name,
             model=model,
             description=kwargs.pop(
                 "description",
-                str(get_instructions(name, "description", excel_file_name)),
+                str(get_instructions(name, "description", instruction_file)),
             ),
             instruction=kwargs.pop(
-                "instructions", get_instructions(name, "instructions", excel_file_name)
+                "instructions", get_instructions(name, "instructions", instruction_file)
             ),
             generate_content_config=content_config,
             **kwargs,

@@ -70,9 +70,7 @@ class QueryGuard:
             INFO: When a blocked keyword is found (includes truncated message)
         """
         agent_name = callback_context.agent_name
-        logger.info(
-            f"--- Callback: block_keyword_guardrail running for agent: {agent_name} ---"
-        )
+        logger.info(f"🛡️ {agent_name} running Query Guardrail")
 
         last_user_message_text = ""
         if llm_request.contents:
@@ -99,66 +97,6 @@ class QueryGuard:
                         )
                     )
         return None
-
-
-class FunctionGuard:
-    """
-    Guards function calls by blocking specified parameter values.
-
-    Example usage:
-    guard = FunctionGuard({
-        'get_weather': {
-            'location': ['Area51', 'North Korea']
-        },
-        'search_web': {
-            'query': ['classified', 'confidential']
-        }
-    })
-    """
-
-    def __init__(self, blocked_params: dict):
-        """
-        Initialize with a dictionary of functions and their blocked parameters.
-
-        Args:
-            blocked_params (dict): Dictionary structure:
-                {
-                    'function_name': {
-                        'parameter_name': [blocked_values],
-                    }
-                }
-        """
-        self.name = "FunctionGuard"
-        self.blocked_params = blocked_params
-
-    async def __call__(self, function_call: dict) -> bool:
-        """
-        Check if the function call should be allowed.
-
-        Args:
-            function_call (dict): The function call details including name and arguments
-
-        Returns:
-            bool: True if call is allowed, False if blocked
-        """
-        function_name = function_call.get("name")
-        arguments = function_call.get("arguments", {})
-
-        if function_name in self.blocked_params:
-            param_rules = self.blocked_params[function_name]
-
-            for param, blocked_values in param_rules.items():
-                if param in arguments:
-                    param_value = arguments[param]
-                    if isinstance(param_value, str) and param_value.lower() in [
-                        v.lower() for v in blocked_values
-                    ]:
-                        logging.warning(
-                            f"Blocked function call: {function_name} with {param}={param_value}"
-                        )
-                        return False
-
-        return True
 
 
 class TokenGuard:
@@ -205,9 +143,7 @@ class TokenGuard:
             Optional[LlmResponse]: Blocking response if token limit exceeded, None otherwise
         """
         agent_name = callback_context.agent_name
-        logger.info(
-            f"--- Callback: token_limit_guardrail running for agent: {agent_name} ---"
-        )
+        logger.info(f"🔎 {agent_name} running Token Limit Guardrail")
 
         # Get last user message
         last_user_message_text = ""
@@ -246,7 +182,7 @@ class TokenGuard:
                 )
             )
 
-        logger.info(f"Estimated token count: {estimated_tokens} (limit: {token_limit})")
+        logger.info(f"🟡 Estimated Tokens: ({estimated_tokens}) (limit: {token_limit})")
         return None
 
 
@@ -313,9 +249,7 @@ class RateLimiter:
             WARNING: When rate limit is exceeded
         """
         agent_name = callback_context.agent_name
-        logger.info(
-            f"--- Callback: rate_limiter_guardrail running for agent: {agent_name} ---"
-        )
+        logger.info(f"🤖 {agent_name} running RateLimiter Guardrail")
 
         async with self.lock:
             now = time.time()
@@ -344,3 +278,64 @@ class RateLimiter:
             # Add current request
             self.requests.append(now)
             return None
+
+
+class FunctionGuard:
+    """
+    Guards function calls by blocking specified parameter values.
+
+    Example usage:
+    guard = FunctionGuard({
+        'get_weather': {
+            'location': ['Area51', 'North Korea']
+        },
+        'search_web': {
+            'query': ['classified', 'confidential']
+        }
+    })
+    """
+
+    def __init__(self, blocked_params: dict):
+        """
+        Initialize with a dictionary of functions and their blocked parameters.
+
+        Args:
+            blocked_params (dict): Dictionary structure:
+                {
+                    'function_name': {
+                        'parameter_name': [blocked_values],
+                    }
+                }
+        """
+        self.name = "FunctionGuard"
+        self.blocked_params = blocked_params
+
+    async def __call__(self, function_call: dict) -> bool:
+        """
+        Check if the function call should be allowed.
+
+        Args:
+            function_call (dict): The function call details including name and arguments
+
+        Returns:
+            bool: True if call is allowed, False if blocked
+        """
+        function_name = function_call.get("name")
+        arguments = function_call.get("arguments", {})
+        logger.info(f"🔑 Running Function Guardrail")
+
+        if function_name in self.blocked_params:
+            param_rules = self.blocked_params[function_name]
+
+            for param, blocked_values in param_rules.items():
+                if param in arguments:
+                    param_value = arguments[param]
+                    if isinstance(param_value, str) and param_value.lower() in [
+                        v.lower() for v in blocked_values
+                    ]:
+                        logging.warning(
+                            f"Blocked function call: {function_name} with {param}={param_value}"
+                        )
+                        return False
+
+        return True
