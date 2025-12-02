@@ -208,7 +208,7 @@ async def upload_document(file: UploadFile = File(...), document_type: str = "")
         # Validate file type
         supported_types = ["pdf", "docx", "txt", "text"]
         if document_type.lower() not in supported_types:
-            error = f"❌ Unsupported file type: {document_type}. Supported types: {', '.join(supported_types)}"
+            error = f"Unsupported file type: {document_type}. Supported types: {', '.join(supported_types)}"
             logger.error(error)
             raise ValueError(error)
 
