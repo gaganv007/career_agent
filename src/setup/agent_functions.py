@@ -79,13 +79,13 @@ def get_courses(conditions: str) -> List[CourseResponse]:
 
 def get_schedule(conditions: str) -> List[ScheduleResponse]:
     """
-    Function to query a the 'schedule' table for schedule information and return as CourseResponse models
+    Function to query a the 'schedule' table for schedule information and return as ScheduleResponse models
 
     Args:
         conditions (str): the conditions to filter by; should be formatted for use in a postgresql statement
 
     Returns:
-        List[ScheduleResponse]: list of CourseResponse models containing course information
+        List[ScheduleResponse]: list of ScheduleResponse models containing schedule information
     """
     logger.debug(f"📢 Function call for 'get_schedule'")
     conn = get_db_connection()
