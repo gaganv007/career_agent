@@ -44,10 +44,10 @@ def get_courses(conditions: str) -> List[CourseResponse]:
     Returns:
         List[Course]: list of Course models containing course information
     """
-    logger.debug(f"\t📢 Function call for 'get_courses'")
+    logger.debug(f"📢 Function call for 'get_courses'")
 
     conn = get_db_connection()
-    logger.info("\t✅ Connection to Cloud SQL Successful")
+    logger.info("✅ Connection to Cloud SQL Successful")
 
     try:
         curr = conn.cursor()
@@ -57,10 +57,10 @@ def get_courses(conditions: str) -> List[CourseResponse]:
             statement += f" WHERE {conditions}"
         statement += ";"
 
-        logger.debug(f"\t📝 Executing Statement: '{statement}'")
+        logger.debug(f"📝 Executing Statement: '{statement}'")
         curr.execute(statement)
         data = curr.fetchall()
-        logger.debug(f"\tℹ️ Pulled from database:\n'{data[100:]}...'")
+        logger.debug(f"ℹ️ Pulled from database: '{data[100:]}...'")
         curr.close()
 
         # Format and Return Results
@@ -73,7 +73,7 @@ def get_courses(conditions: str) -> List[CourseResponse]:
 
         return courses
     except Exception as e:
-        logger.error(f"\t❌ Error Retreiving Courses: {e}")
+        logger.error(f"❌ Error Retreiving Courses: {e}")
         raise
 
 
@@ -87,9 +87,9 @@ def get_schedule(conditions: str) -> List[ScheduleResponse]:
     Returns:
         List[ScheduleResponse]: list of CourseResponse models containing course information
     """
-    logger.debug(f"\t📢 Function call for 'get_schedule'")
+    logger.debug(f"📢 Function call for 'get_schedule'")
     conn = get_db_connection()
-    logger.info(f"\t✅ Connection to Cloud SQL Successful")
+    logger.info(f"✅ Connection to Cloud SQL Successful")
 
     try:
         curr = conn.cursor()
@@ -100,10 +100,10 @@ def get_schedule(conditions: str) -> List[ScheduleResponse]:
             statement += f" WHERE {conditions}"
         statement += ";"
         
-        logger.debug(f"\t📝 Executing Statement: '{statement}'")
+        logger.debug(f"📝 Executing Statement: '{statement}'")
         curr.execute(statement)
         data = curr.fetchall()
-        logger.debug(f"\tℹ️ Pulled from database:\n'{data[100:]}...'")
+        logger.debug(f"ℹ️ Pulled from database: '{data[100:]}...'")
         curr.close()
 
         # Format and Return Results
@@ -119,5 +119,5 @@ def get_schedule(conditions: str) -> List[ScheduleResponse]:
         return sessions
 
     except Exception as e:
-        logger.error(f"\t❌ Error Retrieving Schedule: {e}")
+        logger.error(f"❌ Error Retrieving Schedule: {e}")
         raise

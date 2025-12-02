@@ -114,15 +114,12 @@ async def chat(request: ChatRequest):
             request.session_id
             or f"session_{user_id}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
         )
-
-        logger.debug(
-            f"\n📨 Processing Message from {user_id}: '{request.message[:50]}...'"
-        )
+        logger.info(f"⚙️ User: {user_id}, Session: {session_id}")
 
         # Set token guard mode based on query source
         token_guard.set_document_mode(request.is_document_upload or False)
         logger.debug(
-            f"   Query type: {'document upload' if request.is_document_upload else 'direct message'}"
+            f"📨 Query Type: {'File Upload' if request.is_document_upload else 'Direct Message'}"
         )
 
         # Create or get existing session
@@ -176,8 +173,6 @@ async def chat(request: ChatRequest):
 async def query_agent(query: str, runner, user_id, session_id) -> str:
     content = types.Content(role="user", parts=[types.Part(text=query)])
     final_response_text = "Agent did not produce a final response."
-
-    logger.info(f"⚙️ User_ID: {user_id}, Session_ID: {session_id}")
     logger.debug(f"✏️ {user_id} sent: '{query}'")
 
     # Key Concept: run_async executes the agent logic and yields Events.
@@ -204,7 +199,7 @@ async def query_agent(query: str, runner, user_id, session_id) -> str:
             # Add more checks here if needed (e.g., specific error codes)
             break
 
-    logger.debug(f"🔚 {event.author} replied: '{final_response_text}'")
+    logger.debug(f"🔚 {event.author} replied:\n'{final_response_text}'")
     return f"{final_response_text}"
 
 

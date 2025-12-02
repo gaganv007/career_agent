@@ -70,7 +70,7 @@ class QueryGuard:
             INFO: When a blocked keyword is found (includes truncated message)
         """
         agent_name = callback_context.agent_name
-        logger.info(f"\t🛡️ {agent_name} running Query Guardrail")
+        logger.info(f"🛡️ {agent_name} running Query Guardrail")
 
         last_user_message_text = ""
         if llm_request.contents:
@@ -143,7 +143,7 @@ class TokenGuard:
             Optional[LlmResponse]: Blocking response if token limit exceeded, None otherwise
         """
         agent_name = callback_context.agent_name
-        logger.info(f"\t🟡 {agent_name} running Token Limit Guardrail")
+        logger.info(f"🔎 {agent_name} running Token Limit Guardrail")
 
         # Get last user message
         last_user_message_text = ""
@@ -182,7 +182,7 @@ class TokenGuard:
                 )
             )
 
-        logger.info(f"\t🔎 Estimated Tokens: ({estimated_tokens}) (limit: {token_limit})")
+        logger.info(f"🟡 Estimated Tokens: ({estimated_tokens}) (limit: {token_limit})")
         return None
 
 
@@ -249,7 +249,7 @@ class RateLimiter:
             WARNING: When rate limit is exceeded
         """
         agent_name = callback_context.agent_name
-        logger.info(f"\t🤖 {agent_name} running RateLimiter Guardrail")
+        logger.info(f"🤖 {agent_name} running RateLimiter Guardrail")
 
         async with self.lock:
             now = time.time()
@@ -322,7 +322,7 @@ class FunctionGuard:
         """
         function_name = function_call.get("name")
         arguments = function_call.get("arguments", {})
-        logger.info(f"\t🔑 Running Function Guardrail")
+        logger.info(f"🔑 Running Function Guardrail")
 
         if function_name in self.blocked_params:
             param_rules = self.blocked_params[function_name]
