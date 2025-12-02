@@ -160,7 +160,9 @@ async def query_agent(query: str, runner, user_id, session_id) -> str:
     async for event in runner.run_async(
         user_id=user_id, session_id=session_id, new_message=content
     ):
-        logger.info(f"📊 Event Triggered: {event.__name__} (type: {type(event).__name__})")
+        logger.info(
+            f"📊 Event Triggered: {event.__name__} (type: {type(event).__name__})"
+        )
 
         # Key Concept: is_final_response() marks the concluding message for the turn.
         if event.is_final_response():
@@ -208,9 +210,9 @@ async def upload_document(file: UploadFile = File(...), document_type: str = "")
         # Validate file type
         supported_types = ["pdf", "docx", "txt", "text"]
         if document_type.lower() not in supported_types:
-            raise ValueError(
-                f"Unsupported file type: {document_type}. Supported types: {', '.join(supported_types)}"
-            )
+            error = f"❌ Unsupported file type: {document_type}. Supported types: {', '.join(supported_types)}"
+            logger.error(error)
+            raise ValueError(error)
 
         # Parse the document
         extracted_text = parse_document(file_content, document_type)
@@ -222,8 +224,7 @@ async def upload_document(file: UploadFile = File(...), document_type: str = "")
 
         char_count = len(extracted_text)
         logger.info(
-            f"📄 Document uploaded and parsed: {file.filename}"
-            f"Type: {document_type}, Characters extracted: {char_count}"
+            f"🔎 Read {file.filename}, Type: {document_type}, Characters extracted: {char_count}"
         )
 
         return DocumentUploadResponse(

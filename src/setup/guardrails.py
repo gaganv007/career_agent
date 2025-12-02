@@ -143,7 +143,7 @@ class TokenGuard:
             Optional[LlmResponse]: Blocking response if token limit exceeded, None otherwise
         """
         agent_name = callback_context.agent_name
-        logger.info(f"🔎 {agent_name} running Token Limit Guardrail")
+        logger.info(f"🚧 {agent_name} running Token Limit Guardrail")
 
         # Get last user message
         last_user_message_text = ""
