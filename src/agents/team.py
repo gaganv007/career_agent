@@ -58,12 +58,16 @@ schedule = build_agent(
     name="Scheduling_Agent", tools=[get_schedule], file_name=file_name
 )
 
+# Document Analysis
+documents = build_agent(name="Document_Agent", file_name=file_name)
+
+
 # CS633 Topics
 cs633 = build_agent(name="CS633_Agent", file_name=file_name)
 
 # --- Convert Agents into Tools for Orchestrator ---
 agent_tools = []
-for agent in [career, course, schedule, cs633]:
+for agent in [career, course, schedule, cs633, documents]:
     agent_tools.append(AgentTool(agent=agent))
 
 # --- Advisor Agent to Research and Respond to the User ---
