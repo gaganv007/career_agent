@@ -157,37 +157,86 @@
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
         
-        /* Better formatting for agent lists and recommendations */
-        .agent-message ul {
-            list-style: none;
-            padding-left: 0;
-            margin-top: 12px;
-        }
-        
-        .agent-message li {
-            margin-bottom: 8px;
-            padding-left: 24px;
-            position: relative;
-        }
-        
-        .agent-message li:before {
-            content: '▸';
-            position: absolute;
-            left: 8px;
-            color: #a0aec0;
-        }
-        
-        .agent-message strong {
-            color: #e0e7ff;
-            font-weight: 600;
-        }
-        
-        .agent-message code {
+        /* Table Styles for Formatted Content */
+        .formatted-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
             background: rgba(0, 0, 0, 0.2);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.9em;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .formatted-table th {
+            background: rgba(94, 114, 228, 0.3);
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+            color: white;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .formatted-table td {
+            padding: 10px;
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .formatted-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Token Counter Styles */
+        .token-counter {
+            position: absolute;
+            right: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .token-counter.warning {
+            color: #fbbf24;
+        }
+        
+        .token-counter.danger {
+            color: #ef4444;
+        }
+        
+        .token-counter.normal {
+            color: #10b981;
+        }
+        
+        /* Formatted Content Styles */
+        .formatted-section {
+            margin-bottom: 20px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        .formatted-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #a0aec0;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(160, 174, 192, 0.3);
+        }
+        
+        .formatted-subtitle {
+            font-weight: bold;
+            color: #e0e7ff;
+            margin: 8px 0;
+        }
+        
+        .formatted-list-item {
+            margin-left: 20px;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.9);
         }
         
         /* Typing Dots */
@@ -229,10 +278,189 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // API Configuration - Use environment variable or fallback to localhost
+        // API Configuration
         const API_BASE_URL = window.location.hostname === 'localhost' 
             ? 'http://localhost:8000' 
             : 'https://career-agent-9cif.onrender.com';
+
+        // Token counting function (approximation)
+        const countTokens = (text) => {
+            // Rough approximation: 1 token ≈ 4 characters or 0.75 words
+            const words = text.trim().split(/\s+/).length;
+            const chars = text.length;
+            const tokensByWords = Math.ceil(words * 1.3);
+            const tokensByChars = Math.ceil(chars / 4);
+            return Math.max(tokensByWords, tokensByChars);
+        };
+
+        // Format message text with proper tables and structure
+        const formatMessageText = (text) => {
+            if (!text || typeof text !== 'string') {
+                return <div>No message content</div>;
+            }
+
+            // Check if it's JSON first
+            try {
+                const jsonData = JSON.parse(text);
+                if (typeof jsonData === 'object') {
+                    return (
+                        <pre className="bg-black bg-opacity-20 p-3 rounded-lg overflow-x-auto">
+                            <code className="text-white text-sm">
+                                {JSON.stringify(jsonData, null, 2)}
+                            </code>
+                        </pre>
+                    );
+                }
+            } catch (e) {
+                // Not JSON, continue with text formatting
+            }
+
+            // Check for structured content with ** markers
+            if (text.includes('**') && text.includes('*')) {
+                const sections = [];
+                const lines = text.split('\n');
+                let currentSection = null;
+                let currentItems = [];
+
+                lines.forEach((line, idx) => {
+                    // Check for main section headers (like **1. Static Testing Tools:**)
+                    if (/^\*\*\d+\.\s+.*:\*\*/.test(line)) {
+                        if (currentSection) {
+                            sections.push({ ...currentSection, items: currentItems });
+                        }
+                        const title = line.replace(/\*\*/g, '').trim();
+                        currentSection = { title, type: 'section' };
+                        currentItems = [];
+                    }
+                    // Check for subsection headers (like **Purpose**)
+                    else if (line.includes('**') && line.includes(':')) {
+                        const cleanLine = line.replace(/\*\*/g, '').replace(/\*/g, '').trim();
+                        const [label, ...valueParts] = cleanLine.split(':');
+                        const value = valueParts.join(':').trim();
+                        
+                        if (label && value) {
+                            currentItems.push({ 
+                                type: 'property',
+                                label: label.trim(),
+                                value: value
+                            });
+                        }
+                    }
+                    // Check for list items with **bold** text
+                    else if (line.trim().startsWith('*') && line.includes('**')) {
+                        const cleanLine = line.replace(/^\*\s*/, '').trim();
+                        const parts = cleanLine.split('**');
+                        
+                        if (parts.length >= 3) {
+                            const toolName = parts[1];
+                            const description = parts[2].replace(/^:?\s*/, '').trim();
+                            currentItems.push({
+                                type: 'tool',
+                                name: toolName,
+                                description: description
+                            });
+                        }
+                    }
+                    // Regular list items
+                    else if (line.trim().startsWith('*') || line.trim().startsWith('-')) {
+                        const cleanLine = line.replace(/^[\*\-]\s*/, '').trim();
+                        if (cleanLine) {
+                            currentItems.push({ type: 'item', text: cleanLine });
+                        }
+                    }
+                });
+
+                // Add last section
+                if (currentSection) {
+                    sections.push({ ...currentSection, items: currentItems });
+                }
+
+                // If we found structured content, render it nicely
+                if (sections.length > 0) {
+                    return (
+                        <div className="formatted-content">
+                            {sections.map((section, sIdx) => (
+                                <div key={sIdx} className="formatted-section">
+                                    <div className="formatted-title">{section.title}</div>
+                                    
+                                    {/* Render properties and tools as a table if applicable */}
+                                    {section.items.some(item => item.type === 'tool') && (
+                                        <table className="formatted-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tool</th>
+                                                    <th>Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {section.items.filter(item => item.type === 'tool').map((item, iIdx) => (
+                                                    <tr key={iIdx}>
+                                                        <td style={{ fontWeight: 'bold', minWidth: '150px' }}>{item.name}</td>
+                                                        <td>{item.description}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    )}
+                                    
+                                    {/* Render other properties */}
+                                    {section.items.filter(item => item.type === 'property').map((item, iIdx) => (
+                                        <div key={iIdx} className="mb-3">
+                                            <span className="formatted-subtitle">{item.label}:</span>
+                                            <span className="ml-2 text-white opacity-90">{item.value}</span>
+                                        </div>
+                                    ))}
+                                    
+                                    {/* Render regular list items */}
+                                    {section.items.filter(item => item.type === 'item').map((item, iIdx) => (
+                                        <div key={iIdx} className="formatted-list-item">
+                                            • {item.text}
+                                        </div>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                    );
+                }
+            }
+
+            // Fallback to simple formatting
+            const lines = text.split('\n');
+            return (
+                <div>
+                    {lines.map((line, idx) => {
+                        // Handle bullet points
+                        if (line.trim().startsWith('•') || line.trim().startsWith('-') || line.trim().startsWith('*')) {
+                            const content = line.replace(/^[\s•\-*]+/, '');
+                            return (
+                                <div key={idx} style={{marginLeft: '20px', marginBottom: '4px'}}>
+                                    • {content}
+                                </div>
+                            );
+                        }
+                        // Handle numbered lists
+                        else if (/^\d+\./.test(line.trim())) {
+                            return (
+                                <div key={idx} style={{marginLeft: '20px', marginBottom: '4px'}}>
+                                    {line}
+                                </div>
+                            );
+                        }
+                        // Handle empty lines
+                        else if (line.trim() === '') {
+                            return <br key={idx} />;
+                        }
+                        // Regular text with bold support
+                        else {
+                            const formattedLine = line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+                            return (
+                                <div key={idx} dangerouslySetInnerHTML={{ __html: formattedLine }} />
+                            );
+                        }
+                    })}
+                </div>
+            );
+        };
 
         // Navigation Component
         const Navigation = ({ currentPage, setCurrentPage }) => {
@@ -244,68 +472,7 @@
                     setIsScrolled(window.scrollY > 20);
                 };
                 window.addEventListener('scroll', handleScroll);
-                // Format message text to handle lists and formatting
-            const formatMessageText = (text) => {
-                // Safety check
-                if (!text || typeof text !== 'string') {
-                    return <div>No message content</div>;
-                }
-                
-                try {
-                    // Check if this is JSON
-                    const jsonData = JSON.parse(text);
-                    if (typeof jsonData === 'object') {
-                        return (
-                            <pre className="bg-black bg-opacity-20 p-3 rounded-lg overflow-x-auto">
-                                <code className="text-white text-sm">
-                                    {JSON.stringify(jsonData, null, 2)}
-                                </code>
-                            </pre>
-                        );
-                    }
-                } catch (e) {
-                    // Not JSON, continue with text formatting
-                }
-                
-                // Simple text formatting
-                const lines = text.split('\n');
-                return (
-                    <div>
-                        {lines.map((line, idx) => {
-                            // Handle bullet points
-                            if (line.trim().startsWith('•') || line.trim().startsWith('-') || line.trim().startsWith('*')) {
-                                const content = line.replace(/^[\s•\-*]+/, '');
-                                return (
-                                    <div key={idx} style={{marginLeft: '20px', marginBottom: '4px'}}>
-                                        • {content}
-                                    </div>
-                                );
-                            }
-                            // Handle numbered lists
-                            else if (/^\d+\./.test(line.trim())) {
-                                return (
-                                    <div key={idx} style={{marginLeft: '20px', marginBottom: '4px'}}>
-                                        {line}
-                                    </div>
-                                );
-                            }
-                            // Handle empty lines
-                            else if (line.trim() === '') {
-                                return <br key={idx} />;
-                            }
-                            // Regular text with bold support
-                            else {
-                                const formattedLine = line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-                                return (
-                                    <div key={idx} dangerouslySetInnerHTML={{ __html: formattedLine }} />
-                                );
-                            }
-                        })}
-                    </div>
-                );
-            };
-
-            return () => window.removeEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
             }, []);
 
             const navLinks = [
@@ -579,6 +746,7 @@
         // Chat Page Component
         const ChatPage = ({ messages, setMessages, inputValue, setInputValue, sessionId, setSessionId }) => {
             const [isTyping, setIsTyping] = useState(false);
+            const [tokenCount, setTokenCount] = useState(0);
             const [userId] = useState(() => {
                 try {
                     return localStorage.getItem('userId') || `user_${Date.now()}`;
@@ -610,9 +778,22 @@
                 messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
             }, [messages]);
 
+            // Update token count when input changes
+            useEffect(() => {
+                const tokens = countTokens(inputValue);
+                setTokenCount(tokens);
+            }, [inputValue]);
+
             const sendMessage = async (text = null) => {
                 const messageText = text || inputValue.trim();
                 if (!messageText) return;
+
+                // Check token limit
+                const tokens = countTokens(messageText);
+                if (tokens > 100) {
+                    alert(`Your message is too long (${tokens} tokens). Please limit your message to 100 tokens.`);
+                    return;
+                }
 
                 const userMessage = {
                     id: Date.now(),
@@ -622,6 +803,7 @@
                 };
                 setMessages(prev => [...prev, userMessage]);
                 setInputValue('');
+                setTokenCount(0);
                 setIsTyping(true);
 
                 try {
@@ -707,6 +889,13 @@
                 a.click();
                 document.body.removeChild(a);
                 window.URL.revokeObjectURL(url);
+            };
+
+            // Get token counter color class
+            const getTokenCounterClass = () => {
+                if (tokenCount > 100) return 'danger';
+                if (tokenCount > 80) return 'warning';
+                return 'normal';
             };
 
             return (
@@ -822,7 +1011,7 @@
                         </div>
 
                         <div className="glass rounded-b-2xl p-4">
-                            <div className="flex items-center space-x-3">
+                            <div className="flex items-center space-x-3 relative">
                                 <button 
                                     onClick={() => setUploadModalOpen(true)}
                                     className="text-white opacity-60 hover:opacity-100 transition" 
@@ -830,18 +1019,45 @@
                                 >
                                     <i className="fas fa-paperclip text-xl"></i>
                                 </button>
-                                <input
-                                    type="text"
-                                    value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                                    placeholder="Type your message..."
-                                    className="flex-grow bg-white bg-opacity-10 text-white placeholder-white placeholder-opacity-60 px-5 py-3 rounded-full focus:outline-none focus:bg-opacity-20 transition-all"
-                                />
-                                <button onClick={() => sendMessage()} className="btn-animated rounded-full px-6">
+                                <div className="flex-grow relative">
+                                    <input
+                                        type="text"
+                                        value={inputValue}
+                                        onChange={(e) => {
+                                            const newValue = e.target.value;
+                                            const tokens = countTokens(newValue);
+                                            if (tokens <= 100) {
+                                                setInputValue(newValue);
+                                            } else {
+                                                // Optionally show a warning
+                                                setInputValue(newValue); // Still allow typing but show warning
+                                            }
+                                        }}
+                                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                                        placeholder="Type your message..."
+                                        className="w-full bg-white bg-opacity-10 text-white placeholder-white placeholder-opacity-60 px-5 py-3 rounded-full focus:outline-none focus:bg-opacity-20 transition-all pr-20"
+                                    />
+                                    <div className={`token-counter ${getTokenCounterClass()}`}>
+                                        {tokenCount}/100
+                                    </div>
+                                </div>
+                                <button 
+                                    onClick={() => sendMessage()} 
+                                    disabled={tokenCount > 100}
+                                    className={`rounded-full px-6 ${
+                                        tokenCount > 100 
+                                            ? 'glass text-white opacity-50 cursor-not-allowed' 
+                                            : 'btn-animated'
+                                    }`}
+                                >
                                     <i className="fas fa-paper-plane"></i>
                                 </button>
                             </div>
+                            {tokenCount > 100 && (
+                                <p className="text-red-400 text-sm mt-2 text-center">
+                                    Message exceeds 100 token limit. Please shorten your message.
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -897,7 +1113,7 @@
                                 <li className="flex items-start">
                                     <i className="fas fa-exclamation-triangle text-yellow-400 mr-3 mt-1"></i>
                                     <div>
-                                        <strong>Token Size:</strong> Maximum context window of 4,096 tokens per conversation
+                                        <strong>Token Size:</strong> Maximum 100 tokens per message (approximately 75 words)
                                     </div>
                                 </li>
                                 <li className="flex items-start">
