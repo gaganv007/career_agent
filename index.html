@@ -46,7 +46,217 @@
             border-radius: 20px;
         }
         
-        /* Modal Styles */
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 16px 0;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Footer */
+        .footer {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 20px 0;
+            margin-top: auto;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Sidebar - LEFT aligned as per wireframe */
+        .sidebar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            width: 280px;
+            min-height: calc(100vh - 140px);
+            border-radius: 0 20px 20px 0;
+        }
+        
+        /* Chat Area */
+        .chat-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            margin: 20px;
+        }
+        
+        .chat-header {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px 20px 0 0;
+            color: white;
+        }
+        
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 350px);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+        }
+        
+        .chat-input-area {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0 0 20px 20px;
+        }
+        
+        /* Messages */
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            animation: messagePop 0.5s ease-out;
+        }
+        
+        @keyframes messagePop {
+            0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            word-wrap: break-word;
+        }
+        
+        .message.agent .message-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        /* Rainbow Text */
+        .rainbow-text {
+            background: linear-gradient(90deg, #5e72e4, #825ee4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #5e72e4, #825ee4);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 15px rgba(94, 114, 228, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(94, 114, 228, 0.6);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 12px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* Predefined Prompts */
+        .predefined-prompt {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .predefined-prompt:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+        
+        /* Upload Button */
+        .upload-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .upload-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Token Counter */
+        .token-counter {
+            position: absolute;
+            right: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+        
+        .token-counter.warning {
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.2);
+        }
+        
+        .token-counter.danger {
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.2);
+        }
+        
+        .token-counter.normal {
+            color: #86efac;
+            background: rgba(134, 239, 172, 0.2);
+        }
+        
+        /* Modal */
         .modal-backdrop {
             position: fixed;
             top: 0;
@@ -68,108 +278,36 @@
         }
         
         .modal-content {
+            background: linear-gradient(135deg, rgba(94, 114, 228, 0.9), rgba(130, 94, 228, 0.9));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            color: white;
             animation: slideUp 0.3s ease;
         }
         
         @keyframes slideUp {
-            from { 
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Rainbow Text - Static Version */
-        .rainbow-text {
-            background: linear-gradient(90deg, #5e72e4, #825ee4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        /* Bounce Animation */
-        .bounce-in {
-            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-        
-        @keyframes bounceIn {
-            0% { opacity: 0; transform: scale(0.3) translateY(30px); }
-            50% { transform: scale(1.05) translateY(-10px); }
-            70% { transform: scale(0.95) translateY(5px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        
-        /* Floating Animation */
-        .floating {
-            animation: floating 6s ease-in-out infinite;
-        }
-        
-        @keyframes floating {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        /* Neon Glow - Static Version */
-        .neon-glow {
-            box-shadow: 0 0 20px rgba(94, 114, 228, 0.5),
-                        0 0 40px rgba(94, 114, 228, 0.3);
-        }
-        
-        /* Card Hover */
-        .card-hover {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Button - Static Gradient */
-        .btn-animated {
-            background: linear-gradient(135deg, #5e72e4, #825ee4);
-            color: white;
-            padding: 12px 32px;
-            border-radius: 50px;
-            font-weight: bold;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-        
-        .btn-animated:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(94, 114, 228, 0.4);
-        }
-        
-        /* Message Animation */
-        .message-bubble {
-            animation: messagePop 0.5s ease-out;
-        }
-        
-        @keyframes messagePop {
-            0% { opacity: 0; transform: scale(0.8) translateY(20px); }
-            50% { transform: scale(1.05) translateY(-5px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        
-        /* Table Styles for Formatted Content */
+        /* Table Formatting */
         .formatted-table {
             width: 100%;
             border-collapse: collapse;
             margin: 12px 0;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
             overflow: hidden;
         }
         
         .formatted-table th {
             background: rgba(94, 114, 228, 0.3);
-            padding: 10px;
+            padding: 12px;
             text-align: left;
             font-weight: bold;
             color: white;
@@ -177,66 +315,13 @@
         }
         
         .formatted-table td {
-            padding: 10px;
+            padding: 12px;
             color: white;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .formatted-table tr:hover {
             background: rgba(255, 255, 255, 0.05);
-        }
-        
-        /* Token Counter Styles */
-        .token-counter {
-            position: absolute;
-            right: 60px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 12px;
-            background: rgba(0, 0, 0, 0.3);
-        }
-        
-        .token-counter.warning {
-            color: #fbbf24;
-        }
-        
-        .token-counter.danger {
-            color: #ef4444;
-        }
-        
-        .token-counter.normal {
-            color: #10b981;
-        }
-        
-        /* Formatted Content Styles */
-        .formatted-section {
-            margin-bottom: 20px;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        
-        .formatted-title {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #a0aec0;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid rgba(160, 174, 192, 0.3);
-        }
-        
-        .formatted-subtitle {
-            font-weight: bold;
-            color: #e0e7ff;
-            margin: 8px 0;
-        }
-        
-        .formatted-list-item {
-            margin-left: 20px;
-            margin-bottom: 8px;
-            color: rgba(255, 255, 255, 0.9);
         }
         
         /* Typing Dots */
@@ -263,6 +348,65 @@
                 opacity: 1;
             }
         }
+        
+        /* Hero Section */
+        .hero-section {
+            padding: 100px 20px;
+            text-align: center;
+            color: white;
+        }
+        
+        /* Content Section */
+        .content-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: white;
+            min-height: calc(100vh - 140px);
+        }
+        
+        .content-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .content-box h2 {
+            margin-bottom: 20px;
+        }
+        
+        .content-box h3 {
+            margin-bottom: 15px;
+        }
+        
+        .content-box p {
+            line-height: 1.6;
+        }
+        
+        /* Floating Animation */
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        /* Bounce Animation */
+        .bounce-in {
+            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3) translateY(30px); }
+            50% { transform: scale(1.05) translateY(-10px); }
+            70% { transform: scale(0.95) translateY(5px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -283,9 +427,8 @@
             ? 'http://localhost:8000' 
             : 'https://career-agent-9cif.onrender.com';
 
-        // Token counting function (approximation)
+        // Token counting function
         const countTokens = (text) => {
-            // Rough approximation: 1 token ≈ 4 characters or 0.75 words
             const words = text.trim().split(/\s+/).length;
             const chars = text.length;
             const tokensByWords = Math.ceil(words * 1.3);
@@ -293,26 +436,24 @@
             return Math.max(tokensByWords, tokensByChars);
         };
 
-        // Format message text with proper tables and structure
+        // Format message text with table support
         const formatMessageText = (text) => {
             if (!text || typeof text !== 'string') {
                 return <div>No message content</div>;
             }
 
-            // Check if it's JSON first
+            // Check if it's JSON
             try {
                 const jsonData = JSON.parse(text);
                 if (typeof jsonData === 'object') {
                     return (
-                        <pre className="bg-black bg-opacity-20 p-3 rounded-lg overflow-x-auto">
-                            <code className="text-white text-sm">
-                                {JSON.stringify(jsonData, null, 2)}
-                            </code>
+                        <pre style={{background: 'rgba(0,0,0,0.2)', padding: '12px', borderRadius: '6px', overflow: 'auto', color: 'white'}}>
+                            <code>{JSON.stringify(jsonData, null, 2)}</code>
                         </pre>
                     );
                 }
             } catch (e) {
-                // Not JSON, continue with text formatting
+                // Not JSON, continue
             }
 
             // Check for structured content with ** markers
@@ -323,7 +464,6 @@
                 let currentItems = [];
 
                 lines.forEach((line, idx) => {
-                    // Check for main section headers (like **1. Static Testing Tools:**)
                     if (/^\*\*\d+\.\s+.*:\*\*/.test(line)) {
                         if (currentSection) {
                             sections.push({ ...currentSection, items: currentItems });
@@ -332,7 +472,6 @@
                         currentSection = { title, type: 'section' };
                         currentItems = [];
                     }
-                    // Check for subsection headers (like **Purpose**)
                     else if (line.includes('**') && line.includes(':')) {
                         const cleanLine = line.replace(/\*\*/g, '').replace(/\*/g, '').trim();
                         const [label, ...valueParts] = cleanLine.split(':');
@@ -346,7 +485,6 @@
                             });
                         }
                     }
-                    // Check for list items with **bold** text
                     else if (line.trim().startsWith('*') && line.includes('**')) {
                         const cleanLine = line.replace(/^\*\s*/, '').trim();
                         const parts = cleanLine.split('**');
@@ -361,7 +499,6 @@
                             });
                         }
                     }
-                    // Regular list items
                     else if (line.trim().startsWith('*') || line.trim().startsWith('-')) {
                         const cleanLine = line.replace(/^[\*\-]\s*/, '').trim();
                         if (cleanLine) {
@@ -370,20 +507,19 @@
                     }
                 });
 
-                // Add last section
                 if (currentSection) {
                     sections.push({ ...currentSection, items: currentItems });
                 }
 
-                // If we found structured content, render it nicely
                 if (sections.length > 0) {
                     return (
-                        <div className="formatted-content">
+                        <div>
                             {sections.map((section, sIdx) => (
-                                <div key={sIdx} className="formatted-section">
-                                    <div className="formatted-title">{section.title}</div>
+                                <div key={sIdx} style={{marginBottom: '20px'}}>
+                                    <h3 style={{fontWeight: 'bold', marginBottom: '12px', color: 'white'}}>
+                                        {section.title}
+                                    </h3>
                                     
-                                    {/* Render properties and tools as a table if applicable */}
                                     {section.items.some(item => item.type === 'tool') && (
                                         <table className="formatted-table">
                                             <thead>
@@ -395,7 +531,7 @@
                                             <tbody>
                                                 {section.items.filter(item => item.type === 'tool').map((item, iIdx) => (
                                                     <tr key={iIdx}>
-                                                        <td style={{ fontWeight: 'bold', minWidth: '150px' }}>{item.name}</td>
+                                                        <td style={{fontWeight: 'bold'}}>{item.name}</td>
                                                         <td>{item.description}</td>
                                                     </tr>
                                                 ))}
@@ -403,17 +539,14 @@
                                         </table>
                                     )}
                                     
-                                    {/* Render other properties */}
                                     {section.items.filter(item => item.type === 'property').map((item, iIdx) => (
-                                        <div key={iIdx} className="mb-3">
-                                            <span className="formatted-subtitle">{item.label}:</span>
-                                            <span className="ml-2 text-white opacity-90">{item.value}</span>
+                                        <div key={iIdx} style={{marginBottom: '8px', color: 'white'}}>
+                                            <strong>{item.label}:</strong> {item.value}
                                         </div>
                                     ))}
                                     
-                                    {/* Render regular list items */}
                                     {section.items.filter(item => item.type === 'item').map((item, iIdx) => (
-                                        <div key={iIdx} className="formatted-list-item">
+                                        <div key={iIdx} style={{marginLeft: '20px', marginBottom: '4px', color: 'white'}}>
                                             • {item.text}
                                         </div>
                                     ))}
@@ -424,37 +557,33 @@
                 }
             }
 
-            // Fallback to simple formatting
+            // Simple formatting fallback
             const lines = text.split('\n');
             return (
                 <div>
                     {lines.map((line, idx) => {
-                        // Handle bullet points
                         if (line.trim().startsWith('•') || line.trim().startsWith('-') || line.trim().startsWith('*')) {
                             const content = line.replace(/^[\s•\-*]+/, '');
                             return (
-                                <div key={idx} style={{marginLeft: '20px', marginBottom: '4px'}}>
+                                <div key={idx} style={{marginLeft: '20px', marginBottom: '4px', color: 'white'}}>
                                     • {content}
                                 </div>
                             );
                         }
-                        // Handle numbered lists
                         else if (/^\d+\./.test(line.trim())) {
                             return (
-                                <div key={idx} style={{marginLeft: '20px', marginBottom: '4px'}}>
+                                <div key={idx} style={{marginLeft: '20px', marginBottom: '4px', color: 'white'}}>
                                     {line}
                                 </div>
                             );
                         }
-                        // Handle empty lines
                         else if (line.trim() === '') {
                             return <br key={idx} />;
                         }
-                        // Regular text with bold support
                         else {
                             const formattedLine = line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
                             return (
-                                <div key={idx} dangerouslySetInnerHTML={{ __html: formattedLine }} />
+                                <div key={idx} style={{color: 'white'}} dangerouslySetInnerHTML={{ __html: formattedLine }} />
                             );
                         }
                     })}
@@ -464,173 +593,112 @@
 
         // Navigation Component
         const Navigation = ({ currentPage, setCurrentPage }) => {
-            const [isScrolled, setIsScrolled] = useState(false);
-            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-            useEffect(() => {
-                const handleScroll = () => {
-                    setIsScrolled(window.scrollY > 20);
-                };
-                window.addEventListener('scroll', handleScroll);
-                return () => window.removeEventListener('scroll', handleScroll);
-            }, []);
-
-            const navLinks = [
-                { name: 'Home', path: 'home', icon: 'fa-home' },
-                { name: 'Features', path: 'features', icon: 'fa-sparkles' },
-                { name: 'About', path: 'about', icon: 'fa-info-circle' },
-                { name: 'Contact', path: 'contact', icon: 'fa-envelope' }
-            ];
-
             return (
-                <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-                    isScrolled ? 'glass py-3' : 'py-6'
-                }`}>
-                    <div className="container mx-auto px-6">
-                        <div className="flex justify-between items-center">
-                            <div className="flex items-center space-x-3">
-                                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-400 to-pink-600 flex items-center justify-center floating">
-                                    <i className="fas fa-graduation-cap text-white text-xl"></i>
-                                </div>
-                                <h1 className="text-2xl font-bold rainbow-text">BU Course Agent</h1>
+                <div className="header">
+                    <div style={{maxWidth: '1200px', margin: '0 auto', padding: '0 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
+                            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-400 to-pink-600 flex items-center justify-center floating">
+                                <i className="fas fa-graduation-cap text-white text-xl"></i>
                             </div>
-                            
-                            {/* Desktop Menu */}
-                            <div className="hidden md:flex items-center space-x-6">
-                                {navLinks.map(link => (
-                                    <button
-                                        key={link.path}
-                                        onClick={() => setCurrentPage(link.path)}
-                                        className={`text-white transition-all duration-300 hover:scale-110 ${
-                                            currentPage === link.path ? 'font-bold' : ''
-                                        }`}
-                                    >
-                                        <i className={`fas ${link.icon} mr-2`}></i>
-                                        {link.name}
-                                    </button>
-                                ))}
-                                <button 
-                                    onClick={() => setCurrentPage('chat')}
-                                    className="btn-animated"
-                                >
-                                    Get Started ✨
-                                </button>
-                            </div>
-                            
-                            {/* Mobile Menu Button */}
-                            <button
-                                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                className="md:hidden text-white text-2xl"
-                            >
-                                <i className={`fas ${mobileMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
-                            </button>
+                            <span className="text-2xl font-bold rainbow-text">BU Course Agent</span>
                         </div>
-                        
-                        {/* Mobile Menu */}
-                        {mobileMenuOpen && (
-                            <div className="md:hidden glass mt-4 p-6 rounded-2xl bounce-in">
-                                {navLinks.map(link => (
-                                    <button
-                                        key={link.path}
-                                        onClick={() => {
-                                            setCurrentPage(link.path);
-                                            setMobileMenuOpen(false);
-                                        }}
-                                        className={`block w-full text-left text-white py-3 px-4 rounded-lg transition-all hover:bg-white hover:bg-opacity-10 ${
-                                            currentPage === link.path ? 'bg-white bg-opacity-10' : ''
-                                        }`}
-                                    >
-                                        <i className={`fas ${link.icon} mr-3`}></i>
-                                        {link.name}
-                                    </button>
-                                ))}
-                                <button
-                                    onClick={() => {
-                                        setCurrentPage('chat');
-                                        setMobileMenuOpen(false);
-                                    }}
-                                    className="w-full text-left text-white py-3 px-4 rounded-lg transition-all hover:bg-white hover:bg-opacity-10 mt-2 font-bold"
-                                >
-                                    <i className="fas fa-comments mr-3"></i>
-                                    Get Started
-                                </button>
-                            </div>
-                        )}
+                        <nav style={{display: 'flex', gap: '30px', alignItems: 'center'}}>
+                            <button
+                                onClick={() => setCurrentPage('home')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: currentPage === 'home' ? '#5e72e4' : '#333',
+                                    fontWeight: currentPage === 'home' ? 'bold' : 'normal'
+                                }}
+                            >
+                                Home
+                            </button>
+                            <span style={{color: '#999'}}>|</span>
+                            <button
+                                onClick={() => setCurrentPage('about')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: currentPage === 'about' ? '#5e72e4' : '#333',
+                                    fontWeight: currentPage === 'about' ? 'bold' : 'normal'
+                                }}
+                            >
+                                About
+                            </button>
+                            <span style={{color: '#999'}}>|</span>
+                            <button
+                                onClick={() => setCurrentPage('contact')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: currentPage === 'contact' ? '#5e72e4' : '#333',
+                                    fontWeight: currentPage === 'contact' ? 'bold' : 'normal'
+                                }}
+                            >
+                                Contact Us
+                            </button>
+                        </nav>
                     </div>
-                </nav>
+                </div>
+            );
+        };
+
+        // Footer Component
+        const Footer = ({ setCurrentPage }) => {
+            return (
+                <div className="footer">
+                    <div style={{textAlign: 'center'}}>
+                        <button 
+                            onClick={() => setCurrentPage('terms')}
+                            style={{background: 'none', border: 'none', cursor: 'pointer', color: '#5e72e4', marginRight: '20px'}}
+                        >
+                            Terms of Service
+                        </button>
+                        <span style={{color: '#999'}}>|</span>
+                        <button 
+                            onClick={() => setCurrentPage('privacy')}
+                            style={{background: 'none', border: 'none', cursor: 'pointer', color: '#5e72e4', margin: '0 20px'}}
+                        >
+                            Privacy policy
+                        </button>
+                        <span style={{color: '#999'}}>|</span>
+                        <button 
+                            onClick={() => setCurrentPage('contact')}
+                            style={{background: 'none', border: 'none', cursor: 'pointer', color: '#5e72e4', marginLeft: '20px'}}
+                        >
+                            Contact us
+                        </button>
+                    </div>
+                </div>
             );
         };
 
         // Home Page
         const HomePage = ({ setCurrentPage }) => {
-            const features = [
-                { icon: 'fa-brain', title: 'AI-Powered Recommendations', description: 'Get personalized course suggestions based on your academic profile', color: 'from-blue-500 to-blue-700' },
-                { icon: 'fa-calendar-check', title: 'Smart Schedule Planning', description: 'Optimize your semester schedule with intelligent conflict resolution', color: 'from-green-500 to-green-700' },
-                { icon: 'fa-graduation-cap', title: 'Degree Planning', description: 'Map out your academic path from enrollment to graduation', color: 'from-orange-500 to-orange-700' },
-                { icon: 'fa-file-alt', title: 'Document Analysis', description: 'Upload transcripts, resumes, and job descriptions for tailored advice', color: 'from-purple-500 to-purple-700' }
-            ];
-
             return (
-                <div className="min-h-screen pt-24 pb-12">
-                    <section className="container mx-auto px-6 py-20">
-                        <div className="text-center max-w-5xl mx-auto">
-                            <div className="mb-8">
-                                <i className="fas fa-robot text-8xl text-white opacity-90 floating"></i>
-                            </div>
-                            <h1 className="text-5xl md:text-7xl font-black text-white mb-6 bounce-in">
-                                Your AI Academic <span className="rainbow-text">Companion</span>
-                            </h1>
-                            <p className="text-xl md:text-2xl text-white opacity-90 mb-12">
-                                Navigate your academic journey at BU MET with AI-powered assistance
-                            </p>
-                            <button 
-                                onClick={() => setCurrentPage('chat')}
-                                className="btn-animated text-lg px-8 py-4 neon-glow"
-                            >
-                                <i className="fas fa-comments mr-3"></i>
-                                Start Chatting
-                            </button>
+                <div style={{minHeight: 'calc(100vh - 140px)', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+                    <div className="hero-section">
+                        <div className="mb-8">
+                            <i className="fas fa-robot text-8xl text-white opacity-90 floating"></i>
                         </div>
-                    </section>
-
-                    <section className="container mx-auto px-6 py-20">
-                        <h2 className="text-4xl font-bold text-center text-white mb-12">
-                            Core Features
-                        </h2>
-                        <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                            {features.map((feature, index) => (
-                                <div
-                                    key={index}
-                                    className="glass p-8 rounded-2xl card-hover bounce-in"
-                                    style={{ animationDelay: `${index * 0.1}s` }}
-                                >
-                                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center mb-6`}>
-                                        <i className={`fas ${feature.icon} text-white text-2xl`}></i>
-                                    </div>
-                                    <h3 className="text-2xl font-bold text-white mb-3">{feature.title}</h3>
-                                    <p className="text-white opacity-80">{feature.description}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-
-                    <section className="container mx-auto px-6 py-20">
-                        <div className="glass rounded-3xl p-12 text-center">
-                            <h2 className="text-4xl font-bold text-white mb-6">
-                                Ready to Start Your Academic Journey?
-                            </h2>
-                            <p className="text-xl text-white opacity-80 mb-8 max-w-2xl mx-auto">
-                                Get instant, AI-powered guidance for course selection and academic planning at Boston University MET.
-                            </p>
-                            <button 
-                                onClick={() => setCurrentPage('chat')}
-                                className="btn-animated text-lg px-10 py-4"
-                            >
-                                Get Started Now
-                                <i className="fas fa-arrow-right ml-3"></i>
-                            </button>
-                        </div>
-                    </section>
+                        <h1 style={{fontSize: '48px', marginBottom: '20px', fontWeight: 'bold'}}>
+                            BU Course Agent
+                        </h1>
+                        <p style={{fontSize: '20px', marginBottom: '30px', opacity: 0.9, maxWidth: '600px', margin: '0 auto 30px'}}>
+                            Your AI-powered academic advisor for BU MET Computer Science programs
+                        </p>
+                        <button 
+                            onClick={() => setCurrentPage('chat')}
+                            className="btn-primary"
+                            style={{fontSize: '18px', padding: '15px 40px'}}
+                        >
+                            Get Started
+                        </button>
+                    </div>
                 </div>
             );
         };
@@ -669,48 +737,55 @@
 
             return (
                 <div className="modal-backdrop">
-                    <div className="modal-content glass rounded-2xl p-8 max-w-lg w-full mx-4">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-bold text-white">Upload Document</h2>
-                            <button onClick={onClose} className="text-white opacity-60 hover:opacity-100">
-                                <i className="fas fa-times text-xl"></i>
+                    <div className="modal-content">
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
+                            <h2 style={{fontSize: '24px', fontWeight: 'bold'}}>Upload Document</h2>
+                            <button onClick={onClose} style={{background: 'none', border: 'none', cursor: 'pointer', fontSize: '28px', color: 'white'}}>
+                                ×
                             </button>
                         </div>
 
-                        {/* Document Type Selection */}
-                        <div className="mb-6">
-                            <label className="text-white mb-3 block">Select Document Type:</label>
-                            <div className="space-y-2">
-                                {documentTypes.map(type => (
-                                    <button
-                                        key={type.value}
-                                        onClick={() => setDocumentType(type.value)}
-                                        className={`w-full p-3 rounded-lg text-white text-left flex items-center transition-all ${
-                                            documentType === type.value 
-                                                ? 'bg-gradient-to-r from-blue-500 to-purple-600' 
-                                                : 'glass hover:bg-white hover:bg-opacity-10'
-                                        }`}
-                                    >
-                                        <i className={`fas ${type.icon} mr-3`}></i>
-                                        {type.label}
-                                    </button>
-                                ))}
-                            </div>
+                        <div style={{marginBottom: '20px'}}>
+                            <label style={{display: 'block', marginBottom: '10px', fontWeight: '500'}}>
+                                Select Document Type:
+                            </label>
+                            {documentTypes.map(type => (
+                                <button
+                                    key={type.value}
+                                    onClick={() => setDocumentType(type.value)}
+                                    style={{
+                                        display: 'block',
+                                        width: '100%',
+                                        padding: '12px',
+                                        marginBottom: '8px',
+                                        borderRadius: '12px',
+                                        border: documentType === type.value ? '2px solid white' : '1px solid rgba(255,255,255,0.3)',
+                                        background: documentType === type.value ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)',
+                                        color: 'white',
+                                        textAlign: 'left',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.3s'
+                                    }}
+                                >
+                                    <i className={`fas ${type.icon} mr-3`}></i>
+                                    {type.label}
+                                </button>
+                            ))}
                         </div>
 
-                        {/* File Selection */}
                         {documentType && (
-                            <div className="mb-6">
+                            <div style={{marginBottom: '20px'}}>
                                 <input
                                     ref={fileInputRef}
                                     type="file"
                                     onChange={handleFileSelect}
                                     accept=".pdf,.doc,.docx,.txt"
-                                    className="hidden"
+                                    style={{display: 'none'}}
                                 />
                                 <button
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="w-full glass p-4 rounded-lg text-white hover:bg-white hover:bg-opacity-10 transition-all"
+                                    className="btn-secondary"
+                                    style={{width: '100%'}}
                                 >
                                     <i className="fas fa-cloud-upload-alt mr-3"></i>
                                     {selectedFile ? selectedFile.name : 'Choose File'}
@@ -718,22 +793,23 @@
                             </div>
                         )}
 
-                        {/* Action Buttons */}
-                        <div className="flex space-x-3">
+                        <div style={{display: 'flex', gap: '10px'}}>
                             <button
                                 onClick={handleUpload}
                                 disabled={!selectedFile || !documentType}
-                                className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
-                                    selectedFile && documentType
-                                        ? 'btn-animated'
-                                        : 'glass text-white opacity-50 cursor-not-allowed'
-                                }`}
+                                className="btn-primary"
+                                style={{
+                                    flex: 1,
+                                    opacity: (!selectedFile || !documentType) ? 0.5 : 1,
+                                    cursor: (!selectedFile || !documentType) ? 'not-allowed' : 'pointer'
+                                }}
                             >
                                 Upload
                             </button>
                             <button
                                 onClick={onClose}
-                                className="flex-1 glass text-white py-3 rounded-lg font-semibold hover:bg-white hover:bg-opacity-10 transition-all"
+                                className="btn-secondary"
+                                style={{flex: 1}}
                             >
                                 Cancel
                             </button>
@@ -743,7 +819,7 @@
             );
         };
 
-        // Chat Page Component
+        // Chat Page Component - SIDEBAR ON LEFT AS PER WIREFRAME
         const ChatPage = ({ messages, setMessages, inputValue, setInputValue, sessionId, setSessionId }) => {
             const [isTyping, setIsTyping] = useState(false);
             const [tokenCount, setTokenCount] = useState(0);
@@ -763,11 +839,10 @@
                 } catch (e) {
                     console.error('Could not save to localStorage:', e);
                 }
-                // Only add welcome message if chat is empty
                 if (messages.length === 0) {
                     setMessages([{
                         id: Date.now(),
-                        text: "Hello! I'm your BU Course Agent. I can help you with:\n\n• Course recommendations\n• Schedule planning\n• Degree requirements\n• Academic guidance\n\nYou can also upload documents like transcripts, resumes, or job descriptions for personalized advice!",
+                        text: "Hello! I'm your BU Course Assistant. How can I help you today?",
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
@@ -778,7 +853,6 @@
                 messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
             }, [messages]);
 
-            // Update token count when input changes
             useEffect(() => {
                 const tokens = countTokens(inputValue);
                 setTokenCount(tokens);
@@ -788,7 +862,6 @@
                 const messageText = text || inputValue.trim();
                 if (!messageText) return;
 
-                // Check token limit
                 const tokens = countTokens(messageText);
                 if (tokens > 100) {
                     alert(`Your message is too long (${tokens} tokens). Please limit your message to 100 tokens.`);
@@ -835,7 +908,7 @@
                     console.error('Error:', error);
                     setMessages(prev => [...prev, {
                         id: Date.now() + 1,
-                        text: "I'm having trouble connecting right now. Please ensure the backend server is running on port 8000.",
+                        text: "I'm having trouble connecting right now. Please ensure the backend server is running.",
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
@@ -843,13 +916,6 @@
                     setIsTyping(false);
                 }
             };
-
-            const quickActions = [
-                { text: '📚 Course Recommendations', action: 'What courses should I take next semester?' },
-                { text: '📅 Schedule Planning', action: 'Help me plan my class schedule' },
-                { text: '🎯 Degree Requirements', action: 'What are my remaining degree requirements?' },
-                { text: '💡 Academic Advice', action: 'Give me academic advice for success' }
-            ];
 
             const handleFileUpload = (file, documentType) => {
                 const typeLabels = {
@@ -859,15 +925,15 @@
                     'course_list': 'course list',
                     'other': 'document'
                 };
-                const message = `I've uploaded my ${typeLabels[documentType]}: ${file.name}`;
+                const message = `User uploads a ${typeLabels[documentType]}: ${file.name}`;
                 sendMessage(message);
             };
 
-            const clearChat = () => {
-                if (window.confirm('Are you sure you want to clear the chat history?')) {
+            const newChat = () => {
+                if (window.confirm('Are you sure you want to start a new chat? Current conversation will be lost.')) {
                     setMessages([{
                         id: Date.now(),
-                        text: "Chat cleared. How can I help you?",
+                        text: "Starting a new conversation. How can I help you?",
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
@@ -875,23 +941,15 @@
                 }
             };
 
-            const exportChat = () => {
-                const chatText = messages.map(m => 
-                    `[${m.timestamp.toLocaleTimeString()}] ${m.sender === 'user' ? 'You' : 'Agent'}: ${m.text}`
-                ).join('\n\n');
-                
-                const blob = new Blob([chatText], { type: 'text/plain' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `chat_export_${new Date().toISOString().split('T')[0]}.txt`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            };
+            const predefinedPrompts = [
+                "What courses should I take for Applied Data Analytics?",
+                "Show me the prerequisites for CS 633",
+                "What's Professor Smith's rating?",
+                "Help me plan my schedule for next semester",
+                "What career paths align with my transcript?",
+                "Compare Software Engineering vs Data Science tracks"
+            ];
 
-            // Get token counter color class
             const getTokenCounterClass = () => {
                 if (tokenCount > 100) return 'danger';
                 if (tokenCount > 80) return 'warning';
@@ -899,7 +957,7 @@
             };
 
             return (
-                <div className="min-h-screen pt-20 flex">
+                <div style={{display: 'flex', minHeight: 'calc(100vh - 140px)'}}>
                     {/* Upload Modal */}
                     <UploadModal
                         isOpen={uploadModalOpen}
@@ -907,154 +965,165 @@
                         onUpload={handleFileUpload}
                     />
 
-                    {/* Sidebar */}
-                    <div className="w-80 glass m-4 rounded-2xl p-6">
-                        <h3 className="text-xl font-bold text-white mb-4">Quick Actions</h3>
-                        
+                    {/* LEFT Sidebar - AS PER WIREFRAME */}
+                    <div className="sidebar">
                         <button 
-                            onClick={() => {
-                                setMessages([{
-                                    id: Date.now(),
-                                    text: "Starting a new conversation. How can I help you?",
-                                    sender: 'agent',
-                                    timestamp: new Date()
-                                }]);
-                                setSessionId(null);
-                            }}
-                            className="w-full btn-animated mb-6"
+                            onClick={newChat}
+                            className="btn-primary"
+                            style={{width: '100%', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}
                         >
-                            <i className="fas fa-plus mr-2"></i>
-                            New Chat
+                            <i className="fas fa-plus" style={{marginRight: '8px'}}></i>
+                            New chat
                         </button>
 
-                        <div className="space-y-3 mb-6">
-                            {quickActions.map((action, index) => (
-                                <button
+                        <div style={{marginBottom: '20px'}}>
+                            <h3 style={{fontSize: '16px', fontWeight: 'bold', marginBottom: '15px', color: 'white'}}>
+                                Predefined prompts
+                            </h3>
+                            {predefinedPrompts.map((prompt, index) => (
+                                <div
                                     key={index}
-                                    onClick={() => sendMessage(action.action)}
-                                    className="w-full text-left glass p-3 rounded-lg text-white hover:bg-white hover:bg-opacity-10 transition-all"
+                                    className="predefined-prompt"
+                                    onClick={() => sendMessage(prompt)}
+                                    title={prompt}
+                                    style={{
+                                        overflow: 'hidden',
+                                        whiteSpace: 'nowrap',
+                                        textOverflow: 'ellipsis'
+                                    }}
                                 >
-                                    {action.text}
-                                </button>
+                                    {prompt}
+                                </div>
                             ))}
                         </div>
 
-                        <div className="mt-auto">
-                            <button 
-                                onClick={() => setUploadModalOpen(true)}
-                                className="w-full glass p-3 rounded-lg text-white hover:bg-white hover:bg-opacity-10 transition-all"
-                            >
-                                <i className="fas fa-upload mr-2"></i>
-                                Upload Document
-                            </button>
-                        </div>
+                        <button 
+                            onClick={() => setUploadModalOpen(true)}
+                            className="upload-btn"
+                            style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+                        >
+                            <i className="fas fa-upload" style={{marginRight: '8px'}}></i>
+                            Upload document
+                        </button>
                     </div>
 
-                    {/* Chat Area */}
-                    <div className="flex-grow flex flex-col m-4">
-                        <div className="glass rounded-t-2xl p-6">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center">
-                                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-400 to-pink-600 flex items-center justify-center mr-4">
-                                        <i className="fas fa-robot text-white"></i>
-                                    </div>
-                                    <div>
-                                        <h2 className="text-xl font-bold text-white">BU Course Assistant</h2>
-                                        <p className="text-white opacity-60 text-sm">Always here to help</p>
-                                    </div>
-                                </div>
-                                <div className="flex space-x-3">
-                                    <button 
-                                        onClick={exportChat}
-                                        className="text-white opacity-60 hover:opacity-100 transition" 
-                                        title="Export Chat"
-                                    >
-                                        <i className="fas fa-download text-xl"></i>
-                                    </button>
-                                    <button 
-                                        onClick={clearChat}
-                                        className="text-white opacity-60 hover:opacity-100 transition" 
-                                        title="Clear Chat"
-                                    >
-                                        <i className="fas fa-trash text-xl"></i>
-                                    </button>
-                                </div>
-                            </div>
+                    {/* Main Chat Area */}
+                    <div className="chat-area">
+                        <div className="chat-header">
+                            <h2 style={{fontSize: '24px', fontWeight: 'bold', textAlign: 'center'}}>
+                                BU Course Agent Section
+                            </h2>
                         </div>
 
-                        <div className="flex-grow glass p-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 280px)' }}>
+                        <div className="chat-messages">
                             {messages.map(message => (
-                                <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} mb-4 message-bubble`}>
-                                    <div className={`max-w-2xl px-6 py-3 rounded-2xl ${
-                                        message.sender === 'user'
-                                            ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
-                                            : 'glass text-white agent-message'
-                                    }`}>
-                                        {formatMessageText(message.text)}
-                                        <p className="text-xs opacity-60 mt-2">
-                                            {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                        </p>
+                                <div key={message.id} className={`message ${message.sender}`}>
+                                    {message.sender === 'agent' && (
+                                        <div style={{marginRight: '10px', fontSize: '24px'}}>
+                                            🤖
+                                        </div>
+                                    )}
+                                    <div className="message-content">
+                                        {message.sender === 'agent' ? (
+                                            <div>
+                                                {message.text === '..................' ? (
+                                                    <div>
+                                                        <div className="typing-dot"></div>
+                                                        <div className="typing-dot"></div>
+                                                        <div className="typing-dot"></div>
+                                                    </div>
+                                                ) : (
+                                                    formatMessageText(message.text)
+                                                )}
+                                            </div>
+                                        ) : (
+                                            message.text
+                                        )}
                                     </div>
+                                    {message.sender === 'user' && (
+                                        <div style={{marginLeft: '10px', fontSize: '24px'}}>
+                                            👤
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                             
                             {isTyping && (
-                                <div className="flex justify-start mb-4">
-                                    <div className="glass px-6 py-3 rounded-2xl">
-                                        <div className="typing-dot"></div>
-                                        <div className="typing-dot"></div>
-                                        <div className="typing-dot"></div>
+                                <div className="message agent">
+                                    <div style={{marginRight: '10px', fontSize: '24px'}}>
+                                        🤖
+                                    </div>
+                                    <div className="message-content">
+                                        <div>
+                                            <div className="typing-dot"></div>
+                                            <div className="typing-dot"></div>
+                                            <div className="typing-dot"></div>
+                                        </div>
                                     </div>
                                 </div>
                             )}
                             <div ref={messagesEndRef} />
                         </div>
 
-                        <div className="glass rounded-b-2xl p-4">
-                            <div className="flex items-center space-x-3 relative">
-                                <button 
+                        <div className="chat-input-area">
+                            <div style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
+                                <button
                                     onClick={() => setUploadModalOpen(true)}
-                                    className="text-white opacity-60 hover:opacity-100 transition" 
+                                    style={{
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        fontSize: '20px',
+                                        color: 'white',
+                                        marginRight: '10px'
+                                    }}
                                     title="Upload Document"
                                 >
-                                    <i className="fas fa-paperclip text-xl"></i>
+                                    <i className="fas fa-paperclip"></i>
                                 </button>
-                                <div className="flex-grow relative">
+                                <div style={{flexGrow: 1, position: 'relative'}}>
                                     <input
                                         type="text"
                                         value={inputValue}
                                         onChange={(e) => {
                                             const newValue = e.target.value;
-                                            const tokens = countTokens(newValue);
-                                            if (tokens <= 100) {
-                                                setInputValue(newValue);
-                                            } else {
-                                                // Optionally show a warning
-                                                setInputValue(newValue); // Still allow typing but show warning
-                                            }
+                                            setInputValue(newValue);
                                         }}
                                         onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                                        placeholder="Type your message..."
-                                        className="w-full bg-white bg-opacity-10 text-white placeholder-white placeholder-opacity-60 px-5 py-3 rounded-full focus:outline-none focus:bg-opacity-20 transition-all pr-20"
+                                        placeholder="Type a message..."
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px 80px 12px 15px',
+                                            borderRadius: '25px',
+                                            border: '1px solid rgba(255,255,255,0.3)',
+                                            background: 'rgba(255,255,255,0.1)',
+                                            color: 'white',
+                                            fontSize: '14px',
+                                            backdropFilter: 'blur(10px)'
+                                        }}
                                     />
                                     <div className={`token-counter ${getTokenCounterClass()}`}>
                                         {tokenCount}/100
                                     </div>
                                 </div>
                                 <button 
-                                    onClick={() => sendMessage()} 
+                                    onClick={() => sendMessage()}
                                     disabled={tokenCount > 100}
-                                    className={`rounded-full px-6 ${
-                                        tokenCount > 100 
-                                            ? 'glass text-white opacity-50 cursor-not-allowed' 
-                                            : 'btn-animated'
-                                    }`}
+                                    style={{
+                                        marginLeft: '10px',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: tokenCount > 100 ? 'not-allowed' : 'pointer',
+                                        fontSize: '20px',
+                                        color: 'white',
+                                        opacity: tokenCount > 100 ? 0.5 : 1
+                                    }}
                                 >
                                     <i className="fas fa-paper-plane"></i>
                                 </button>
                             </div>
                             {tokenCount > 100 && (
-                                <p className="text-red-400 text-sm mt-2 text-center">
+                                <p style={{color: '#f87171', fontSize: '12px', marginTop: '8px', textAlign: 'center'}}>
                                     Message exceeds 100 token limit. Please shorten your message.
                                 </p>
                             )}
@@ -1064,229 +1133,151 @@
             );
         };
 
-        // Features Page
-        const FeaturesPage = () => (
-            <div className="min-h-screen pt-24 pb-12">
-                <div className="container mx-auto px-6">
-                    <h1 className="text-5xl font-bold text-center rainbow-text mb-12">Features & Limitations</h1>
-                    
-                    <div className="max-w-4xl mx-auto">
-                        <div className="glass p-8 rounded-2xl mb-8">
-                            <h2 className="text-3xl font-bold text-white mb-6">What Our Chatbot Can Do</h2>
-                            <ul className="space-y-4 text-white">
-                                <li className="flex items-start">
-                                    <i className="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Course Recommendations:</strong> Suggests appropriate courses based on your academic background and program requirements
-                                    </div>
-                                </li>
-                                <li className="flex items-start">
-                                    <i className="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Schedule Planning:</strong> Helps create optimal class schedules considering prerequisites and time conflicts
-                                    </div>
-                                </li>
-                                <li className="flex items-start">
-                                    <i className="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Document Analysis:</strong> Process transcripts, resumes, and job descriptions for tailored academic advice
-                                    </div>
-                                </li>
-                                <li className="flex items-start">
-                                    <i className="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Degree Requirements:</strong> Provides information about program requirements and graduation criteria
-                                    </div>
-                                </li>
-                                <li className="flex items-start">
-                                    <i className="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Career Alignment:</strong> Matches course selections with career goals based on job descriptions
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div className="glass p-8 rounded-2xl">
-                            <h2 className="text-3xl font-bold text-white mb-6">Current Limitations</h2>
-                            <ul className="space-y-4 text-white">
-                                <li className="flex items-start">
-                                    <i className="fas fa-exclamation-triangle text-yellow-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Token Size:</strong> Maximum 100 tokens per message (approximately 75 words)
-                                    </div>
-                                </li>
-                                <li className="flex items-start">
-                                    <i className="fas fa-exclamation-triangle text-yellow-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Rate Limits:</strong> 10 queries per minute on the free tier (Google Gemini API)
-                                    </div>
-                                </li>
-                                <li className="flex items-start">
-                                    <i className="fas fa-exclamation-triangle text-yellow-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Scope:</strong> Focused specifically on BU MET Computer Science programs
-                                    </div>
-                                </li>
-                                <li className="flex items-start">
-                                    <i className="fas fa-exclamation-triangle text-yellow-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Real-time Data:</strong> Does not have access to real-time course availability or enrollment numbers
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-
         // About Page
         const AboutPage = () => (
-            <div className="min-h-screen pt-24 pb-12">
-                <div className="container mx-auto px-6">
-                    <h1 className="text-5xl font-bold text-center rainbow-text mb-12">Our Team</h1>
+            <div className="content-section">
+                <h1 style={{fontSize: '36px', marginBottom: '30px', textAlign: 'center'}}>About us page</h1>
+                
+                <div className="content-box">
+                    <h2 style={{fontSize: '24px', marginBottom: '15px', color: 'white'}}>Who we are?</h2>
+                    <p style={{marginBottom: '20px'}}>We are graduate students at Boston University's Metropolitan College, enrolled in the MET CS 633 Software Quality, Testing, and Security Management course.</p>
                     
-                    <div className="max-w-6xl mx-auto">
-                        <div className="glass p-8 rounded-2xl mb-8">
-                            <p className="text-white text-lg mb-8">
-                                We are graduate students at Boston University's Metropolitan College, enrolled in the MET CS 633 
-                                Software Quality, Testing, and Security Management course. Our team has developed this AI-powered 
-                                course advisory system as our final project.
-                            </p>
-                        </div>
-
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <div className="glass p-6 rounded-2xl">
-                                <div className="flex items-center mb-4">
-                                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-purple-600 flex items-center justify-center mr-4">
-                                        <i className="fas fa-user text-white text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-white">Gagan V</h3>
-                                        <p className="text-white opacity-80">Development Lead</p>
-                                    </div>
-                                </div>
-                                <p className="text-white opacity-90">
-                                    Led the development of the multi-agent system architecture and backend implementation using Google's Gemini API.
-                                </p>
-                            </div>
-
-                            <div className="glass p-6 rounded-2xl">
-                                <div className="flex items-center mb-4">
-                                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-green-400 to-teal-600 flex items-center justify-center mr-4">
-                                        <i className="fas fa-user text-white text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-white">Anand</h3>
-                                        <p className="text-white opacity-80">Frontend Developer</p>
-                                    </div>
-                                </div>
-                                <p className="text-white opacity-90">
-                                    Designed and implemented the React-based user interface with focus on user experience and responsive design.
-                                </p>
-                            </div>
-
-                            <div className="glass p-6 rounded-2xl">
-                                <div className="flex items-center mb-4">
-                                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-400 to-orange-600 flex items-center justify-center mr-4">
-                                        <i className="fas fa-user text-white text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-white">Shashank</h3>
-                                        <p className="text-white opacity-80">Project Manager</p>
-                                    </div>
-                                </div>
-                                <p className="text-white opacity-90">
-                                    Coordinated team efforts, managed project timeline, and ensured alignment with course requirements and objectives.
-                                </p>
-                            </div>
-
-                            <div className="glass p-6 rounded-2xl">
-                                <div className="flex items-center mb-4">
-                                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-pink-400 to-red-600 flex items-center justify-center mr-4">
-                                        <i className="fas fa-user text-white text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-white">Brendan</h3>
-                                        <p className="text-white opacity-80">QA & Testing Lead</p>
-                                    </div>
-                                </div>
-                                <p className="text-white opacity-90">
-                                    Led quality assurance efforts, conducted comprehensive testing, and ensured application reliability and user experience.
-                                </p>
-                            </div>
-                        </div>
+                    <div style={{marginTop: '20px'}}>
+                        <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>Our Team Members:</h3>
+                        <ul style={{listStyle: 'none', padding: 0}}>
+                            <li style={{padding: '10px 0', fontSize: '18px', color: 'white'}}>
+                                <i className="fas fa-user-graduate mr-3" style={{color: '#667eea'}}></i>
+                                Gagan Veginati
+                            </li>
+                            <li style={{padding: '10px 0', fontSize: '18px', color: 'white'}}>
+                                <i className="fas fa-user-graduate mr-3" style={{color: '#667eea'}}></i>
+                                Sean Silver
+                            </li>
+                            <li style={{padding: '10px 0', fontSize: '18px', color: 'white'}}>
+                                <i className="fas fa-user-graduate mr-3" style={{color: '#667eea'}}></i>
+                                Brendan Collins
+                            </li>
+                            <li style={{padding: '10px 0', fontSize: '18px', color: 'white'}}>
+                                <i className="fas fa-user-graduate mr-3" style={{color: '#667eea'}}></i>
+                                Zharas Omirzak
+                            </li>
+                            <li style={{padding: '10px 0', fontSize: '18px', color: 'white'}}>
+                                <i className="fas fa-user-graduate mr-3" style={{color: '#667eea'}}></i>
+                                Jonathan Rothendler
+                            </li>
+                        </ul>
                     </div>
+                </div>
+
+                <div className="content-box">
+                    <h2 style={{fontSize: '24px', marginBottom: '15px', color: 'white'}}>What this tool does?</h2>
+                    <p>The BU Course Agent is an AI-powered academic advisor that helps students navigate course selection, degree planning, and career alignment for BU MET Computer Science programs.</p>
+                </div>
+
+                <div className="content-box">
+                    <h2 style={{fontSize: '24px', marginBottom: '15px', color: 'white'}}>Our goal</h2>
+                    <p>To provide intelligent, personalized academic guidance to help students make informed decisions about their educational path and career trajectory.</p>
                 </div>
             </div>
         );
 
         // Contact Page
         const ContactPage = () => (
-            <div className="min-h-screen pt-24 pb-12">
-                <div className="container mx-auto px-6">
-                    <h1 className="text-5xl font-bold text-center rainbow-text mb-12">Contact & Resources</h1>
+            <div className="content-section">
+                <h1 style={{fontSize: '36px', marginBottom: '30px', textAlign: 'center'}}>Contact us page</h1>
+                
+                <div className="content-box">
+                    <p style={{marginBottom: '20px', fontSize: '16px'}}>For any questions about this project or technical issues, please contact BU CS team:</p>
                     
-                    <div className="max-w-4xl mx-auto">
-                        <div className="glass p-8 rounded-2xl mb-8">
-                            <h2 className="text-3xl font-bold text-white mb-6">Academic Resources</h2>
-                            <div className="space-y-6">
-                                <a href="https://www.bu.edu/met/programs/graduate/computer-science/" 
-                                   target="_blank" 
-                                   rel="noopener noreferrer"
-                                   className="flex items-center text-white hover:text-blue-300 transition">
-                                    <i className="fas fa-graduation-cap text-2xl mr-4"></i>
-                                    <div>
-                                        <h3 className="text-xl font-bold">BU MET Computer Science Program</h3>
-                                        <p className="opacity-80">Explore the full Computer Science graduate program at Boston University MET</p>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div className="glass p-8 rounded-2xl mb-8">
-                            <h2 className="text-3xl font-bold text-white mb-6">Course Information</h2>
-                            <div className="space-y-6">
-                                <a href="https://www.bu.edu/met/courses/" 
-                                   target="_blank" 
-                                   rel="noopener noreferrer"
-                                   className="flex items-center text-white hover:text-blue-300 transition">
-                                    <i className="fas fa-book text-2xl mr-4"></i>
-                                    <div>
-                                        <h3 className="text-xl font-bold">MET CS 633</h3>
-                                        <p className="opacity-80">Software Quality, Testing, and Security Management</p>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div className="glass p-8 rounded-2xl">
-                            <h2 className="text-3xl font-bold text-white mb-6">Faculty Contact</h2>
-                            <div className="space-y-6">
-                                <div className="flex items-center text-white">
-                                    <i className="fas fa-user-tie text-2xl mr-4"></i>
-                                    <div>
-                                        <h3 className="text-xl font-bold">Course Instructor</h3>
-                                        <p className="opacity-80">For academic inquiries related to CS 633</p>
-                                        <p className="text-sm opacity-60 mt-2">Contact information available through BU MET portal</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="glass p-8 rounded-2xl mt-8">
-                            <h2 className="text-3xl font-bold text-white mb-4">API Setup Instructions</h2>
-                            <p className="text-white mb-4">To run this application locally, you need a Google Gemini API key:</p>
-                            <ol className="space-y-3 text-white">
-                                <li>1. Visit <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">Google AI Studio</a></li>
-                                <li>2. Create a new API key (free tier available)</li>
-                                <li>3. Create a <code className="bg-black bg-opacity-30 px-2 py-1 rounded">.env</code> file in the project root</li>
-                                <li>4. Add your key: <code className="bg-black bg-opacity-30 px-2 py-1 rounded">GOOGLE_API_KEY=your_key_here</code></li>
-                                <li>5. Add model name: <code className="bg-black bg-opacity-30 px-2 py-1 rounded">MODEL_NAME=gemini-2.0-flash-exp</code></li>
-                            </ol>
-                        </div>
+                    <div style={{marginBottom: '20px', padding: '15px', background: 'rgba(255,255,255,0.1)', borderRadius: '12px'}}>
+                        <a href="https://www.bu.edu/met/degrees-certificates/ms-computer-information-systems/" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           style={{color: '#a0aec0', textDecoration: 'none', display: 'block', marginBottom: '10px'}}>
+                            <i className="fas fa-link mr-2"></i>
+                            https://www.bu.edu/met/degrees-certificates/ms-computer-information-systems/
+                        </a>
                     </div>
+                    
+                    <div style={{marginBottom: '20px', padding: '15px', background: 'rgba(255,255,255,0.1)', borderRadius: '12px'}}>
+                        <a href="https://met.bu.edu/inquiryform" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           style={{color: '#a0aec0', textDecoration: 'none'}}>
+                            <i className="fas fa-link mr-2"></i>
+                            https://met.bu.edu/inquiryform
+                        </a>
+                    </div>
+                    
+                    <p style={{margin: '30px 0', textAlign: 'center', fontSize: '18px', color: '#a0aec0'}}>OR</p>
+                    
+                    <div style={{padding: '15px', background: 'rgba(255,255,255,0.1)', borderRadius: '12px'}}>
+                        <a href="https://www.bu.edu/academics/met/courses/met-cs-633/" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           style={{color: '#a0aec0', textDecoration: 'none'}}>
+                            <i className="fas fa-link mr-2"></i>
+                            https://www.bu.edu/academics/met/courses/met-cs-633/
+                        </a>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // Terms of Service Page
+        const TermsPage = () => (
+            <div className="content-section">
+                <h1 style={{fontSize: '36px', marginBottom: '30px', textAlign: 'center'}}>Terms of Service page</h1>
+                
+                <div className="content-box">
+                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>1. Purpose of This Tool</h3>
+                    <p style={{marginBottom: '20px'}}>The BU Career Agent is a student-built prototype created for the CS633 Software Quality, Testing, and Security Management course. It is not an official Boston University advising system.</p>
+                    
+                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>2. No Official Advice</h3>
+                    <p style={{marginBottom: '20px'}}>All course recommendations, career insights, and academic guidance generated by the tool are informational only and should not be considered official academic advising.</p>
+                    
+                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>3. User Responsibility</h3>
+                    <p style={{marginBottom: '20px'}}>Students are responsible for verifying program requirements, prerequisites, and academic policies through BU's official catalog and advisors.</p>
+                    
+                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>4. Acceptable Use</h3>
+                    <p style={{marginBottom: '20px'}}>You agree to use this tool for educational and informational purposes only and not submit harmful, misleading, or inappropriate content.</p>
+                    
+                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>5. Limitation of Liability</h3>
+                    <p style={{marginBottom: '20px'}}>The project team and instructors are not liable for decisions made based on the tool's recommendations.</p>
+                    
+                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>6. No Career or Academic Outcome Guarantee</h3>
+                    <p>This tool is a student term project created for the CS633 course. All course suggestions, program matches, and career insights are for demonstration purposes only and should not be interpreted as guarantees of academic success, admissions outcomes, or employment opportunities. Users should always verify decisions with official Boston University advisors or career services.</p>
+                </div>
+            </div>
+        );
+
+        // Privacy Policy Page
+        const PrivacyPage = () => (
+            <div className="content-section">
+                <h1 style={{fontSize: '36px', marginBottom: '30px', textAlign: 'center'}}>Privacy policy page</h1>
+                
+                <div className="content-box">
+                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>1. Data Collection</h3>
+                    <p style={{marginBottom: '20px'}}>The tool may temporarily process user inputs such as chat messages, uploaded transcripts, or job descriptions only for the purpose of generating recommendations.</p>
+                    
+                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>2. No Permanent Storage</h3>
+                    <p style={{marginBottom: '20px'}}>Uploaded documents and chat content are not stored permanently and are cleared when the session is reset or ends.</p>
+                    
+                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>3. No Personal Information Required</h3>
+                    <p style={{marginBottom: '20px'}}>You are not required to enter personally identifiable information (PII). Any information you voluntarily provide is used only to generate responses within the session.</p>
+                    
+                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>4. Third-Party Services</h3>
+                    <p style={{marginBottom: '15px'}}>The chatbot may use external AI APIs (e.g., Google Gemini) strictly for text processing. These services follow their own privacy standards.</p>
+                    <p style={{marginBottom: '20px'}}>For more information about Gemini Privacy Policy visit Gemini Apps Privacy Hub: <a href="https://support.google.com/gemini/answer/13594961?hl=en" target="_blank" rel="noopener noreferrer" style={{color: '#a0aec0'}}>https://support.google.com/gemini/answer/13594961?hl=en</a></p>
+                    
+                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>5. Cookies / Tracking</h3>
+                    <p style={{marginBottom: '20px'}}>This prototype does not use cookies or tracking tools.</p>
+                    
+                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>6. Data Security</h3>
+                    <p style={{marginBottom: '20px'}}>Reasonable measures are taken to protect session data, but no system is entirely secure. Because this is a prototype, users should avoid uploading sensitive personal data.</p>
+                    
+                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>7. Contact</h3>
+                    <p>For concerns about data use within this project, please reach out through the Contact Us page.</p>
                 </div>
             </div>
         );
@@ -1294,7 +1285,6 @@
         // Main App Component
         const App = () => {
             const [currentPage, setCurrentPage] = useState('home');
-            // Lifted chat state to App level so it persists across tab changes
             const [messages, setMessages] = useState([]);
             const [inputValue, setInputValue] = useState('');
             const [sessionId, setSessionId] = useState(null);
@@ -1314,21 +1304,24 @@
                                 setSessionId={setSessionId}
                             />
                         );
-                    case 'features':
-                        return <FeaturesPage />;
                     case 'about':
                         return <AboutPage />;
                     case 'contact':
                         return <ContactPage />;
+                    case 'terms':
+                        return <TermsPage />;
+                    case 'privacy':
+                        return <PrivacyPage />;
                     default:
                         return <HomePage setCurrentPage={setCurrentPage} />;
                 }
             };
 
             return (
-                <div className="min-h-screen">
+                <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
                     <Navigation currentPage={currentPage} setCurrentPage={setCurrentPage} />
                     {renderPage()}
+                    <Footer setCurrentPage={setCurrentPage} />
                 </div>
             );
         };
