@@ -611,7 +611,7 @@
                                     ref={fileInputRef}
                                     type="file"
                                     onChange={handleFileSelect}
-                                    accept=".pdf,.doc,.docx,.txt"
+                                    accept=".pdf,.docx,.txt,.text"
                                     className="hidden"
                                 />
                                 <button
@@ -822,7 +822,7 @@
                         'course_list': 'course list',
                         'other': 'document'
                     };
-                    const fullMessage = `Please analyze my ${typeLabels[documentType]}:\n\n"${uploadResult.extracted_text}"`;
+                    const fullMessage = `Please analyze my uploaded ${typeLabels[documentType]}:\n\n"${uploadResult.extracted_text}"`;
                     
                     // Send to agent backend directly without displaying to user
                     const chatResponse = await fetch(`${API_BASE_URL}/chat`, {

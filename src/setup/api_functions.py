@@ -67,9 +67,7 @@ def _parse_pdf(file_content: bytes) -> str:
             )
 
         extracted_text = "\n".join(text_content)
-        logger.info(
-            f"Successfully parsed PDF document ({len(extracted_text)} characters)"
-        )
+        logger.debug(f"📄 Successfully parsed PDF document")
         return extracted_text
     except Exception as e:
         logger.error(f"PDF parsing failed: {str(e)}")
@@ -88,9 +86,7 @@ def _parse_docx(file_content: bytes) -> str:
                 text_content.append(paragraph.text)
 
         extracted_text = "\n".join(text_content)
-        logger.info(
-            f"Successfully parsed DOCX document ({len(extracted_text)} characters)"
-        )
+        logger.info(f"📄 Successfully parsed DOCX document")
         return extracted_text
     except Exception as e:
         logger.error(f"DOCX parsing failed: {str(e)}")
@@ -101,9 +97,7 @@ def _parse_text(file_content: bytes) -> str:
     """Extract text from plain text file."""
     try:
         extracted_text = file_content.decode("utf-8")
-        logger.info(
-            f"Successfully parsed text document ({len(extracted_text)} characters)"
-        )
+        logger.info(f"📄 Successfully parsed text document")
         return extracted_text
     except Exception as e:
         logger.error(f"Text parsing failed: {str(e)}")

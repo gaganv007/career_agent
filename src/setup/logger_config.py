@@ -24,11 +24,9 @@ class AgentLogger:
 
         self.logger.handlers.clear()
         detailed_formatter = logging.Formatter(
-            "%(asctime)s: %(funcName)s@%(lineno)d - %(levelname)s -  %(message)s"
+            "%(asctime)s: %(funcName)s@%(lineno)d - %(levelname)s\t%(message)s"
         )
-        simple_formatter = logging.Formatter(
-            "%(asctime)s: %(funcName)s@%(lineno)d\t%(message)s"
-        )
+        simple_formatter = logging.Formatter("%(asctime)s: %(levelname)s\t%(message)s")
 
         # File Handler
         file_handler = logging.handlers.RotatingFileHandler(

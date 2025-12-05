@@ -9,8 +9,6 @@ import uvicorn
 import logging
 from pathlib import Path
 from datetime import datetime
-from typing import Optional
-from pydantic import BaseModel
 
 # Add src directory to Python path
 project_root = Path(__file__).resolve().parent
@@ -32,8 +30,8 @@ from google.adk.runners import Runner
 # Custom modules
 from setup.api_functions import parse_document
 from setup.logger_config import setup_logging
+from setup.schemas import ChatRequest, ChatResponse, DocumentUploadResponse
 from agents.team import orchestrator, query_per_min_limit, token_guard
-
 
 app = FastAPI(title="BU Agent API")
 
@@ -53,26 +51,6 @@ sessions = {}  # Store user sessions
 
 logger = setup_logging()
 logging.getLogger("google_genai.types").setLevel(logging.ERROR)
-
-
-class ChatRequest(BaseModel):
-    message: str
-    user_id: Optional[str] = "web_user"
-    session_id: Optional[str] = None
-    is_document_upload: Optional[bool] = False
-
-
-class ChatResponse(BaseModel):
-    response: str
-    session_id: str
-    user_id: str
-
-
-class DocumentUploadResponse(BaseModel):
-    success: bool
-    message: str
-    extracted_text: str
-    character_count: int
 
 
 @app.on_event("startup")
@@ -137,7 +115,7 @@ async def chat(request: ChatRequest):
                 session_service=service,
             )
             sessions[session_key] = runner
-            logger.info(f"✅ Created new session: {session_key}")
+            logger.info(f"💻 Created new session: {session_key}")
         else:
             runner = sessions[session_key]
 
@@ -166,20 +144,23 @@ async def chat(request: ChatRequest):
         error_detail = f"Error: {str(e)}"
         logger.error(error_detail)
         logger.info(
-            f"\n{'='*60}\nERROR in /chat endpoint:\n{error_detail}\n\nTraceback:\n{traceback.format_exc()}\n{'='*60}\n"
+            f"\n{'='*60}\nERROR in /chat endpoint:\n"
+            f"{error_detail}\n\nTraceback:\n{traceback.format_exc()}\n{'='*60}\n"
         )
 
 
 async def query_agent(query: str, runner, user_id, session_id) -> str:
     content = types.Content(role="user", parts=[types.Part(text=query)])
     final_response_text = "Agent did not produce a final response."
-    logger.debug(f"✏️ {user_id} sent: '{query}'")
+    logger.debug(f"✏️ {user_id} sent:\n'{query}'")
 
     # Key Concept: run_async executes the agent logic and yields Events.
     async for event in runner.run_async(
         user_id=user_id, session_id=session_id, new_message=content
     ):
-        logger.info(f"📊 Event Triggered (type: {type(event).__name__})")
+        logger.debug(
+            f"🌐 Event Triggered! (type: {type(event).__name__})"
+        )
 
         # Key Concept: is_final_response() marks the concluding message for the turn.
         if event.is_final_response():
@@ -227,9 +208,9 @@ async def upload_document(file: UploadFile = File(...), document_type: str = "")
         # Validate file type
         supported_types = ["pdf", "docx", "txt", "text"]
         if document_type.lower() not in supported_types:
-            raise ValueError(
-                f"Unsupported file type: {document_type}. Supported types: {', '.join(supported_types)}"
-            )
+            error = f"Unsupported file type: {document_type}. Supported types: {', '.join(supported_types)}"
+            logger.error(error)
+            raise ValueError(error)
 
         # Parse the document
         extracted_text = parse_document(file_content, document_type)
@@ -240,8 +221,9 @@ async def upload_document(file: UploadFile = File(...), document_type: str = "")
             )
 
         char_count = len(extracted_text)
-        logger.info(f"\n📄 Document uploaded and parsed: {file.filename}")
-        logger.info(f"   Type: {document_type}, Characters extracted: {char_count}")
+        logger.info(
+            f"🔎 Read {file.filename}, Type: {document_type}, Characters extracted: {char_count}"
+        )
 
         return DocumentUploadResponse(
             success=True,
@@ -252,7 +234,7 @@ async def upload_document(file: UploadFile = File(...), document_type: str = "")
 
     except ValueError as e:
         error_msg = str(e)
-        logger.info(f"\n⚠️  Document upload validation error: {error_msg}")
+        logger.info(f"⚠️  Document upload validation error: {error_msg}")
         raise HTTPException(status_code=400, detail=error_msg)
 
     except Exception as e:
@@ -260,7 +242,7 @@ async def upload_document(file: UploadFile = File(...), document_type: str = "")
 
         error_msg = f"Error processing document: {str(e)}"
         logger.info(
-            f"\n❌ Error in /upload-document endpoint:\n{error_msg}\n{traceback.format_exc()}"
+            f"❌ Error in /upload-document endpoint:\n{error_msg}\n{traceback.format_exc()}"
         )
         raise HTTPException(status_code=500, detail=error_msg)
 
