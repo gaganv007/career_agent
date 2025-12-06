@@ -6,8 +6,11 @@ Module to define agent-related functions, such as database reads
 import os
 import logging
 import psycopg2 as psy
+
+from datetime import time
 from typing import List
 from setup.schemas import CourseResponse, ScheduleResponse
+
 
 
 logger = logging.getLogger("AgentLogger")
@@ -31,6 +34,79 @@ def get_db_connection():
         logger.error(f"❌ Failed to Connect to Cloud SQL: {e}")
         raise
 
+def get_table_names(conn = get_db_connection()):
+    """Return a list of table names."""
+    logger.debug(f"📢 Function call for 'get_table_names'")
+
+    table_names = []
+    curr = conn.cursor()
+    tables = curr.execute("SELECT table_name FROM information_schema.tables" \
+    " WHERE table_schema='public' AND table_type='BASE TABLE';")
+    
+    for table in tables.fetchall():
+        table_names.append(table[0])
+    return table_names
+
+
+def get_column_names(table_name, conn = get_db_connection()):
+    """Return a list of column names."""
+    logger.debug(f"📢 Function call for 'get_column_names'")
+
+    column_names = []
+    curr = conn.cursor()
+    columns = curr.execute(f"SELECT column_name, data_type FROM information_schema.columns"
+                           f" WHERE table_name = {table_name};")
+    
+    for col in columns.fetchall():
+        column_names.append(col[0])
+    return column_names
+
+
+def get_database_info(conn):
+    """Return a list of dicts containing the table name and columns for each table in the database."""
+    table_dicts = []
+    for table_name in get_table_names(conn):
+        columns_names = get_column_names(conn, table_name)
+        table_dicts.append({"table_name": table_name, "column_names": columns_names})
+    return table_dicts
+
+
+def run_sql_query(statement: str) -> List[CourseResponse]:
+    """
+    Function to query a the 'courses' table for course information and return as Course models
+    Information returned includes the course number, course title, and course description.
+    Course descriptions can analyzed to determine the key skills learned and developed within the course.
+
+    Args:
+        conditions (str): the conditions to filter by; should be formatted for use in a postgresql statement
+
+    Returns:
+        List[Course]: list of Course models containing course information
+    """
+    logger.debug(f"📢 Function call for 'run_sql_query'")
+    conn = get_db_connection()
+    logger.info("✅ Connection to Cloud SQL Successful")
+
+    try:
+        curr = conn.cursor()
+        command = statement.split()[0]
+        if command.lower() != 'select':
+            raise ValueError(f"Statement can only be a 'SELECT' statement")
+
+        logger.debug(f"📝 Executing Statement: '{statement}'")
+        curr.execute(statement)
+        data = curr.fetchall()
+        logger.debug(f"ℹ️ Pulled from database: '{data}'")
+        curr.close()
+
+        results = []
+        for row in data:
+            results.append(row)
+
+        return results
+    except Exception as e:
+        logger.error(f"❌ Error Retreiving Courses: {e}")
+        raise
 
 def get_courses(conditions: str) -> List[CourseResponse]:
     """
@@ -60,7 +136,7 @@ def get_courses(conditions: str) -> List[CourseResponse]:
         logger.debug(f"📝 Executing Statement: '{statement}'")
         curr.execute(statement)
         data = curr.fetchall()
-        logger.debug(f"ℹ️ Pulled from database: '{data[100:]}...'")
+        logger.debug(f"ℹ️ Pulled from database: '{data}'")
         curr.close()
 
         # Format and Return Results
@@ -103,17 +179,17 @@ def get_schedule(conditions: str) -> List[ScheduleResponse]:
         logger.debug(f"📝 Executing Statement: '{statement}'")
         curr.execute(statement)
         data = curr.fetchall()
-        logger.debug(f"ℹ️ Pulled from database:\n'{data[100:]}...'")
+        logger.debug(f"ℹ️ Pulled from database:\n'{data}'")
         curr.close()
 
         # Format and Return Results
         sessions = []
         for row in data:
             session = ScheduleResponse(
-                session_number=row[0],
-                course_number=row[1],
-                day_of_week=row[2],
-                location=row[3],
+                course_number=row[0],
+                day_of_week=row[1],
+                start_time=row[2].strftime("%H:%M"),
+                end_time=row[3].strftime("%H:%M"),
             )
             sessions.append(session)
         return sessions

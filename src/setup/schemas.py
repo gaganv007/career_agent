@@ -36,10 +36,10 @@ class CourseResponse(BaseModel):
 
 
 class ScheduleResponse(BaseModel):
-    session_number: str
     course_number: str
     day_of_week: str
-    location: str
+    start_time: str
+    end_time: str
 
     class Config:
         from_attributes = True
