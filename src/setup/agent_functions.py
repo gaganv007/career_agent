@@ -65,7 +65,7 @@ def get_column_names(table_name, conn=get_db_connection()):
     return column_names
 
 
-def get_database_info(conn):
+def get_database_info(conn=get_db_connection()):
     """Return a list of dicts containing the table name and columns for each table in the database."""
     table_dicts = []
     for table_name in get_table_names(conn):
