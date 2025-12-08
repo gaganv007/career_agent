@@ -29,6 +29,35 @@ To address this, our project aims to build an intelligent agent that leverages G
 
 ## Developer's Guide
 
+### File Structure
+```yaml
+career_agent/
+├── .github/                    ## Contains GitHub Actions
+├── documentation           
+│   └── developer_guide/        ## Image Location for README
+├── src/                        ## Primary Folder of *.py files and logic
+│   ├── agents/                 ## Location for Agent Build and Logic Files
+│   │   ├── versions/           ## Location for Agent Instructions; stored in Excel
+│   │   ├── build.py            #  Module to load instructions and build an individual agent
+│   │   ├── config.py           #  Module to load API Keys and Database Credentials from environment variables 
+│   │   └── team.py             #  Module to define multiple agents and their associated tools
+│   ├── setup/                  ## Location for defining agent and front-end functions, callback functions, and logger setup
+│   │   ├── agent_functions.py  #  Module to define agent functions, such as database reads
+│   │   ├── api_functions.py    #  Module to define api functions, such as text extraction from documents
+│   │   ├── guardrails.py       #  Module to define call back functions for agents, such as token limit
+│   │   ├── logger_config.py    #  Module to configure how logger statements are formatted and stored
+│   │   └── schemas.py          #  Module to define data structures for information used and returned by agents
+│   ├── static/                 ## Location for storing GUI / HTML files
+│   │   ├── index_debug.html    #  Developer GUI for testing interactions with agent
+│   │   └── index.html          #  Primary GUI for end-users
+│   ├── tests/                  ## Location for simple unit tests
+│   │   ├── conftest.py         #  Configuration for pytests
+│   │   └── test_agent.py       #  Module for conducting simple interactions with the agents
+│   ├── api.py                  #  Module to run a web server and interact with agents
+│   ├── pyproject.toml          #  Project file defining library dependencies    
+│   └── uv.lock                 #  UV Lock file for syncing libraries
+```
+
 ### Library 
 We're using [uv](https://docs.astral.sh/uv/getting-started/installation/) to manage libraries for our project. To ensure each developer is using the same libraries, follow these instructions.
 
@@ -120,9 +149,3 @@ The python libraries within your virtual environment should now include all the 
 3. Open '<a href="src/index.html" target="_blank">index.html</a>' from your preferred web browser
 
     - This is the front-end application to interact with
-
-## User Guide
-🚧 Coming Soon
-
-## Deployment
-🚧 Coming Soon
