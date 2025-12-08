@@ -43,3 +43,13 @@ class ScheduleResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class FAQResponse(BaseModel):
+    faq_id: int
+    question: str
+    answer: str
+    course_number: str
+
+    class Config:
+        from_attributes = True
