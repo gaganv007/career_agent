@@ -4,18 +4,16 @@ Module to setup agents with specific functions and constraints.
 
 # pylint: disable=import-error
 import logging
-from typing import AsyncGenerator
 
 # LLM Tools / Functions
 from google.adk.tools import AgentTool
-from google.adk.events import Event, EventActions
 from google.adk.agents import LoopAgent, BaseAgent, SequentialAgent
-from google.adk.agents.invocation_context import InvocationContext
-from setup.guardrails import QueryGuard, TokenGuard, RateLimiter, FunctionGuard
+
 
 # Custom Agent Builder
 from agents.build import build_agent, setup_content_config
 from setup.agent_functions import get_courses, get_schedule, run_sql_query, search_faq
+from setup.guardrails import QueryGuard, TokenGuard, RateLimiter, FunctionGuard
 
 logger = logging.getLogger("AgentLogger")
 
@@ -92,9 +90,5 @@ validator = build_agent(
 
 # --- Primary Agent for User Interactions ---
 orchestrator = SequentialAgent(
-    name="Validation_Sequence",
-    sub_agents=[
-        advisor,
-        validator
-    ]
+    name="Validation_Sequence", sub_agents=[advisor, validator]
 )
