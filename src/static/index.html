@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BU Course Agent - AI Academic Advisor</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -14,409 +13,18 @@
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        /* Static Background - Colorblind Friendly */
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
-            z-index: -1;
-        }
-        
-        /* Static Orbs */
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.3;
-        }
-        
-        /* Glass Effect */
-        .glass {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-        }
-        
-        /* Header */
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 16px 0;
-            position: relative;
-            z-index: 10;
-        }
-        
-        /* Footer */
-        .footer {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 20px 0;
-            margin-top: auto;
-            position: relative;
-            z-index: 10;
-        }
-        
-        /* Sidebar - LEFT aligned as per wireframe */
-        .sidebar {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 20px;
-            width: 280px;
-            min-height: calc(100vh - 140px);
-            border-radius: 0 20px 20px 0;
-        }
-        
-        /* Chat Area */
-        .chat-area {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            margin: 20px;
-        }
-        
-        .chat-header {
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px 20px 0 0;
-            color: white;
-        }
-        
-        .chat-messages {
-            flex-grow: 1;
-            padding: 20px;
-            overflow-y: auto;
-            max-height: calc(100vh - 350px);
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(5px);
-        }
-        
-        .chat-input-area {
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 0 0 20px 20px;
-        }
-        
-        /* Messages */
-        .message {
-            margin-bottom: 20px;
-            display: flex;
-            align-items: flex-start;
-            animation: messagePop 0.5s ease-out;
-        }
-        
-        @keyframes messagePop {
-            0% { opacity: 0; transform: scale(0.8) translateY(20px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        
-        .message.user {
-            justify-content: flex-end;
-        }
-        
-        .message-content {
-            max-width: 70%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            word-wrap: break-word;
-        }
-        
-        .message.agent .message-content {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        
-        .message.user .message-content {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        /* Rainbow Text */
-        .rainbow-text {
-            background: linear-gradient(90deg, #5e72e4, #825ee4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        /* Buttons */
-        .btn-primary {
-            background: linear-gradient(135deg, #5e72e4, #825ee4);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: bold;
-            transition: all 0.3s;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 4px 15px rgba(94, 114, 228, 0.4);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(94, 114, 228, 0.6);
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 12px 24px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50px;
-            font-weight: 500;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        /* Predefined Prompts */
-        .predefined-prompt {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: white;
-            font-size: 14px;
-        }
-        
-        .predefined-prompt:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(5px);
-        }
-        
-        /* Upload Button */
-        .upload-btn {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 12px;
-            border-radius: 12px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-            text-align: center;
-        }
-        
-        .upload-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        /* Token Counter */
-        .token-counter {
-            position: absolute;
-            right: 60px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 12px;
-            background: rgba(0, 0, 0, 0.3);
-            color: white;
-        }
-        
-        .token-counter.warning {
-            color: #fbbf24;
-            background: rgba(251, 191, 36, 0.2);
-        }
-        
-        .token-counter.danger {
-            color: #f87171;
-            background: rgba(248, 113, 113, 0.2);
-        }
-        
-        .token-counter.normal {
-            color: #86efac;
-            background: rgba(134, 239, 172, 0.2);
-        }
-        
-        /* Modal */
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .modal-content {
-            background: linear-gradient(135deg, rgba(94, 114, 228, 0.9), rgba(130, 94, 228, 0.9));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            color: white;
-            animation: slideUp 0.3s ease;
-        }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Table Formatting */
-        .formatted-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 12px 0;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
+            height: 100vh;
             overflow: hidden;
+            background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
         }
         
-        .formatted-table th {
-            background: rgba(94, 114, 228, 0.3);
-            padding: 12px;
-            text-align: left;
-            font-weight: bold;
-            color: white;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .formatted-table td {
-            padding: 12px;
-            color: white;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .formatted-table tr:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        /* Typing Dots */
-        .typing-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: white;
-            margin: 0 3px;
-            animation: typingAnimation 1.4s infinite ease-in-out;
-        }
-        
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-        
-        @keyframes typingAnimation {
-            0%, 80%, 100% {
-                transform: scale(0.8);
-                opacity: 0.5;
-            }
-            40% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-        
-        /* Hero Section */
-        .hero-section {
-            padding: 100px 20px;
-            text-align: center;
-            color: white;
-        }
-        
-        /* Content Section */
-        .content-section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            color: white;
-            min-height: calc(100vh - 140px);
-        }
-        
-        .content-box {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-        }
-        
-        .content-box h2 {
-            margin-bottom: 20px;
-        }
-        
-        .content-box h3 {
-            margin-bottom: 15px;
-        }
-        
-        .content-box p {
-            line-height: 1.6;
-        }
-        
-        /* Floating Animation */
-        .floating {
-            animation: floating 6s ease-in-out infinite;
-        }
-        
-        @keyframes floating {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        /* Bounce Animation */
-        .bounce-in {
-            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-        
-        @keyframes bounceIn {
-            0% { opacity: 0; transform: scale(0.3) translateY(30px); }
-            50% { transform: scale(1.05) translateY(-10px); }
-            70% { transform: scale(0.95) translateY(5px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
+        #root {
+            height: 100vh;
+            overflow: hidden;
         }
     </style>
 </head>
 <body>
-    <div class="animated-bg"></div>
-    
-    <!-- Static Background Orbs -->
-    <div class="orb" style="width: 400px; height: 400px; top: -200px; left: -100px; background: radial-gradient(circle, rgba(94, 114, 228, 0.2), transparent);"></div>
-    <div class="orb" style="width: 300px; height: 300px; bottom: -150px; right: -100px; background: radial-gradient(circle, rgba(130, 94, 228, 0.2), transparent);"></div>
-    <div class="orb" style="width: 350px; height: 350px; top: 50%; left: 50%; background: radial-gradient(circle, rgba(94, 114, 228, 0.2), transparent);"></div>
-    
     <div id="root"></div>
 
     <script type="text/babel">
@@ -429,6 +37,7 @@
 
         // Token counting function
         const countTokens = (text) => {
+            if (!text) return 0;
             const words = text.trim().split(/\s+/).length;
             const chars = text.length;
             const tokensByWords = Math.ceil(words * 1.3);
@@ -436,18 +45,25 @@
             return Math.max(tokensByWords, tokensByChars);
         };
 
-        // Format message text with table support
+        // Format message text
         const formatMessageText = (text) => {
             if (!text || typeof text !== 'string') {
                 return <div>No message content</div>;
             }
 
-            // Check if it's JSON
+            // Try to parse as JSON
             try {
                 const jsonData = JSON.parse(text);
                 if (typeof jsonData === 'object') {
                     return (
-                        <pre style={{background: 'rgba(0,0,0,0.2)', padding: '12px', borderRadius: '6px', overflow: 'auto', color: 'white'}}>
+                        <pre style={{
+                            background: 'rgba(0,0,0,0.2)', 
+                            padding: '12px', 
+                            borderRadius: '6px', 
+                            overflow: 'auto', 
+                            color: 'white',
+                            whiteSpace: 'pre-wrap'
+                        }}>
                             <code>{JSON.stringify(jsonData, null, 2)}</code>
                         </pre>
                     );
@@ -456,137 +72,11 @@
                 // Not JSON, continue
             }
 
-            // Check for structured content with ** markers
-            if (text.includes('**') && text.includes('*')) {
-                const sections = [];
-                const lines = text.split('\n');
-                let currentSection = null;
-                let currentItems = [];
-
-                lines.forEach((line, idx) => {
-                    if (/^\*\*\d+\.\s+.*:\*\*/.test(line)) {
-                        if (currentSection) {
-                            sections.push({ ...currentSection, items: currentItems });
-                        }
-                        const title = line.replace(/\*\*/g, '').trim();
-                        currentSection = { title, type: 'section' };
-                        currentItems = [];
-                    }
-                    else if (line.includes('**') && line.includes(':')) {
-                        const cleanLine = line.replace(/\*\*/g, '').replace(/\*/g, '').trim();
-                        const [label, ...valueParts] = cleanLine.split(':');
-                        const value = valueParts.join(':').trim();
-                        
-                        if (label && value) {
-                            currentItems.push({ 
-                                type: 'property',
-                                label: label.trim(),
-                                value: value
-                            });
-                        }
-                    }
-                    else if (line.trim().startsWith('*') && line.includes('**')) {
-                        const cleanLine = line.replace(/^\*\s*/, '').trim();
-                        const parts = cleanLine.split('**');
-                        
-                        if (parts.length >= 3) {
-                            const toolName = parts[1];
-                            const description = parts[2].replace(/^:?\s*/, '').trim();
-                            currentItems.push({
-                                type: 'tool',
-                                name: toolName,
-                                description: description
-                            });
-                        }
-                    }
-                    else if (line.trim().startsWith('*') || line.trim().startsWith('-')) {
-                        const cleanLine = line.replace(/^[\*\-]\s*/, '').trim();
-                        if (cleanLine) {
-                            currentItems.push({ type: 'item', text: cleanLine });
-                        }
-                    }
-                });
-
-                if (currentSection) {
-                    sections.push({ ...currentSection, items: currentItems });
-                }
-
-                if (sections.length > 0) {
-                    return (
-                        <div>
-                            {sections.map((section, sIdx) => (
-                                <div key={sIdx} style={{marginBottom: '20px'}}>
-                                    <h3 style={{fontWeight: 'bold', marginBottom: '12px', color: 'white'}}>
-                                        {section.title}
-                                    </h3>
-                                    
-                                    {section.items.some(item => item.type === 'tool') && (
-                                        <table className="formatted-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Tool</th>
-                                                    <th>Description</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {section.items.filter(item => item.type === 'tool').map((item, iIdx) => (
-                                                    <tr key={iIdx}>
-                                                        <td style={{fontWeight: 'bold'}}>{item.name}</td>
-                                                        <td>{item.description}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    )}
-                                    
-                                    {section.items.filter(item => item.type === 'property').map((item, iIdx) => (
-                                        <div key={iIdx} style={{marginBottom: '8px', color: 'white'}}>
-                                            <strong>{item.label}:</strong> {item.value}
-                                        </div>
-                                    ))}
-                                    
-                                    {section.items.filter(item => item.type === 'item').map((item, iIdx) => (
-                                        <div key={iIdx} style={{marginLeft: '20px', marginBottom: '4px', color: 'white'}}>
-                                            • {item.text}
-                                        </div>
-                                    ))}
-                                </div>
-                            ))}
-                        </div>
-                    );
-                }
-            }
-
-            // Simple formatting fallback
-            const lines = text.split('\n');
+            // Clean up the text and return
+            const cleanText = text.replace(/\*\*/g, '');
             return (
-                <div>
-                    {lines.map((line, idx) => {
-                        if (line.trim().startsWith('•') || line.trim().startsWith('-') || line.trim().startsWith('*')) {
-                            const content = line.replace(/^[\s•\-*]+/, '');
-                            return (
-                                <div key={idx} style={{marginLeft: '20px', marginBottom: '4px', color: 'white'}}>
-                                    • {content}
-                                </div>
-                            );
-                        }
-                        else if (/^\d+\./.test(line.trim())) {
-                            return (
-                                <div key={idx} style={{marginLeft: '20px', marginBottom: '4px', color: 'white'}}>
-                                    {line}
-                                </div>
-                            );
-                        }
-                        else if (line.trim() === '') {
-                            return <br key={idx} />;
-                        }
-                        else {
-                            const formattedLine = line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-                            return (
-                                <div key={idx} style={{color: 'white'}} dangerouslySetInnerHTML={{ __html: formattedLine }} />
-                            );
-                        }
-                    })}
+                <div style={{color: 'white', whiteSpace: 'pre-wrap'}}>
+                    {cleanText}
                 </div>
             );
         };
@@ -594,13 +84,43 @@
         // Navigation Component
         const Navigation = ({ currentPage, setCurrentPage }) => {
             return (
-                <div className="header">
-                    <div style={{maxWidth: '1200px', margin: '0 auto', padding: '0 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    padding: '16px 0',
+                    height: '70px',
+                    display: 'flex',
+                    alignItems: 'center'
+                }}>
+                    <div style={{
+                        maxWidth: '1200px', 
+                        margin: '0 auto', 
+                        padding: '0 20px', 
+                        width: '100%',
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center'
+                    }}>
                         <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-400 to-pink-600 flex items-center justify-center floating">
-                                <i className="fas fa-graduation-cap text-white text-xl"></i>
+                            <div style={{
+                                width: '48px',
+                                height: '48px',
+                                borderRadius: '50%',
+                                background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}>
+                                <i className="fas fa-graduation-cap" style={{color: 'white', fontSize: '20px'}}></i>
                             </div>
-                            <span className="text-2xl font-bold rainbow-text">BU Course Agent</span>
+                            <span style={{
+                                fontSize: '24px',
+                                fontWeight: 'bold',
+                                background: 'linear-gradient(90deg, #5e72e4, #825ee4)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent'
+                            }}>
+                                BU Course Agent
+                            </span>
                         </div>
                         <nav style={{display: 'flex', gap: '30px', alignItems: 'center'}}>
                             <button
@@ -610,12 +130,12 @@
                                     border: 'none',
                                     cursor: 'pointer',
                                     color: currentPage === 'home' ? '#5e72e4' : '#333',
-                                    fontWeight: currentPage === 'home' ? 'bold' : 'normal'
+                                    fontWeight: currentPage === 'home' ? 'bold' : 'normal',
+                                    fontSize: '16px'
                                 }}
                             >
                                 Home
                             </button>
-                            <span style={{color: '#999'}}>|</span>
                             <button
                                 onClick={() => setCurrentPage('about')}
                                 style={{
@@ -623,12 +143,12 @@
                                     border: 'none',
                                     cursor: 'pointer',
                                     color: currentPage === 'about' ? '#5e72e4' : '#333',
-                                    fontWeight: currentPage === 'about' ? 'bold' : 'normal'
+                                    fontWeight: currentPage === 'about' ? 'bold' : 'normal',
+                                    fontSize: '16px'
                                 }}
                             >
                                 About
                             </button>
-                            <span style={{color: '#999'}}>|</span>
                             <button
                                 onClick={() => setCurrentPage('contact')}
                                 style={{
@@ -636,10 +156,27 @@
                                     border: 'none',
                                     cursor: 'pointer',
                                     color: currentPage === 'contact' ? '#5e72e4' : '#333',
-                                    fontWeight: currentPage === 'contact' ? 'bold' : 'normal'
+                                    fontWeight: currentPage === 'contact' ? 'bold' : 'normal',
+                                    fontSize: '16px'
                                 }}
                             >
                                 Contact Us
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage('chat')}
+                                style={{
+                                    background: 'linear-gradient(135deg, #5e72e4, #825ee4)',
+                                    color: 'white',
+                                    padding: '10px 24px',
+                                    borderRadius: '50px',
+                                    border: 'none',
+                                    fontWeight: 'bold',
+                                    cursor: 'pointer',
+                                    fontSize: '16px',
+                                    boxShadow: '0 4px 15px rgba(94, 114, 228, 0.4)'
+                                }}
+                            >
+                                Get Started
                             </button>
                         </nav>
                     </div>
@@ -650,8 +187,14 @@
         // Footer Component
         const Footer = ({ setCurrentPage }) => {
             return (
-                <div className="footer">
-                    <div style={{textAlign: 'center'}}>
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    padding: '20px 0',
+                    height: '70px',
+                    display: 'flex',
+                    alignItems: 'center'
+                }}>
+                    <div style={{textAlign: 'center', width: '100%'}}>
                         <button 
                             onClick={() => setCurrentPage('terms')}
                             style={{background: 'none', border: 'none', cursor: 'pointer', color: '#5e72e4', marginRight: '20px'}}
@@ -680,25 +223,38 @@
         // Home Page
         const HomePage = ({ setCurrentPage }) => {
             return (
-                <div style={{minHeight: 'calc(100vh - 140px)', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-                    <div className="hero-section">
-                        <div className="mb-8">
-                            <i className="fas fa-robot text-8xl text-white opacity-90 floating"></i>
-                        </div>
-                        <h1 style={{fontSize: '48px', marginBottom: '20px', fontWeight: 'bold'}}>
-                            BU Course Agent
-                        </h1>
-                        <p style={{fontSize: '20px', marginBottom: '30px', opacity: 0.9, maxWidth: '600px', margin: '0 auto 30px'}}>
-                            Your AI-powered academic advisor for BU MET Computer Science programs
-                        </p>
-                        <button 
-                            onClick={() => setCurrentPage('chat')}
-                            className="btn-primary"
-                            style={{fontSize: '18px', padding: '15px 40px'}}
-                        >
-                            Get Started
-                        </button>
-                    </div>
+                <div style={{
+                    height: 'calc(100vh - 140px)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    color: 'white'
+                }}>
+                    <i className="fas fa-robot" style={{fontSize: '96px', marginBottom: '30px', opacity: 0.9}}></i>
+                    <h1 style={{fontSize: '48px', marginBottom: '20px', fontWeight: 'bold'}}>
+                        BU Course Agent
+                    </h1>
+                    <p style={{fontSize: '20px', marginBottom: '30px', opacity: 0.9, maxWidth: '600px'}}>
+                        Your AI-powered academic advisor for BU MET Computer Science programs
+                    </p>
+                    <button 
+                        onClick={() => setCurrentPage('chat')}
+                        style={{
+                            background: 'white',
+                            color: '#5e72e4',
+                            fontSize: '18px',
+                            padding: '15px 40px',
+                            borderRadius: '50px',
+                            border: 'none',
+                            fontWeight: 'bold',
+                            cursor: 'pointer',
+                            boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
+                        }}
+                    >
+                        Get Started
+                    </button>
                 </div>
             );
         };
@@ -714,7 +270,6 @@
                 { value: 'resume', label: 'Resume/CV', icon: 'fa-id-card' },
                 { value: 'job_description', label: 'Job Description', icon: 'fa-briefcase' },
                 { value: 'course_list', label: 'Course List', icon: 'fa-list' },
-                { value: 'other', label: 'Other Document', icon: 'fa-file' }
             ];
 
             const handleFileSelect = (e) => {
@@ -736,8 +291,26 @@
             if (!isOpen) return null;
 
             return (
-                <div className="modal-backdrop">
-                    <div className="modal-content">
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0, 0, 0, 0.7)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1000
+                }}>
+                    <div style={{
+                        background: 'linear-gradient(135deg, #5e72e4, #825ee4)',
+                        borderRadius: '20px',
+                        padding: '30px',
+                        maxWidth: '500px',
+                        width: '90%',
+                        color: 'white'
+                    }}>
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
                             <h2 style={{fontSize: '24px', fontWeight: 'bold'}}>Upload Document</h2>
                             <button onClick={onClose} style={{background: 'none', border: 'none', cursor: 'pointer', fontSize: '28px', color: 'white'}}>
@@ -763,11 +336,10 @@
                                         background: documentType === type.value ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)',
                                         color: 'white',
                                         textAlign: 'left',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.3s'
+                                        cursor: 'pointer'
                                     }}
                                 >
-                                    <i className={`fas ${type.icon} mr-3`}></i>
+                                    <i className={`fas ${type.icon}`} style={{marginRight: '10px'}}></i>
                                     {type.label}
                                 </button>
                             ))}
@@ -780,14 +352,21 @@
                                     type="file"
                                     onChange={handleFileSelect}
                                     accept=".pdf,.doc,.docx,.txt"
-                                    className="hidden"
+                                    style={{display: 'none'}}
                                 />
                                 <button
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="btn-secondary"
-                                    style={{width: '100%'}}
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '12px',
+                                        border: '1px solid rgba(255,255,255,0.3)',
+                                        background: 'rgba(255,255,255,0.1)',
+                                        color: 'white',
+                                        cursor: 'pointer'
+                                    }}
                                 >
-                                    <i className="fas fa-cloud-upload-alt mr-3"></i>
+                                    <i className="fas fa-cloud-upload-alt" style={{marginRight: '10px'}}></i>
                                     {selectedFile ? selectedFile.name : 'Choose File'}
                                 </button>
                             </div>
@@ -797,9 +376,14 @@
                             <button
                                 onClick={handleUpload}
                                 disabled={!selectedFile || !documentType}
-                                className="btn-primary"
                                 style={{
                                     flex: 1,
+                                    padding: '12px',
+                                    borderRadius: '12px',
+                                    border: 'none',
+                                    background: 'white',
+                                    color: '#5e72e4',
+                                    fontWeight: 'bold',
                                     opacity: (!selectedFile || !documentType) ? 0.5 : 1,
                                     cursor: (!selectedFile || !documentType) ? 'not-allowed' : 'pointer'
                                 }}
@@ -808,8 +392,15 @@
                             </button>
                             <button
                                 onClick={onClose}
-                                className="btn-secondary"
-                                style={{flex: 1}}
+                                style={{
+                                    flex: 1,
+                                    padding: '12px',
+                                    borderRadius: '12px',
+                                    border: '1px solid rgba(255,255,255,0.3)',
+                                    background: 'rgba(255,255,255,0.1)',
+                                    color: 'white',
+                                    cursor: 'pointer'
+                                }}
                             >
                                 Cancel
                             </button>
@@ -819,26 +410,14 @@
             );
         };
 
-        // Chat Page Component - SIDEBAR ON LEFT AS PER WIREFRAME
+        // Chat Page Component with all features
         const ChatPage = ({ messages, setMessages, inputValue, setInputValue, sessionId, setSessionId }) => {
             const [isTyping, setIsTyping] = useState(false);
-            const [tokenCount, setTokenCount] = useState(0);
-            const [userId] = useState(() => {
-                try {
-                    return localStorage.getItem('userId') || `user_${Date.now()}`;
-                } catch (e) {
-                    return `user_${Date.now()}`;
-                }
-            });
             const [uploadModalOpen, setUploadModalOpen] = useState(false);
+            const [tokenCount, setTokenCount] = useState(0);
             const messagesEndRef = useRef(null);
 
             useEffect(() => {
-                try {
-                    localStorage.setItem('userId', userId);
-                } catch (e) {
-                    console.error('Could not save to localStorage:', e);
-                }
                 if (messages.length === 0) {
                     setMessages([{
                         id: Date.now(),
@@ -854,8 +433,7 @@
             }, [messages]);
 
             useEffect(() => {
-                const tokens = countTokens(inputValue);
-                setTokenCount(tokens);
+                setTokenCount(countTokens(inputValue));
             }, [inputValue]);
 
             const sendMessage = async (text = null) => {
@@ -864,7 +442,7 @@
 
                 const tokens = countTokens(messageText);
                 if (tokens > 100) {
-                    alert(`Your message is too long (${tokens} tokens). Please limit your message to 100 tokens.`);
+                    alert(`Your message is too long (${tokens} tokens). Please limit to 100 tokens.`);
                     return;
                 }
 
@@ -885,7 +463,6 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             message: messageText,
-                            user_id: userId,
                             session_id: sessionId
                         })
                     });
@@ -903,12 +480,11 @@
                         timestamp: new Date()
                     };
                     setMessages(prev => [...prev, agentMessage]);
-
                 } catch (error) {
                     console.error('Error:', error);
                     setMessages(prev => [...prev, {
                         id: Date.now() + 1,
-                        text: "I'm having trouble connecting right now. Please ensure the backend server is running.",
+                        text: "I'm having trouble connecting. Please try again.",
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
@@ -917,109 +493,57 @@
                 }
             };
 
-            const quickActions = [
-                { text: '📄 CS633 Help', action: 'What topics are covered in BU MET CS633?' },
-                { text: '📚 Course Recommendations', action: 'What courses are relevant to my career goals?' },
-                { text: '📅 Schedule Planning', action: 'Can you me plan my class schedule for next semester?' },
-                { text: '🎓 Degree Requirements', action: 'What are the core courses for BU MET\'s Master\'s program in Computer Information Systems?' },
-                { text: '🙋 Academic Advice', action: 'Which are the top trending skills in Computer Science right now?' }
-            ];
+            const handleFileUpload = (file, documentType) => {
+                const typeLabels = {
+                    'transcript': 'transcript',
+                    'resume': 'resume',
+                    'job_description': 'job description',
+                    'course_list': 'course list'
+                };
+                const message = `User uploads a ${typeLabels[documentType]}: ${file.name}`;
+                sendMessage(message);
+            };
 
-            const handleFileUpload = async (file, documentType) => {
-                try {
-                    // Create FormData to send the file
-                    const formData = new FormData();
-                    formData.append('file', file);
-                    formData.append('document_type', documentType);
-                    
-                    // Show uploading message (on the right side as user message)
-                    setIsTyping(true);
-                    setMessages(prev => [...prev, {
+            const newChat = () => {
+                if (window.confirm('Start a new chat? Current conversation will be lost.')) {
+                    setMessages([{
                         id: Date.now(),
-                        text: `📤 Uploading ${documentType}...`,
-                        sender: 'user',
-                        timestamp: new Date()
-                    }]);
-                    
-                    // Upload to backend
-                    const response = await fetch(`${API_BASE_URL}/upload-document`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.detail || 'Upload failed');
-                    }
-                    
-                    const uploadResult = await response.json();
-                    
-                    // Update success message (without showing the full document text)
-                    setMessages(prev => prev.map((m, idx) => 
-                        idx === prev.length - 1 
-                            ? {
-                                ...m,
-                                text: `✅ Successfully uploaded ${documentType}`,
-                                sender: 'user'
-                            }
-                            : m
-                    ));
-                    
-                    // Send the extracted text directly to the agent API without displaying in chat
-                    const typeLabels = {
-                        'transcript': 'transcript',
-                        'resume': 'resume',
-                        'job_description': 'job description',
-                        'course_list': 'course list',
-                        'other': 'document'
-                    };
-                    const fullMessage = `Please analyze my ${typeLabels[documentType]}:\n\n"${uploadResult.extracted_text}"`;
-                    
-                    // Send to agent backend directly without displaying to user
-                    const chatResponse = await fetch(`${API_BASE_URL}/chat`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            message: fullMessage,
-                            user_id: userId,
-                            session_id: sessionId,
-                            is_document_upload: true
-                        })
-                    });
-                    
-                    const chatData = await chatResponse.json();
-                    
-                    if (!sessionId && chatData.session_id) {
-                        setSessionId(chatData.session_id);
-                    }
-                    
-                    // Only display the agent's response, not the user's message with the full document
-                    const agentMessage = {
-                        id: Date.now() + 1,
-                        text: chatData.response || "I've analyzed your document.",
-                        sender: 'agent',
-                        timestamp: new Date()
-                    };
-                    setMessages(prev => [...prev, agentMessage]);
-                    setIsTyping(false);
-                    
-                } catch (error) {
-                    console.error('File upload error:', error);
-                    setMessages(prev => [...prev, {
-                        id: Date.now(),
-                        text: `❌ Upload failed: ${error.message}`,
+                        text: "New chat started. How can I help?",
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
-                    setIsTyping(false);
+                    setSessionId(null);
                 }
             };
 
+            const exportChat = () => {
+                if (messages.length === 0) {
+                    alert('No messages to export.');
+                    return;
+                }
+
+                const chatContent = messages.map(msg => {
+                    const sender = msg.sender === 'user' ? 'You' : 'BU Course Agent';
+                    const time = new Date(msg.timestamp).toLocaleString();
+                    return `[${time}] ${sender}: ${msg.text}`;
+                }).join('\n\n');
+
+                const blob = new Blob([chatContent], { type: 'text/plain' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `BU_Course_Agent_Chat_${new Date().toISOString().slice(0,10)}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            };
+
             const clearChat = () => {
-                if (window.confirm('Are you sure you want to clear the chat history?')) {
+                if (window.confirm('Clear all messages? This cannot be undone.')) {
                     setMessages([{
                         id: Date.now(),
-                        text: "Starting a new conversation. How can I help you?",
+                        text: "Chat cleared. How can I help you today?",
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
@@ -1028,22 +552,18 @@
             };
 
             const predefinedPrompts = [
-                "What courses should I take for Applied Data Analytics?",
-                "Show me the prerequisites for CS 633",
-                "What's Professor Smith's rating?",
-                "Help me plan my schedule for next semester",
-                "What career paths align with my transcript?",
-                "Compare Software Engineering vs Data Science tracks"
+                "What topics are covered in BU MET CS633?",
+                "What courses are relevant to my career goals?",
+                "Can you help me plan my class schedule?",
+                "Which are the top trending skills in CS?"
             ];
 
-            const getTokenCounterClass = () => {
-                if (tokenCount > 100) return 'danger';
-                if (tokenCount > 80) return 'warning';
-                return 'normal';
-            };
-
             return (
-                <div style={{display: 'flex', minHeight: 'calc(100vh - 140px)'}}>
+                <div style={{
+                    height: 'calc(100vh - 140px)',
+                    display: 'flex',
+                    overflow: 'hidden'
+                }}>
                     {/* Upload Modal */}
                     <UploadModal
                         isOpen={uploadModalOpen}
@@ -1051,158 +571,257 @@
                         onUpload={handleFileUpload}
                     />
 
-                    {/* LEFT Sidebar - AS PER WIREFRAME */}
-                    <div className="sidebar">
+                    {/* Sidebar */}
+                    <div style={{
+                        width: '250px',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        padding: '20px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '10px'
+                    }}>
                         <button 
                             onClick={newChat}
-                            className="btn-primary"
-                            style={{width: '100%', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+                            style={{
+                                background: 'white',
+                                color: '#5e72e4',
+                                padding: '10px',
+                                borderRadius: '25px',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontWeight: 'bold',
+                                marginBottom: '10px'
+                            }}
                         >
                             <i className="fas fa-plus" style={{marginRight: '8px'}}></i>
-                            New chat
+                            New Chat
                         </button>
 
-                        <div style={{marginBottom: '20px'}}>
-                            <h3 style={{fontSize: '16px', fontWeight: 'bold', marginBottom: '15px', color: 'white'}}>
-                                Predefined prompts
-                            </h3>
-                            {predefinedPrompts.map((prompt, index) => (
-                                <div
-                                    key={index}
-                                    className="predefined-prompt"
-                                    onClick={() => sendMessage(prompt)}
-                                    title={prompt}
-                                    style={{
-                                        overflow: 'hidden',
-                                        whiteSpace: 'nowrap',
-                                        textOverflow: 'ellipsis'
-                                    }}
-                                >
-                                    {prompt}
-                                </div>
-                            ))}
+                        <h3 style={{color: 'white', fontSize: '14px', marginBottom: '10px'}}>
+                            Predefined Prompts
+                        </h3>
+                        
+                        {predefinedPrompts.map((prompt, index) => (
+                            <button
+                                key={index}
+                                onClick={() => sendMessage(prompt)}
+                                style={{
+                                    background: 'rgba(255, 255, 255, 0.1)',
+                                    color: 'white',
+                                    padding: '10px',
+                                    borderRadius: '10px',
+                                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                                    cursor: 'pointer',
+                                    textAlign: 'left',
+                                    fontSize: '12px',
+                                    transition: 'all 0.3s'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                                    e.target.style.transform = 'translateX(5px)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                                    e.target.style.transform = 'translateX(0)';
+                                }}
+                            >
+                                {prompt}
+                            </button>
+                        ))}
+
+                        <div style={{marginTop: '20px'}}>
+                            <button 
+                                onClick={() => setUploadModalOpen(true)}
+                                style={{
+                                    width: '100%',
+                                    background: 'rgba(255, 255, 255, 0.1)',
+                                    color: 'white',
+                                    padding: '10px',
+                                    borderRadius: '10px',
+                                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                                    cursor: 'pointer',
+                                    fontSize: '12px',
+                                    marginBottom: '10px'
+                                }}
+                            >
+                                <i className="fas fa-upload" style={{marginRight: '8px'}}></i>
+                                Upload Document
+                            </button>
+
+                            <button 
+                                onClick={exportChat}
+                                style={{
+                                    width: '100%',
+                                    background: 'rgba(255, 255, 255, 0.1)',
+                                    color: 'white',
+                                    padding: '10px',
+                                    borderRadius: '10px',
+                                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                                    cursor: 'pointer',
+                                    fontSize: '12px',
+                                    marginBottom: '10px'
+                                }}
+                            >
+                                <i className="fas fa-download" style={{marginRight: '8px'}}></i>
+                                Export Chat
+                            </button>
+
+                            <button 
+                                onClick={clearChat}
+                                style={{
+                                    width: '100%',
+                                    background: 'rgba(255, 255, 255, 0.1)',
+                                    color: 'white',
+                                    padding: '10px',
+                                    borderRadius: '10px',
+                                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                                    cursor: 'pointer',
+                                    fontSize: '12px'
+                                }}
+                            >
+                                <i className="fas fa-trash" style={{marginRight: '8px'}}></i>
+                                Clear Chat
+                            </button>
                         </div>
-
-                        <button 
-                            onClick={() => setUploadModalOpen(true)}
-                            className="upload-btn"
-                            style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-                        >
-                            <i className="fas fa-upload" style={{marginRight: '8px'}}></i>
-                            Upload document
-                        </button>
                     </div>
 
-                    {/* Main Chat Area */}
-                    <div className="chat-area">
-                        <div className="chat-header">
-                            <h2 style={{fontSize: '24px', fontWeight: 'bold', textAlign: 'center'}}>
-                                BU Course Agent Section
-                            </h2>
+                    {/* Chat Area */}
+                    <div style={{
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        margin: '20px',
+                        borderRadius: '20px'
+                    }}>
+                        {/* Header */}
+                        <div style={{
+                            padding: '20px',
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            borderRadius: '20px 20px 0 0',
+                            textAlign: 'center'
+                        }}>
+                            <h2 style={{color: 'white', margin: 0}}>BU Course Agent</h2>
                         </div>
 
-                        <div className="chat-messages">
+                        {/* Messages */}
+                        <div style={{
+                            flex: 1,
+                            padding: '20px',
+                            overflowY: 'auto',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '15px'
+                        }}>
                             {messages.map(message => (
-                                <div key={message.id} className={`message ${message.sender}`}>
+                                <div key={message.id} style={{
+                                    display: 'flex',
+                                    alignItems: 'flex-start',
+                                    justifyContent: message.sender === 'user' ? 'flex-end' : 'flex-start'
+                                }}>
                                     {message.sender === 'agent' && (
-                                        <div style={{marginRight: '10px', fontSize: '24px'}}>
-                                            🤖
-                                        </div>
+                                        <span style={{fontSize: '24px', marginRight: '10px'}}>🤖</span>
                                     )}
-                                    <div className="message-content">
-                                        {message.sender === 'agent' ? (
-                                            <div>
-                                                {message.text === '..................' ? (
-                                                    <div>
-                                                        <div className="typing-dot"></div>
-                                                        <div className="typing-dot"></div>
-                                                        <div className="typing-dot"></div>
-                                                    </div>
-                                                ) : (
-                                                    formatMessageText(message.text)
-                                                )}
-                                            </div>
-                                        ) : (
-                                            message.text
-                                        )}
+                                    <div style={{
+                                        maxWidth: '70%',
+                                        padding: '12px 16px',
+                                        borderRadius: '12px',
+                                        background: message.sender === 'user' 
+                                            ? 'linear-gradient(135deg, #667eea, #764ba2)' 
+                                            : 'rgba(255, 255, 255, 0.1)',
+                                        color: 'white'
+                                    }}>
+                                        {message.sender === 'agent' ? formatMessageText(message.text) : message.text}
                                     </div>
                                     {message.sender === 'user' && (
-                                        <div style={{marginLeft: '10px', fontSize: '24px'}}>
-                                            👤
-                                        </div>
+                                        <span style={{fontSize: '24px', marginLeft: '10px'}}>👤</span>
                                     )}
                                 </div>
                             ))}
                             
                             {isTyping && (
-                                <div className="message agent">
-                                    <div style={{marginRight: '10px', fontSize: '24px'}}>
-                                        🤖
-                                    </div>
-                                    <div className="message-content">
-                                        <div>
-                                            <div className="typing-dot"></div>
-                                            <div className="typing-dot"></div>
-                                            <div className="typing-dot"></div>
-                                        </div>
+                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                    <span style={{fontSize: '24px', marginRight: '10px'}}>🤖</span>
+                                    <div style={{
+                                        padding: '12px 16px',
+                                        borderRadius: '12px',
+                                        background: 'rgba(255, 255, 255, 0.1)',
+                                        color: 'white'
+                                    }}>
+                                        <span>•</span><span style={{margin: '0 3px'}}>•</span><span>•</span>
                                     </div>
                                 </div>
                             )}
                             <div ref={messagesEndRef} />
                         </div>
 
-                        <div className="chat-input-area">
-                            <div style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
+                        {/* Input */}
+                        <div style={{
+                            padding: '20px',
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            borderRadius: '0 0 20px 20px'
+                        }}>
+                            <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
                                 <button
                                     onClick={() => setUploadModalOpen(true)}
                                     style={{
-                                        background: 'none',
+                                        padding: '12px',
+                                        borderRadius: '50%',
                                         border: 'none',
-                                        cursor: 'pointer',
-                                        fontSize: '20px',
+                                        background: 'rgba(255, 255, 255, 0.1)',
                                         color: 'white',
-                                        marginRight: '10px'
+                                        cursor: 'pointer'
                                     }}
                                     title="Upload Document"
                                 >
                                     <i className="fas fa-paperclip"></i>
                                 </button>
-                                <div style={{flexGrow: 1, position: 'relative'}}>
+                                <div style={{flex: 1, position: 'relative'}}>
                                     <input
                                         type="text"
                                         value={inputValue}
-                                        onChange={(e) => {
-                                            const newValue = e.target.value;
-                                            setInputValue(newValue);
-                                        }}
+                                        onChange={(e) => setInputValue(e.target.value)}
                                         onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                                         placeholder="Type a message..."
                                         style={{
                                             width: '100%',
                                             padding: '12px 80px 12px 15px',
                                             borderRadius: '25px',
-                                            border: '1px solid rgba(255,255,255,0.3)',
-                                            background: 'rgba(255,255,255,0.1)',
+                                            border: 'none',
+                                            background: 'rgba(255, 255, 255, 0.1)',
                                             color: 'white',
                                             fontSize: '14px',
-                                            backdropFilter: 'blur(10px)'
+                                            outline: 'none'
                                         }}
                                     />
-                                    <div className={`token-counter ${getTokenCounterClass()}`}>
+                                    <span style={{
+                                        position: 'absolute',
+                                        right: '10px',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        fontSize: '12px',
+                                        padding: '4px 8px',
+                                        borderRadius: '12px',
+                                        background: tokenCount > 100 ? 'rgba(248, 113, 113, 0.2)' : 
+                                                   tokenCount > 80 ? 'rgba(251, 191, 36, 0.2)' : 
+                                                   'rgba(134, 239, 172, 0.2)',
+                                        color: tokenCount > 100 ? '#f87171' : 
+                                               tokenCount > 80 ? '#fbbf24' : 
+                                               '#86efac'
+                                    }}>
                                         {tokenCount}/100
-                                    </div>
+                                    </span>
                                 </div>
                                 <button 
                                     onClick={() => sendMessage()}
                                     disabled={tokenCount > 100}
                                     style={{
-                                        marginLeft: '10px',
-                                        background: 'none',
+                                        padding: '12px 20px',
+                                        borderRadius: '25px',
                                         border: 'none',
-                                        cursor: tokenCount > 100 ? 'not-allowed' : 'pointer',
-                                        fontSize: '20px',
-                                        color: 'white',
-                                        opacity: tokenCount > 100 ? 0.5 : 1
+                                        background: tokenCount > 100 ? '#999' : 'white',
+                                        color: tokenCount > 100 ? '#666' : '#5e72e4',
+                                        cursor: tokenCount > 100 ? 'not-allowed' : 'pointer'
                                     }}
                                 >
                                     <i className="fas fa-paper-plane"></i>
@@ -1210,7 +829,7 @@
                             </div>
                             {tokenCount > 100 && (
                                 <p style={{color: '#f87171', fontSize: '12px', marginTop: '8px', textAlign: 'center'}}>
-                                    Message exceeds 100 token limit. Please shorten your message.
+                                    Message exceeds 100 token limit
                                 </p>
                             )}
                         </div>
@@ -1219,151 +838,100 @@
             );
         };
 
-        // About Page
+        // Simple About Page
         const AboutPage = () => (
-            <div className="content-section">
-                <h1 style={{fontSize: '36px', marginBottom: '30px', textAlign: 'center'}}>About us page</h1>
-                
-                <div className="content-box">
-                    <h2 style={{fontSize: '24px', marginBottom: '15px', color: 'white'}}>Who we are?</h2>
-                    <p style={{marginBottom: '20px'}}>We are graduate students at Boston University's Metropolitan College, enrolled in the MET CS 633 Software Quality, Testing, and Security Management course.</p>
-                    
-                    <div style={{marginTop: '20px'}}>
-                        <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>Our Team Members:</h3>
-                        <ul style={{listStyle: 'none', padding: 0}}>
-                            <li style={{padding: '10px 0', fontSize: '18px', color: 'white'}}>
-                                <i className="fas fa-user-graduate mr-3" style={{color: '#667eea'}}></i>
-                                Gagan Veginati
-                            </li>
-                            <li style={{padding: '10px 0', fontSize: '18px', color: 'white'}}>
-                                <i className="fas fa-user-graduate mr-3" style={{color: '#667eea'}}></i>
-                                Sean Silver
-                            </li>
-                            <li style={{padding: '10px 0', fontSize: '18px', color: 'white'}}>
-                                <i className="fas fa-user-graduate mr-3" style={{color: '#667eea'}}></i>
-                                Brendan Collins
-                            </li>
-                            <li style={{padding: '10px 0', fontSize: '18px', color: 'white'}}>
-                                <i className="fas fa-user-graduate mr-3" style={{color: '#667eea'}}></i>
-                                Zharas Omirzak
-                            </li>
-                            <li style={{padding: '10px 0', fontSize: '18px', color: 'white'}}>
-                                <i className="fas fa-user-graduate mr-3" style={{color: '#667eea'}}></i>
-                                Jonathan Rothendler
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div className="content-box">
-                    <h2 style={{fontSize: '24px', marginBottom: '15px', color: 'white'}}>What this tool does?</h2>
-                    <p>The BU Course Agent is an AI-powered academic advisor that helps students navigate course selection, degree planning, and career alignment for BU MET Computer Science programs.</p>
-                </div>
-
-                <div className="content-box">
-                    <h2 style={{fontSize: '24px', marginBottom: '15px', color: 'white'}}>Our goal</h2>
-                    <p>To provide intelligent, personalized academic guidance to help students make informed decisions about their educational path and career trajectory.</p>
+            <div style={{
+                height: 'calc(100vh - 140px)',
+                padding: '40px',
+                color: 'white',
+                overflow: 'auto'
+            }}>
+                <h1 style={{textAlign: 'center', marginBottom: '30px'}}>About Us</h1>
+                <div style={{
+                    maxWidth: '800px',
+                    margin: '0 auto',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    padding: '30px',
+                    borderRadius: '20px'
+                }}>
+                    <p>We are graduate students at Boston University's Metropolitan College.</p>
+                    <br/>
+                    <h3>Our Team:</h3>
+                    <ul style={{listStyle: 'none', padding: '20px 0'}}>
+                        <li>Sean Silver - Team Lead</li>
+                        <li>Gagan Veginati - Frontend Developer</li>
+                        <li>Brendan Collins - Scrum Master</li>
+                        <li>Zharas Omirzak - UI Designer</li>
+                        <li>Jonathan Rothendler - Database Administrator</li>
+                    </ul>
                 </div>
             </div>
         );
 
-        // Contact Page
+        // Simple Contact Page
         const ContactPage = () => (
-            <div className="content-section">
-                <h1 style={{fontSize: '36px', marginBottom: '30px', textAlign: 'center'}}>Contact us page</h1>
-                
-                <div className="content-box">
-                    <p style={{marginBottom: '20px', fontSize: '16px'}}>For any questions about this project or technical issues, please contact BU CS team:</p>
-                    
-                    <div style={{marginBottom: '20px', padding: '15px', background: 'rgba(255,255,255,0.1)', borderRadius: '12px'}}>
-                        <a href="https://www.bu.edu/met/degrees-certificates/ms-computer-information-systems/" 
-                           target="_blank" 
-                           rel="noopener noreferrer"
-                           style={{color: '#a0aec0', textDecoration: 'none', display: 'block', marginBottom: '10px'}}>
-                            <i className="fas fa-link mr-2"></i>
-                            https://www.bu.edu/met/degrees-certificates/ms-computer-information-systems/
-                        </a>
-                    </div>
-                    
-                    <div style={{marginBottom: '20px', padding: '15px', background: 'rgba(255,255,255,0.1)', borderRadius: '12px'}}>
-                        <a href="https://met.bu.edu/inquiryform" 
-                           target="_blank" 
-                           rel="noopener noreferrer"
-                           style={{color: '#a0aec0', textDecoration: 'none'}}>
-                            <i className="fas fa-link mr-2"></i>
-                            https://met.bu.edu/inquiryform
-                        </a>
-                    </div>
-                    
-                    <p style={{margin: '30px 0', textAlign: 'center', fontSize: '18px', color: '#a0aec0'}}>OR</p>
-                    
-                    <div style={{padding: '15px', background: 'rgba(255,255,255,0.1)', borderRadius: '12px'}}>
-                        <a href="https://www.bu.edu/academics/met/courses/met-cs-633/" 
-                           target="_blank" 
-                           rel="noopener noreferrer"
-                           style={{color: '#a0aec0', textDecoration: 'none'}}>
-                            <i className="fas fa-link mr-2"></i>
-                            https://www.bu.edu/academics/met/courses/met-cs-633/
-                        </a>
-                    </div>
+            <div style={{
+                height: 'calc(100vh - 140px)',
+                padding: '40px',
+                color: 'white',
+                overflow: 'auto'
+            }}>
+                <h1 style={{textAlign: 'center', marginBottom: '30px'}}>Contact Us</h1>
+                <div style={{
+                    maxWidth: '600px',
+                    margin: '0 auto',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    padding: '30px',
+                    borderRadius: '20px',
+                    textAlign: 'center'
+                }}>
+                    <p>For questions about this project:</p>
+                    <br/>
+                    <a href="https://www.bu.edu/met/" style={{color: 'white'}}>
+                        BU MET Website
+                    </a>
                 </div>
             </div>
         );
 
-        // Terms of Service Page
+        // Simple Terms Page
         const TermsPage = () => (
-            <div className="content-section">
-                <h1 style={{fontSize: '36px', marginBottom: '30px', textAlign: 'center'}}>Terms of Service page</h1>
-                
-                <div className="content-box">
-                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>1. Purpose of This Tool</h3>
-                    <p style={{marginBottom: '20px'}}>The BU Career Agent is a student-built prototype created for the CS633 Software Quality, Testing, and Security Management course. It is not an official Boston University advising system.</p>
-                    
-                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>2. No Official Advice</h3>
-                    <p style={{marginBottom: '20px'}}>All course recommendations, career insights, and academic guidance generated by the tool are informational only and should not be considered official academic advising.</p>
-                    
-                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>3. User Responsibility</h3>
-                    <p style={{marginBottom: '20px'}}>Students are responsible for verifying program requirements, prerequisites, and academic policies through BU's official catalog and advisors.</p>
-                    
-                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>4. Acceptable Use</h3>
-                    <p style={{marginBottom: '20px'}}>You agree to use this tool for educational and informational purposes only and not submit harmful, misleading, or inappropriate content.</p>
-                    
-                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>5. Limitation of Liability</h3>
-                    <p style={{marginBottom: '20px'}}>The project team and instructors are not liable for decisions made based on the tool's recommendations.</p>
-                    
-                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>6. No Career or Academic Outcome Guarantee</h3>
-                    <p>This tool is a student term project created for the CS633 course. All course suggestions, program matches, and career insights are for demonstration purposes only and should not be interpreted as guarantees of academic success, admissions outcomes, or employment opportunities. Users should always verify decisions with official Boston University advisors or career services.</p>
+            <div style={{
+                height: 'calc(100vh - 140px)',
+                padding: '40px',
+                color: 'white',
+                overflow: 'auto'
+            }}>
+                <h1 style={{textAlign: 'center'}}>Terms of Service</h1>
+                <div style={{
+                    maxWidth: '800px',
+                    margin: '30px auto',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    padding: '30px',
+                    borderRadius: '20px'
+                }}>
+                    <p>This is a student project for educational purposes.</p>
                 </div>
             </div>
         );
 
-        // Privacy Policy Page
+        // Simple Privacy Page
         const PrivacyPage = () => (
-            <div className="content-section">
-                <h1 style={{fontSize: '36px', marginBottom: '30px', textAlign: 'center'}}>Privacy policy page</h1>
-                
-                <div className="content-box">
-                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>1. Data Collection</h3>
-                    <p style={{marginBottom: '20px'}}>The tool may temporarily process user inputs such as chat messages, uploaded transcripts, or job descriptions only for the purpose of generating recommendations.</p>
-                    
-                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>2. No Permanent Storage</h3>
-                    <p style={{marginBottom: '20px'}}>Uploaded documents and chat content are not stored permanently and are cleared when the session is reset or ends.</p>
-                    
-                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>3. No Personal Information Required</h3>
-                    <p style={{marginBottom: '20px'}}>You are not required to enter personally identifiable information (PII). Any information you voluntarily provide is used only to generate responses within the session.</p>
-                    
-                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>4. Third-Party Services</h3>
-                    <p style={{marginBottom: '15px'}}>The chatbot may use external AI APIs (e.g., Google Gemini) strictly for text processing. These services follow their own privacy standards.</p>
-                    <p style={{marginBottom: '20px'}}>For more information about Gemini Privacy Policy visit Gemini Apps Privacy Hub: <a href="https://support.google.com/gemini/answer/13594961?hl=en" target="_blank" rel="noopener noreferrer" style={{color: '#a0aec0'}}>https://support.google.com/gemini/answer/13594961?hl=en</a></p>
-                    
-                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>5. Cookies / Tracking</h3>
-                    <p style={{marginBottom: '20px'}}>This prototype does not use cookies or tracking tools.</p>
-                    
-                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>6. Data Security</h3>
-                    <p style={{marginBottom: '20px'}}>Reasonable measures are taken to protect session data, but no system is entirely secure. Because this is a prototype, users should avoid uploading sensitive personal data.</p>
-                    
-                    <h3 style={{fontSize: '20px', marginBottom: '15px', color: '#a0aec0'}}>7. Contact</h3>
-                    <p>For concerns about data use within this project, please reach out through the Contact Us page.</p>
+            <div style={{
+                height: 'calc(100vh - 140px)',
+                padding: '40px',
+                color: 'white',
+                overflow: 'auto'
+            }}>
+                <h1 style={{textAlign: 'center'}}>Privacy Policy</h1>
+                <div style={{
+                    maxWidth: '800px',
+                    margin: '30px auto',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    padding: '30px',
+                    borderRadius: '20px'
+                }}>
+                    <p>We do not store personal data permanently.</p>
                 </div>
             </div>
         );
@@ -1404,7 +972,7 @@
             };
 
             return (
-                <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+                <div style={{height: '100vh', display: 'flex', flexDirection: 'column'}}>
                     <Navigation currentPage={currentPage} setCurrentPage={setCurrentPage} />
                     {renderPage()}
                     <Footer setCurrentPage={setCurrentPage} />
