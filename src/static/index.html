@@ -60,11 +60,26 @@
             50% { box-shadow: 0 0 40px rgba(255,255,255,0.8); }
         }
         
-        /* Typing Animation */
+        /* Typing Animation - Fixed */
         @keyframes typing {
-            0%, 80%, 100% { opacity: 0; }
-            40% { opacity: 1; }
+            0% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0.3; transform: scale(0.8); }
         }
+        
+        .typing-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin: 0 3px;
+            background: white;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        .typing-dot:nth-child(3) { animation-delay: 0s; }
     </style>
 </head>
 <body>
@@ -78,12 +93,14 @@
             ? 'http://localhost:8000' 
             : 'https://career-agent-9cif.onrender.com';
 
-        // Token counting function
+        // Token counting function - Fixed
         const countTokens = (text) => {
-            if (!text) return 0;
-            const words = text.trim().split(/\s+/).length;
+            if (!text || text.length === 0) return 0;
+            // More accurate token counting
+            const words = text.trim().split(/\s+/).filter(word => word.length > 0);
             const chars = text.length;
-            const tokensByWords = Math.ceil(words * 1.3);
+            // Approximation: average of word-based and character-based estimates
+            const tokensByWords = Math.ceil(words.length * 1.3);
             const tokensByChars = Math.ceil(chars / 4);
             return Math.max(tokensByWords, tokensByChars);
         };
@@ -125,6 +142,8 @@
                 let inNumberedList = false;
                 let numberedItems = [];
                 let currentSection = null;
+                let inTable = false;
+                let tableRows = [];
 
                 lines.forEach((line, index) => {
                     const trimmedLine = line.trim();
@@ -139,6 +158,98 @@
                             return part;
                         });
                     };
+
+                    // Detect start/end of table
+                    const isTableRow = trimmedLine.includes('|') && trimmedLine.split('|').length > 2;
+                    const isHeaderDivider = trimmedLine.match(/^[\|\s\-:]+$/) && trimmedLine.includes('|');
+                    
+                    // If we encounter a table row
+                    if (isTableRow && !isHeaderDivider) {
+                        if (!inTable) {
+                            // Start a new table
+                            inTable = true;
+                            tableRows = [];
+                            // Close any open lists
+                            if (inList && listItems.length > 0) {
+                                formatted.push(
+                                    <ul key={`list-${formatted.length}`} style={{
+                                        marginLeft: '20px',
+                                        marginBottom: '15px',
+                                        listStyle: 'disc'
+                                    }}>
+                                        {listItems}
+                                    </ul>
+                                );
+                                listItems = [];
+                                inList = false;
+                            }
+                            if (inNumberedList && numberedItems.length > 0) {
+                                formatted.push(
+                                    <ol key={`numlist-${formatted.length}`} style={{
+                                        marginLeft: '20px',
+                                        marginBottom: '15px'
+                                    }}>
+                                        {numberedItems}
+                                    </ol>
+                                );
+                                numberedItems = [];
+                                inNumberedList = false;
+                            }
+                        }
+                        
+                        const cells = trimmedLine.split('|').map(cell => cell.trim()).filter(cell => cell !== '');
+                        tableRows.push(cells);
+                    }
+                    // Skip header divider rows
+                    else if (isHeaderDivider && inTable) {
+                        // Skip this line but stay in table mode
+                    }
+                    // End of table - output the complete table
+                    else if (inTable && !isTableRow) {
+                        if (tableRows.length > 0) {
+                            formatted.push(
+                                <div key={`table-${formatted.length}`} style={{
+                                    marginBottom: '15px',
+                                    border: '1px solid rgba(255,255,255,0.2)',
+                                    borderRadius: '8px',
+                                    overflow: 'hidden'
+                                }}>
+                                    <table style={{
+                                        width: '100%',
+                                        borderCollapse: 'collapse'
+                                    }}>
+                                        <tbody>
+                                            {tableRows.map((row, rowIdx) => (
+                                                <tr key={rowIdx} style={{
+                                                    background: rowIdx === 0 ? 'rgba(94, 114, 228, 0.2)' : 
+                                                               rowIdx % 2 === 0 ? 'rgba(255,255,255,0.05)' : 'transparent'
+                                                }}>
+                                                    {row.map((cell, cellIdx) => (
+                                                        <td key={cellIdx} style={{
+                                                            padding: '8px 12px',
+                                                            borderRight: cellIdx < row.length - 1 ? '1px solid rgba(255,255,255,0.1)' : 'none',
+                                                            borderBottom: rowIdx < tableRows.length - 1 ? '1px solid rgba(255,255,255,0.1)' : 'none',
+                                                            color: 'white',
+                                                            fontWeight: rowIdx === 0 ? 'bold' : 'normal',
+                                                            textAlign: 'left'
+                                                        }}>
+                                                            {processBoldText(cell)}
+                                                        </td>
+                                                    ))}
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            );
+                        }
+                        inTable = false;
+                        tableRows = [];
+                        // Now process the current line normally
+                        if (trimmedLine) {
+                            // Process this line with the regular logic below
+                        }
+                    }
 
                     // Check for section headers (lines ending with :)
                     if (trimmedLine.endsWith(':') && trimmedLine.length > 1 && !trimmedLine.includes('http')) {
@@ -230,7 +341,7 @@
                             </li>
                         );
                     }
-                    // Handle tables (lines with | separators)
+                    // Handle tables (lines with | separators or structured data)
                     else if (trimmedLine.includes('|') && trimmedLine.split('|').length > 2) {
                         // Close any open lists
                         if (inList && listItems.length > 0) {
@@ -259,24 +370,67 @@
                             inNumberedList = false;
                         }
                         
+                        // Check if this looks like a table header or divider
                         const cells = trimmedLine.split('|').map(cell => cell.trim()).filter(cell => cell);
-                        formatted.push(
-                            <div key={`table-row-${index}`} style={{
-                                display: 'flex',
-                                borderBottom: '1px solid rgba(255,255,255,0.2)',
-                                padding: '8px 0'
-                            }}>
-                                {cells.map((cell, idx) => (
-                                    <div key={idx} style={{
-                                        flex: 1,
-                                        padding: '0 10px',
-                                        color: 'white'
-                                    }}>
-                                        {processBoldText(cell)}
-                                    </div>
-                                ))}
-                            </div>
-                        );
+                        const isHeaderDivider = cells.every(cell => /^[-:]+$/.test(cell));
+                        
+                        if (!isHeaderDivider) {
+                            // Create proper table row
+                            formatted.push(
+                                <div key={`table-row-${index}`} style={{
+                                    display: 'flex',
+                                    borderBottom: '1px solid rgba(255,255,255,0.2)',
+                                    padding: '8px 0',
+                                    background: index % 2 === 0 ? 'rgba(255,255,255,0.05)' : 'transparent'
+                                }}>
+                                    {cells.map((cell, idx) => (
+                                        <div key={idx} style={{
+                                            flex: 1,
+                                            padding: '5px 10px',
+                                            color: 'white',
+                                            fontWeight: index === 0 ? 'bold' : 'normal',
+                                            borderRight: idx < cells.length - 1 ? '1px solid rgba(255,255,255,0.1)' : 'none'
+                                        }}>
+                                            {processBoldText(cell)}
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        }
+                    }
+                    // Handle table-like structures with multiple spaces or tabs
+                    else if (trimmedLine.match(/\s{2,}|\t/) && trimmedLine.split(/\s{2,}|\t/).length > 1) {
+                        const cells = trimmedLine.split(/\s{2,}|\t/).map(cell => cell.trim()).filter(cell => cell);
+                        if (cells.length > 1) {
+                            formatted.push(
+                                <div key={`spaced-table-${index}`} style={{
+                                    display: 'flex',
+                                    borderBottom: '1px solid rgba(255,255,255,0.1)',
+                                    padding: '6px 0'
+                                }}>
+                                    {cells.map((cell, idx) => (
+                                        <div key={idx} style={{
+                                            flex: 1,
+                                            padding: '3px 8px',
+                                            color: 'white'
+                                        }}>
+                                            {processBoldText(cell)}
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        } else {
+                            // Single cell, treat as regular text
+                            formatted.push(
+                                <p key={`text-${index}`} style={{
+                                    marginBottom: '10px',
+                                    color: 'white',
+                                    lineHeight: '1.6'
+                                }}>
+                                    {processBoldText(trimmedLine)}
+                                </p>
+                            );
+                        }
                     }
                     // Regular text
                     else if (trimmedLine) {
@@ -482,7 +636,7 @@
                                     boxShadow: '0 4px 15px rgba(94, 114, 228, 0.4)'
                                 }}
                             >
-                                Get Started
+                                Chat Now
                             </button>
                         </nav>
                     </div>
@@ -765,10 +919,6 @@
                 messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
             }, [messages]);
 
-            useEffect(() => {
-                setTokenCount(countTokens(inputValue));
-            }, [inputValue]);
-
             const sendMessage = async (text = null) => {
                 const messageText = text || inputValue.trim();
                 if (!messageText) return;
@@ -791,16 +941,33 @@
                 setIsTyping(true);
 
                 try {
+                    console.log('Sending message to:', `${API_BASE_URL}/chat`);
+                    console.log('Message payload:', {
+                        message: messageText,
+                        session_id: sessionId
+                    });
+
                     const response = await fetch(`${API_BASE_URL}/chat`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
                         body: JSON.stringify({
                             message: messageText,
-                            session_id: sessionId
+                            session_id: sessionId || null,
+                            user_id: 'user_' + Date.now()
                         })
                     });
 
+                    console.log('Response status:', response.status);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
                     const data = await response.json();
+                    console.log('Response data:', data);
                     
                     if (!sessionId && data.session_id) {
                         setSessionId(data.session_id);
@@ -808,16 +975,29 @@
 
                     const agentMessage = {
                         id: Date.now() + 1,
-                        text: data.response || "I'm here to help with your academic planning!",
+                        text: data.response || data.message || "I'm here to help with your academic planning!",
                         sender: 'agent',
                         timestamp: new Date()
                     };
                     setMessages(prev => [...prev, agentMessage]);
+                    
                 } catch (error) {
-                    console.error('Error:', error);
+                    console.error('Error sending message:', error);
+                    console.error('Error details:', error.message);
+                    
+                    // Show more specific error message
+                    let errorMessage = "I'm having trouble connecting. ";
+                    if (error.message.includes('404')) {
+                        errorMessage += "The chat endpoint was not found. Please check if the backend is running at the correct URL.";
+                    } else if (error.message.includes('Failed to fetch')) {
+                        errorMessage += "Cannot connect to the server. Please make sure the backend is running on port 8000.";
+                    } else {
+                        errorMessage += "Error: " + error.message;
+                    }
+                    
                     setMessages(prev => [...prev, {
                         id: Date.now() + 1,
-                        text: "I'm having trouble connecting. Please try again.",
+                        text: errorMessage,
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
@@ -826,15 +1006,70 @@
                 }
             };
 
-            const handleFileUpload = (file, documentType) => {
+            const handleFileUpload = async (file, documentType) => {
                 const typeLabels = {
                     'transcript': 'transcript',
                     'resume': 'resume',
                     'job_description': 'job description',
                     'course_list': 'course list'
                 };
-                const message = `User uploads a ${typeLabels[documentType]}: ${file.name}`;
-                sendMessage(message);
+                
+                try {
+                    // Read the file content
+                    const reader = new FileReader();
+                    
+                    reader.onload = async (e) => {
+                        const fileContent = e.target.result;
+                        
+                        // For text files, send the content directly
+                        let documentText = '';
+                        
+                        if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+                            documentText = fileContent;
+                        } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+                            // For PDFs, we'd need a PDF parser library
+                            // For now, we'll send a note that PDF parsing is needed
+                            documentText = `[PDF Document - ${file.name}]\n\nNote: PDF parsing requires backend processing. Please implement PDF text extraction on the server side.`;
+                        } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || 
+                                   file.type === 'application/msword' ||
+                                   file.name.endsWith('.docx') || 
+                                   file.name.endsWith('.doc')) {
+                            // For Word documents, we'd need a parser library
+                            documentText = `[Word Document - ${file.name}]\n\nNote: Word document parsing requires backend processing. Please implement DOCX text extraction on the server side.`;
+                        } else {
+                            documentText = fileContent;
+                        }
+                        
+                        // Create a comprehensive message with the document content
+                        const message = `User uploads a ${typeLabels[documentType]}: ${file.name}\n\n--- DOCUMENT CONTENT START ---\n${documentText}\n--- DOCUMENT CONTENT END ---\n\nPlease analyze this ${typeLabels[documentType]} and provide insights.`;
+                        
+                        console.log('Uploading document with content:', {
+                            type: documentType,
+                            filename: file.name,
+                            contentLength: documentText.length,
+                            preview: documentText.substring(0, 200) + '...'
+                        });
+                        
+                        sendMessage(message);
+                    };
+                    
+                    reader.onerror = (error) => {
+                        console.error('Error reading file:', error);
+                        alert('Error reading file. Please try again.');
+                    };
+                    
+                    // Read as text for .txt files
+                    if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+                        reader.readAsText(file);
+                    } else {
+                        // For other file types, read as text anyway (will need proper parsing)
+                        reader.readAsText(file);
+                    }
+                    
+                } catch (error) {
+                    console.error('Error processing file:', error);
+                    alert('Error processing file. Please try again.');
+                }
             };
 
             const newChat = () => {
@@ -881,6 +1116,8 @@
                         timestamp: new Date()
                     }]);
                     setSessionId(null);
+                    setInputValue('');
+                    setTokenCount(0);
                 }
             };
 
@@ -1079,9 +1316,13 @@
                                         padding: '12px 16px',
                                         borderRadius: '12px',
                                         background: 'rgba(255, 255, 255, 0.1)',
-                                        color: 'white'
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '3px'
                                     }}>
-                                        <span>•</span><span style={{margin: '0 3px'}}>•</span><span>•</span>
+                                        <span className="typing-dot"></span>
+                                        <span className="typing-dot"></span>
+                                        <span className="typing-dot"></span>
                                     </div>
                                 </div>
                             )}
@@ -1113,18 +1354,39 @@
                                     <input
                                         type="text"
                                         value={inputValue}
-                                        onChange={(e) => setInputValue(e.target.value)}
-                                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                                        onChange={(e) => {
+                                            const newValue = e.target.value;
+                                            setInputValue(newValue);
+                                            const newTokenCount = countTokens(newValue);
+                                            setTokenCount(newTokenCount);
+                                            console.log('Input changed:', { 
+                                                text: newValue, 
+                                                tokens: newTokenCount,
+                                                length: newValue.length 
+                                            });
+                                        }}
+                                        onKeyPress={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                                e.preventDefault();
+                                                const currentTokens = countTokens(inputValue);
+                                                if (currentTokens <= 100 && inputValue.trim()) {
+                                                    sendMessage();
+                                                } else if (currentTokens > 100) {
+                                                    alert(`Your message is too long (${currentTokens} tokens). Please limit to 100 tokens.`);
+                                                }
+                                            }
+                                        }}
                                         placeholder="Type a message..."
                                         style={{
                                             width: '100%',
                                             padding: '12px 80px 12px 15px',
                                             borderRadius: '25px',
-                                            border: 'none',
+                                            border: '2px solid ' + (tokenCount > 100 ? '#f87171' : 'transparent'),
                                             background: 'rgba(255, 255, 255, 0.1)',
                                             color: 'white',
                                             fontSize: '14px',
-                                            outline: 'none'
+                                            outline: 'none',
+                                            transition: 'border-color 0.3s'
                                         }}
                                     />
                                     <span style={{
