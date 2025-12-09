@@ -16,11 +16,54 @@
             height: 100vh;
             overflow: hidden;
             background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+            animation: gradientShift 10s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%); }
+            50% { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+            100% { background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%); }
         }
         
         #root {
             height: 100vh;
             overflow: hidden;
+        }
+        
+        /* Floating Animation */
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        /* Fade In Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Slide In Animation */
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* Pulse Animation */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        /* Glow Animation */
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255,255,255,0.5); }
+            50% { box-shadow: 0 0 40px rgba(255,255,255,0.8); }
+        }
+        
+        /* Typing Animation */
+        @keyframes typing {
+            0%, 80%, 100% { opacity: 0; }
+            40% { opacity: 1; }
         }
     </style>
 </head>
@@ -45,13 +88,13 @@
             return Math.max(tokensByWords, tokensByChars);
         };
 
-        // Format message text
+        // Enhanced Format message text with better formatting support
         const formatMessageText = (text) => {
             if (!text || typeof text !== 'string') {
                 return <div>No message content</div>;
             }
 
-            // Try to parse as JSON
+            // Try to parse as JSON first
             try {
                 const jsonData = JSON.parse(text);
                 if (typeof jsonData === 'object') {
@@ -62,21 +105,284 @@
                             borderRadius: '6px', 
                             overflow: 'auto', 
                             color: 'white',
-                            whiteSpace: 'pre-wrap'
+                            whiteSpace: 'pre-wrap',
+                            fontFamily: 'monospace'
                         }}>
                             <code>{JSON.stringify(jsonData, null, 2)}</code>
                         </pre>
                     );
                 }
             } catch (e) {
-                // Not JSON, continue
+                // Not JSON, continue with text formatting
             }
 
-            // Clean up the text and return
-            const cleanText = text.replace(/\*\*/g, '');
+            // Function to parse and format the text with proper markers
+            const formatTextWithMarkers = (inputText) => {
+                const lines = inputText.split('\n');
+                const formatted = [];
+                let inList = false;
+                let listItems = [];
+                let inNumberedList = false;
+                let numberedItems = [];
+                let currentSection = null;
+
+                lines.forEach((line, index) => {
+                    const trimmedLine = line.trim();
+                    
+                    // Handle bold text markers **text**
+                    const processBoldText = (text) => {
+                        const parts = text.split(/\*\*(.*?)\*\*/g);
+                        return parts.map((part, idx) => {
+                            if (idx % 2 === 1) {
+                                return <strong key={idx} style={{color: '#86efac'}}>{part}</strong>;
+                            }
+                            return part;
+                        });
+                    };
+
+                    // Check for section headers (lines ending with :)
+                    if (trimmedLine.endsWith(':') && trimmedLine.length > 1 && !trimmedLine.includes('http')) {
+                        // Save any pending list
+                        if (inList && listItems.length > 0) {
+                            formatted.push(
+                                <ul key={`list-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px',
+                                    listStyle: 'disc'
+                                }}>
+                                    {listItems}
+                                </ul>
+                            );
+                            listItems = [];
+                            inList = false;
+                        }
+                        if (inNumberedList && numberedItems.length > 0) {
+                            formatted.push(
+                                <ol key={`numlist-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px'
+                                }}>
+                                    {numberedItems}
+                                </ol>
+                            );
+                            numberedItems = [];
+                            inNumberedList = false;
+                        }
+                        
+                        formatted.push(
+                            <h4 key={`header-${index}`} style={{
+                                color: '#86efac',
+                                fontWeight: 'bold',
+                                marginTop: '15px',
+                                marginBottom: '10px',
+                                fontSize: '16px'
+                            }}>
+                                {processBoldText(trimmedLine.slice(0, -1))}
+                            </h4>
+                        );
+                    }
+                    // Handle bullet points (-, *, •)
+                    else if (/^[-*•]\s+/.test(trimmedLine)) {
+                        const content = trimmedLine.replace(/^[-*•]\s+/, '');
+                        if (!inList) {
+                            inList = true;
+                            if (inNumberedList && numberedItems.length > 0) {
+                                formatted.push(
+                                    <ol key={`numlist-${formatted.length}`} style={{
+                                        marginLeft: '20px',
+                                        marginBottom: '15px'
+                                    }}>
+                                        {numberedItems}
+                                    </ol>
+                                );
+                                numberedItems = [];
+                                inNumberedList = false;
+                            }
+                        }
+                        listItems.push(
+                            <li key={`item-${index}`} style={{marginBottom: '5px', color: 'white'}}>
+                                {processBoldText(content)}
+                            </li>
+                        );
+                    }
+                    // Handle numbered lists (1., 2., etc.)
+                    else if (/^\d+\.\s+/.test(trimmedLine)) {
+                        const content = trimmedLine.replace(/^\d+\.\s+/, '');
+                        if (!inNumberedList) {
+                            inNumberedList = true;
+                            if (inList && listItems.length > 0) {
+                                formatted.push(
+                                    <ul key={`list-${formatted.length}`} style={{
+                                        marginLeft: '20px',
+                                        marginBottom: '15px',
+                                        listStyle: 'disc'
+                                    }}>
+                                        {listItems}
+                                    </ul>
+                                );
+                                listItems = [];
+                                inList = false;
+                            }
+                        }
+                        numberedItems.push(
+                            <li key={`numitem-${index}`} style={{marginBottom: '5px', color: 'white'}}>
+                                {processBoldText(content)}
+                            </li>
+                        );
+                    }
+                    // Handle tables (lines with | separators)
+                    else if (trimmedLine.includes('|') && trimmedLine.split('|').length > 2) {
+                        // Close any open lists
+                        if (inList && listItems.length > 0) {
+                            formatted.push(
+                                <ul key={`list-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px',
+                                    listStyle: 'disc'
+                                }}>
+                                    {listItems}
+                                </ul>
+                            );
+                            listItems = [];
+                            inList = false;
+                        }
+                        if (inNumberedList && numberedItems.length > 0) {
+                            formatted.push(
+                                <ol key={`numlist-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px'
+                                }}>
+                                    {numberedItems}
+                                </ol>
+                            );
+                            numberedItems = [];
+                            inNumberedList = false;
+                        }
+                        
+                        const cells = trimmedLine.split('|').map(cell => cell.trim()).filter(cell => cell);
+                        formatted.push(
+                            <div key={`table-row-${index}`} style={{
+                                display: 'flex',
+                                borderBottom: '1px solid rgba(255,255,255,0.2)',
+                                padding: '8px 0'
+                            }}>
+                                {cells.map((cell, idx) => (
+                                    <div key={idx} style={{
+                                        flex: 1,
+                                        padding: '0 10px',
+                                        color: 'white'
+                                    }}>
+                                        {processBoldText(cell)}
+                                    </div>
+                                ))}
+                            </div>
+                        );
+                    }
+                    // Regular text
+                    else if (trimmedLine) {
+                        // Close any open lists
+                        if (inList && listItems.length > 0) {
+                            formatted.push(
+                                <ul key={`list-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px',
+                                    listStyle: 'disc'
+                                }}>
+                                    {listItems}
+                                </ul>
+                            );
+                            listItems = [];
+                            inList = false;
+                        }
+                        if (inNumberedList && numberedItems.length > 0) {
+                            formatted.push(
+                                <ol key={`numlist-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px'
+                                }}>
+                                    {numberedItems}
+                                </ol>
+                            );
+                            numberedItems = [];
+                            inNumberedList = false;
+                        }
+                        
+                        formatted.push(
+                            <p key={`text-${index}`} style={{
+                                marginBottom: '10px',
+                                color: 'white',
+                                lineHeight: '1.6'
+                            }}>
+                                {processBoldText(trimmedLine)}
+                            </p>
+                        );
+                    }
+                    // Empty line
+                    else if (index < lines.length - 1) {
+                        // Close any open lists
+                        if (inList && listItems.length > 0) {
+                            formatted.push(
+                                <ul key={`list-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px',
+                                    listStyle: 'disc'
+                                }}>
+                                    {listItems}
+                                </ul>
+                            );
+                            listItems = [];
+                            inList = false;
+                        }
+                        if (inNumberedList && numberedItems.length > 0) {
+                            formatted.push(
+                                <ol key={`numlist-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px'
+                                }}>
+                                    {numberedItems}
+                                </ol>
+                            );
+                            numberedItems = [];
+                            inNumberedList = false;
+                        }
+                    }
+                });
+
+                // Handle any remaining list items
+                if (inList && listItems.length > 0) {
+                    formatted.push(
+                        <ul key={`list-${formatted.length}`} style={{
+                            marginLeft: '20px',
+                            marginBottom: '15px',
+                            listStyle: 'disc'
+                        }}>
+                            {listItems}
+                        </ul>
+                    );
+                }
+                if (inNumberedList && numberedItems.length > 0) {
+                    formatted.push(
+                        <ol key={`numlist-${formatted.length}`} style={{
+                            marginLeft: '20px',
+                            marginBottom: '15px'
+                        }}>
+                            {numberedItems}
+                        </ol>
+                    );
+                }
+
+                return formatted;
+            };
+
+            const formattedContent = formatTextWithMarkers(text);
+            
             return (
-                <div style={{color: 'white', whiteSpace: 'pre-wrap'}}>
-                    {cleanText}
+                <div style={{
+                    maxWidth: '100%',
+                    wordWrap: 'break-word',
+                    overflowWrap: 'break-word'
+                }}>
+                    {formattedContent}
                 </div>
             );
         };
@@ -230,13 +536,30 @@
                     justifyContent: 'center',
                     alignItems: 'center',
                     textAlign: 'center',
-                    color: 'white'
+                    color: 'white',
+                    animation: 'fadeIn 1s ease-out'
                 }}>
-                    <i className="fas fa-robot" style={{fontSize: '96px', marginBottom: '30px', opacity: 0.9}}></i>
-                    <h1 style={{fontSize: '48px', marginBottom: '20px', fontWeight: 'bold'}}>
+                    <i className="fas fa-robot" style={{
+                        fontSize: '96px', 
+                        marginBottom: '30px', 
+                        opacity: 0.9,
+                        animation: 'floating 6s ease-in-out infinite'
+                    }}></i>
+                    <h1 style={{
+                        fontSize: '48px', 
+                        marginBottom: '20px', 
+                        fontWeight: 'bold',
+                        animation: 'slideIn 0.8s ease-out'
+                    }}>
                         BU Course Agent
                     </h1>
-                    <p style={{fontSize: '20px', marginBottom: '30px', opacity: 0.9, maxWidth: '600px'}}>
+                    <p style={{
+                        fontSize: '20px', 
+                        marginBottom: '30px', 
+                        opacity: 0.9, 
+                        maxWidth: '600px',
+                        animation: 'fadeIn 1.2s ease-out'
+                    }}>
                         Your AI-powered academic advisor for BU MET Computer Science programs
                     </p>
                     <button 
@@ -250,7 +573,17 @@
                             border: 'none',
                             fontWeight: 'bold',
                             cursor: 'pointer',
-                            boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
+                            boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+                            animation: 'pulse 2s infinite',
+                            transition: 'all 0.3s'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.target.style.transform = 'scale(1.1)';
+                            e.target.style.boxShadow = '0 15px 40px rgba(0,0,0,0.3)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.transform = 'scale(1)';
+                            e.target.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
                         }}
                     >
                         Get Started
@@ -838,100 +1171,479 @@
             );
         };
 
-        // Simple About Page
+        // About Page with complete content
         const AboutPage = () => (
             <div style={{
                 height: 'calc(100vh - 140px)',
                 padding: '40px',
                 color: 'white',
-                overflow: 'auto'
+                overflow: 'auto',
+                animation: 'fadeIn 0.8s ease-out'
             }}>
-                <h1 style={{textAlign: 'center', marginBottom: '30px'}}>About Us</h1>
+                <h1 style={{textAlign: 'center', marginBottom: '30px', animation: 'slideIn 0.6s ease-out'}}>About Us</h1>
                 <div style={{
-                    maxWidth: '800px',
-                    margin: '0 auto',
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    padding: '30px',
-                    borderRadius: '20px'
+                    maxWidth: '900px',
+                    margin: '0 auto'
                 }}>
-                    <p>We are graduate students at Boston University's Metropolitan College.</p>
-                    <br/>
-                    <h3>Our Team:</h3>
-                    <ul style={{listStyle: 'none', padding: '20px 0'}}>
-                        <li>Sean Silver - Team Lead</li>
-                        <li>Gagan Veginati - Frontend Developer</li>
-                        <li>Brendan Collins - Scrum Master</li>
-                        <li>Zharas Omirzak - UI Designer</li>
-                        <li>Jonathan Rothendler - Database Administrator</li>
-                    </ul>
+                    <div style={{
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        padding: '30px',
+                        borderRadius: '20px',
+                        marginBottom: '20px',
+                        backdropFilter: 'blur(10px)',
+                        animation: 'fadeIn 1s ease-out'
+                    }}>
+                        <h2 style={{marginBottom: '15px'}}>Who We Are</h2>
+                        <p style={{marginBottom: '20px', lineHeight: '1.6'}}>
+                            We are graduate students at Boston University's Metropolitan College, enrolled in the 
+                            MET CS 633 Software Quality, Testing, and Security Management course. Our team is 
+                            passionate about leveraging AI technology to improve the academic experience for students.
+                        </p>
+                        
+                        <h3 style={{marginBottom: '15px'}}>Our Team:</h3>
+                        <ul style={{listStyle: 'none', padding: 0}}>
+                            <li style={{padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.1)'}}>
+                                <i className="fas fa-user-graduate" style={{marginRight: '10px', color: '#86efac'}}></i>
+                                <strong>Sean Silver</strong> - Team Lead & Backend Developer
+                                <p style={{marginLeft: '30px', fontSize: '14px', opacity: 0.8}}>
+                                    Leading architecture design and API development
+                                </p>
+                            </li>
+                            <li style={{padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.1)'}}>
+                                <i className="fas fa-user-graduate" style={{marginRight: '10px', color: '#86efac'}}></i>
+                                <strong>Gagan Veginati</strong> - Frontend Developer
+                                <p style={{marginLeft: '30px', fontSize: '14px', opacity: 0.8}}>
+                                    Creating responsive UI and user experience
+                                </p>
+                            </li>
+                            <li style={{padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.1)'}}>
+                                <i className="fas fa-user-graduate" style={{marginRight: '10px', color: '#86efac'}}></i>
+                                <strong>Brendan Collins</strong> - Scrum Master & Designer
+                                <p style={{marginLeft: '30px', fontSize: '14px', opacity: 0.8}}>
+                                    Managing sprints and designing wireframes
+                                </p>
+                            </li>
+                            <li style={{padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.1)'}}>
+                                <i className="fas fa-user-graduate" style={{marginRight: '10px', color: '#86efac'}}></i>
+                                <strong>Zharas Omirzak</strong> - UI Designer & Tester
+                                <p style={{marginLeft: '30px', fontSize: '14px', opacity: 0.8}}>
+                                    Designing interfaces and quality assurance
+                                </p>
+                            </li>
+                            <li style={{padding: '10px 0'}}>
+                                <i className="fas fa-user-graduate" style={{marginRight: '10px', color: '#86efac'}}></i>
+                                <strong>Jonathan Rothendler</strong> - Database Administrator
+                                <p style={{marginLeft: '30px', fontSize: '14px', opacity: 0.8}}>
+                                    Managing data architecture and storage
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div style={{
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        padding: '30px',
+                        borderRadius: '20px',
+                        marginBottom: '20px',
+                        backdropFilter: 'blur(10px)',
+                        animation: 'fadeIn 1.2s ease-out'
+                    }}>
+                        <h2 style={{marginBottom: '15px'}}>Our Mission</h2>
+                        <p style={{lineHeight: '1.6'}}>
+                            The BU Course Agent is designed to help students navigate the complex landscape of course 
+                            selection and degree planning. By leveraging Google's Gemini AI technology, we provide 
+                            personalized academic guidance that considers your career goals, prerequisites, and 
+                            academic interests.
+                        </p>
+                    </div>
+                    
+                    <div style={{
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        padding: '30px',
+                        borderRadius: '20px',
+                        backdropFilter: 'blur(10px)',
+                        animation: 'fadeIn 1.4s ease-out'
+                    }}>
+                        <h2 style={{marginBottom: '15px'}}>What We Offer</h2>
+                        <ul style={{lineHeight: '1.8'}}>
+                            <li>🎯 Personalized course recommendations based on your goals</li>
+                            <li>📚 Comprehensive information about BU MET CS programs</li>
+                            <li>🗓️ Smart schedule planning assistance</li>
+                            <li>💼 Career-aligned academic guidance</li>
+                            <li>📊 Transcript analysis and degree progress tracking</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         );
 
-        // Simple Contact Page
+        // Contact Page with complete content
         const ContactPage = () => (
             <div style={{
                 height: 'calc(100vh - 140px)',
                 padding: '40px',
                 color: 'white',
-                overflow: 'auto'
+                overflow: 'auto',
+                animation: 'fadeIn 0.8s ease-out'
             }}>
-                <h1 style={{textAlign: 'center', marginBottom: '30px'}}>Contact Us</h1>
+                <h1 style={{textAlign: 'center', marginBottom: '30px', animation: 'slideIn 0.6s ease-out'}}>Contact Us</h1>
                 <div style={{
-                    maxWidth: '600px',
-                    margin: '0 auto',
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    padding: '30px',
-                    borderRadius: '20px',
-                    textAlign: 'center'
+                    maxWidth: '800px',
+                    margin: '0 auto'
                 }}>
-                    <p>For questions about this project:</p>
-                    <br/>
-                    <a href="https://www.bu.edu/met/" style={{color: 'white'}}>
-                        BU MET Website
-                    </a>
+                    <div style={{
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        padding: '30px',
+                        borderRadius: '20px',
+                        marginBottom: '20px',
+                        backdropFilter: 'blur(10px)',
+                        animation: 'fadeIn 1s ease-out'
+                    }}>
+                        <h2 style={{marginBottom: '20px'}}>Get in Touch</h2>
+                        <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                            For questions about this project or to learn more about BU's Computer Science programs, 
+                            please use the following resources:
+                        </p>
+                        
+                        <div style={{
+                            padding: '20px',
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            borderRadius: '15px',
+                            marginBottom: '15px',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.transform = 'translateX(10px)'}
+                        onMouseLeave={(e) => e.currentTarget.style.transform = 'translateX(0)'}>
+                            <a href="https://www.bu.edu/met/degrees-certificates/ms-computer-information-systems/" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               style={{color: 'white', textDecoration: 'none'}}>
+                                <i className="fas fa-graduation-cap" style={{marginRight: '15px', fontSize: '20px'}}></i>
+                                <strong>BU MET MS Computer Information Systems</strong>
+                                <p style={{marginLeft: '35px', fontSize: '14px', opacity: 0.8}}>
+                                    Explore our graduate programs and curriculum
+                                </p>
+                            </a>
+                        </div>
+                        
+                        <div style={{
+                            padding: '20px',
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            borderRadius: '15px',
+                            marginBottom: '15px',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.transform = 'translateX(10px)'}
+                        onMouseLeave={(e) => e.currentTarget.style.transform = 'translateX(0)'}>
+                            <a href="https://met.bu.edu/inquiryform" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               style={{color: 'white', textDecoration: 'none'}}>
+                                <i className="fas fa-envelope" style={{marginRight: '15px', fontSize: '20px'}}></i>
+                                <strong>BU MET Inquiry Form</strong>
+                                <p style={{marginLeft: '35px', fontSize: '14px', opacity: 0.8}}>
+                                    Contact admissions for program information
+                                </p>
+                            </a>
+                        </div>
+                        
+                        <div style={{
+                            padding: '20px',
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            borderRadius: '15px',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.transform = 'translateX(10px)'}
+                        onMouseLeave={(e) => e.currentTarget.style.transform = 'translateX(0)'}>
+                            <a href="https://www.bu.edu/academics/met/courses/met-cs-633/" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               style={{color: 'white', textDecoration: 'none'}}>
+                                <i className="fas fa-book" style={{marginRight: '15px', fontSize: '20px'}}></i>
+                                <strong>MET CS 633 Course Information</strong>
+                                <p style={{marginLeft: '35px', fontSize: '14px', opacity: 0.8}}>
+                                    Learn about our Software Quality & Testing course
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div style={{
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        padding: '30px',
+                        borderRadius: '20px',
+                        backdropFilter: 'blur(10px)',
+                        animation: 'fadeIn 1.2s ease-out',
+                        textAlign: 'center'
+                    }}>
+                        <h3 style={{marginBottom: '15px'}}>Office Hours</h3>
+                        <p>Monday - Friday: 9:00 AM - 5:00 PM EST</p>
+                        <p style={{marginTop: '20px', fontSize: '14px', opacity: 0.8}}>
+                            This is a student project. For official academic advising, 
+                            please contact BU MET directly.
+                        </p>
+                    </div>
                 </div>
             </div>
         );
 
-        // Simple Terms Page
+        // Terms Page with complete content
         const TermsPage = () => (
             <div style={{
                 height: 'calc(100vh - 140px)',
                 padding: '40px',
                 color: 'white',
-                overflow: 'auto'
+                overflow: 'auto',
+                animation: 'fadeIn 0.8s ease-out'
             }}>
-                <h1 style={{textAlign: 'center'}}>Terms of Service</h1>
+                <h1 style={{textAlign: 'center', marginBottom: '30px', animation: 'slideIn 0.6s ease-out'}}>Terms of Service</h1>
                 <div style={{
-                    maxWidth: '800px',
-                    margin: '30px auto',
+                    maxWidth: '900px',
+                    margin: '0 auto',
                     background: 'rgba(255, 255, 255, 0.1)',
-                    padding: '30px',
-                    borderRadius: '20px'
+                    padding: '40px',
+                    borderRadius: '20px',
+                    backdropFilter: 'blur(10px)'
                 }}>
-                    <p>This is a student project for educational purposes.</p>
+                    <p style={{marginBottom: '20px', fontStyle: 'italic'}}>
+                        Last Updated: December 2024
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>1. Acceptance of Terms</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        By accessing and using the BU Course Agent, you acknowledge that you have read, understood, 
+                        and agree to be bound by these Terms of Service. This is a student project created for 
+                        educational purposes as part of CS633 at Boston University.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>2. Purpose and Scope</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        The BU Course Agent is a prototype AI-powered academic advisory tool developed for the 
+                        CS633 Software Quality, Testing, and Security Management course. It is NOT an official 
+                        Boston University advising system and should not be used as the sole source for academic 
+                        planning decisions.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>3. No Official Academic Advice</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        All course recommendations, career insights, and academic guidance generated by this tool 
+                        are informational only and should not be considered official academic advising. Students 
+                        must consult with official BU academic advisors for formal degree planning and course 
+                        selection.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>4. User Responsibilities</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        Users are responsible for:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Verifying all program requirements through BU's official catalog</li>
+                        <li>Confirming prerequisites with official sources</li>
+                        <li>Meeting with official academic advisors for degree planning</li>
+                        <li>Ensuring accuracy of uploaded documents</li>
+                        <li>Using the tool responsibly and ethically</li>
+                    </ul>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>5. Acceptable Use Policy</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        You agree to use this tool for educational and informational purposes only. You will not:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Submit harmful, misleading, or inappropriate content</li>
+                        <li>Attempt to exploit or hack the system</li>
+                        <li>Impersonate others or provide false information</li>
+                        <li>Use the tool for commercial purposes</li>
+                        <li>Share sensitive personal information</li>
+                    </ul>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>6. Limitation of Liability</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        The project team, instructors, and Boston University are not liable for any decisions, 
+                        outcomes, or consequences resulting from the use of this tool. This includes but is not 
+                        limited to course enrollment decisions, degree planning choices, or career path selections.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>7. No Guarantees</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        This tool is a student term project created for CS633. All course suggestions, program 
+                        matches, and career insights are for demonstration purposes only. We make no guarantees 
+                        regarding academic success, admissions outcomes, graduation timelines, or employment 
+                        opportunities.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>8. Intellectual Property</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        This project was created by students at Boston University. All rights to the course data 
+                        and BU branding remain with Boston University. The tool uses Google's Gemini AI API for 
+                        natural language processing.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>9. Changes to Terms</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        As this is a student project, these terms are provided for educational completeness and 
+                        may be updated as part of the course requirements.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>10. Contact Information</h3>
+                    <p style={{lineHeight: '1.6'}}>
+                        For questions about these terms or the project, please refer to our Contact page or 
+                        reach out through the CS633 course channels.
+                    </p>
                 </div>
             </div>
         );
 
-        // Simple Privacy Page
+        // Privacy Page with complete content
         const PrivacyPage = () => (
             <div style={{
                 height: 'calc(100vh - 140px)',
                 padding: '40px',
                 color: 'white',
-                overflow: 'auto'
+                overflow: 'auto',
+                animation: 'fadeIn 0.8s ease-out'
             }}>
-                <h1 style={{textAlign: 'center'}}>Privacy Policy</h1>
+                <h1 style={{textAlign: 'center', marginBottom: '30px', animation: 'slideIn 0.6s ease-out'}}>Privacy Policy</h1>
                 <div style={{
-                    maxWidth: '800px',
-                    margin: '30px auto',
+                    maxWidth: '900px',
+                    margin: '0 auto',
                     background: 'rgba(255, 255, 255, 0.1)',
-                    padding: '30px',
-                    borderRadius: '20px'
+                    padding: '40px',
+                    borderRadius: '20px',
+                    backdropFilter: 'blur(10px)'
                 }}>
-                    <p>We do not store personal data permanently.</p>
+                    <p style={{marginBottom: '20px', fontStyle: 'italic'}}>
+                        Effective Date: December 2024
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>1. Information We Collect</h3>
+                    <p style={{marginBottom: '20px', lineHeight: '1.6'}}>
+                        The BU Course Agent may temporarily process the following types of information:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li><strong>Chat Messages:</strong> Questions and responses during your session</li>
+                        <li><strong>Uploaded Documents:</strong> Transcripts, resumes, or course lists you choose to share</li>
+                        <li><strong>Session Data:</strong> Temporary session identifiers for conversation continuity</li>
+                        <li><strong>Usage Patterns:</strong> How you interact with the tool's features</li>
+                    </ul>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>2. How We Use Information</h3>
+                    <p style={{marginBottom: '20px', lineHeight: '1.6'}}>
+                        Information processed by the tool is used exclusively to:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Generate personalized course recommendations</li>
+                        <li>Provide academic planning guidance</li>
+                        <li>Analyze transcript data for degree progress</li>
+                        <li>Match career goals with course selections</li>
+                        <li>Improve the tool's responses during your session</li>
+                    </ul>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>3. Data Storage and Retention</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        <strong>Important:</strong> We do NOT permanently store your personal information. All data is:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Processed only during your active session</li>
+                        <li>Cleared when you start a new chat or close the browser</li>
+                        <li>Not saved to any database or file system</li>
+                        <li>Not shared with third parties except for AI processing</li>
+                    </ul>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>4. Third-Party Services</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        This tool uses Google's Gemini AI API for natural language processing. When you interact 
+                        with the chatbot, your messages are sent to Google's servers for processing. Google's 
+                        use of this data is governed by their own privacy policy:
+                    </p>
+                    <div style={{
+                        padding: '15px',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        borderRadius: '10px',
+                        marginBottom: '25px'
+                    }}>
+                        <a href="https://support.google.com/gemini/answer/13594961?hl=en" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           style={{color: '#86efac'}}>
+                            📖 Google Gemini Apps Privacy Hub
+                        </a>
+                    </div>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>5. No Personal Information Required</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        You are NOT required to provide personally identifiable information (PII) such as:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Social Security Numbers</li>
+                        <li>Student ID numbers</li>
+                        <li>Date of birth</li>
+                        <li>Home address</li>
+                        <li>Phone numbers</li>
+                        <li>Email addresses</li>
+                    </ul>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        Any such information you voluntarily provide will not be stored and is only used 
+                        within your current session.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>6. Cookies and Tracking</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        This prototype does NOT use:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Cookies for tracking</li>
+                        <li>Google Analytics or similar services</li>
+                        <li>User profiling or behavioral tracking</li>
+                        <li>Third-party advertising networks</li>
+                    </ul>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>7. Data Security</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        We implement reasonable security measures to protect your session data:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Secure HTTPS connections</li>
+                        <li>Session-based data isolation</li>
+                        <li>No permanent data storage</li>
+                        <li>Automatic session cleanup</li>
+                    </ul>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        However, as this is a student prototype, we recommend avoiding the upload of 
+                        highly sensitive personal documents.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>8. Your Rights</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        You have the right to:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Use the tool without providing personal information</li>
+                        <li>Clear your chat history at any time</li>
+                        <li>Export your conversation for your records</li>
+                        <li>Start fresh sessions without historical data</li>
+                    </ul>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>9. Children's Privacy</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        This tool is designed for university students and is not intended for children under 13. 
+                        We do not knowingly collect information from children.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>10. Changes to This Policy</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        As this is a student project for CS633, this privacy policy may be updated as part of 
+                        course requirements. Any changes will be reflected on this page.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>11. Contact Us</h3>
+                    <p style={{lineHeight: '1.6'}}>
+                        For privacy concerns or questions about data handling, please refer to our Contact page 
+                        or reach out through the appropriate BU MET channels. Remember, for official academic 
+                        records and privacy matters, contact BU's official services.
+                    </p>
                 </div>
             </div>
         );
