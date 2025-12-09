@@ -60,11 +60,26 @@
             50% { box-shadow: 0 0 40px rgba(255,255,255,0.8); }
         }
         
-        /* Typing Animation */
+        /* Typing Animation - Fixed */
         @keyframes typing {
-            0%, 80%, 100% { opacity: 0; }
-            40% { opacity: 1; }
+            0% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0.3; transform: scale(0.8); }
         }
+        
+        .typing-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin: 0 3px;
+            background: white;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        .typing-dot:nth-child(3) { animation-delay: 0s; }
     </style>
 </head>
 <body>
@@ -791,16 +806,33 @@
                 setIsTyping(true);
 
                 try {
+                    console.log('Sending message to:', `${API_BASE_URL}/chat`);
+                    console.log('Message payload:', {
+                        message: messageText,
+                        session_id: sessionId
+                    });
+
                     const response = await fetch(`${API_BASE_URL}/chat`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
                         body: JSON.stringify({
                             message: messageText,
-                            session_id: sessionId
+                            session_id: sessionId || null,
+                            user_id: 'user_' + Date.now()
                         })
                     });
 
+                    console.log('Response status:', response.status);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
                     const data = await response.json();
+                    console.log('Response data:', data);
                     
                     if (!sessionId && data.session_id) {
                         setSessionId(data.session_id);
@@ -808,16 +840,29 @@
 
                     const agentMessage = {
                         id: Date.now() + 1,
-                        text: data.response || "I'm here to help with your academic planning!",
+                        text: data.response || data.message || "I'm here to help with your academic planning!",
                         sender: 'agent',
                         timestamp: new Date()
                     };
                     setMessages(prev => [...prev, agentMessage]);
+                    
                 } catch (error) {
-                    console.error('Error:', error);
+                    console.error('Error sending message:', error);
+                    console.error('Error details:', error.message);
+                    
+                    // Show more specific error message
+                    let errorMessage = "I'm having trouble connecting. ";
+                    if (error.message.includes('404')) {
+                        errorMessage += "The chat endpoint was not found. Please check if the backend is running at the correct URL.";
+                    } else if (error.message.includes('Failed to fetch')) {
+                        errorMessage += "Cannot connect to the server. Please make sure the backend is running on port 8000.";
+                    } else {
+                        errorMessage += "Error: " + error.message;
+                    }
+                    
                     setMessages(prev => [...prev, {
                         id: Date.now() + 1,
-                        text: "I'm having trouble connecting. Please try again.",
+                        text: errorMessage,
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
@@ -1079,9 +1124,13 @@
                                         padding: '12px 16px',
                                         borderRadius: '12px',
                                         background: 'rgba(255, 255, 255, 0.1)',
-                                        color: 'white'
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '3px'
                                     }}>
-                                        <span>•</span><span style={{margin: '0 3px'}}>•</span><span>•</span>
+                                        <span className="typing-dot"></span>
+                                        <span className="typing-dot"></span>
+                                        <span className="typing-dot"></span>
                                     </div>
                                 </div>
                             )}
@@ -1113,8 +1162,12 @@
                                     <input
                                         type="text"
                                         value={inputValue}
-                                        onChange={(e) => setInputValue(e.target.value)}
-                                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                                        onChange={(e) => {
+                                            const newValue = e.target.value;
+                                            setInputValue(newValue);
+                                            setTokenCount(countTokens(newValue));
+                                        }}
+                                        onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
                                         placeholder="Type a message..."
                                         style={{
                                             width: '100%',
