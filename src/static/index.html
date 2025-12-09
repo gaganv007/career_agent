@@ -1202,7 +1202,20 @@
                         {predefinedPrompts.map((prompt, index) => (
                             <button
                                 key={index}
-                                onClick={() => sendMessage(prompt)}
+                                onClick={() => {
+                                    // Start a new chat first
+                                    setMessages([{
+                                        id: Date.now(),
+                                        text: "New chat started. How can I help?",
+                                        sender: 'agent',
+                                        timestamp: new Date()
+                                    }]);
+                                    setSessionId(null);
+                                    setInputValue('');
+                                    setTokenCount(0);
+                                    // Then send the predefined prompt
+                                    setTimeout(() => sendMessage(prompt), 100);
+                                }}
                                 style={{
                                     background: 'rgba(255, 255, 255, 0.1)',
                                     color: 'white',
