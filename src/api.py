@@ -26,6 +26,7 @@ from fastapi.responses import FileResponse
 from google.genai import types
 from google.adk.sessions import InMemorySessionService
 from google.adk.runners import Runner
+from google.genai.errors import ClientError
 
 # Custom modules
 from setup.api_functions import parse_document
@@ -133,20 +134,29 @@ async def chat(request: ChatRequest):
         logger.info(f"✅ Response sent successfully")
 
         return ChatResponse(response=response, session_id=session_id, user_id=user_id)
-
-    except HTTPException:
-        # Re-raise HTTP exceptions (like rate limit)
-        raise
-
+    except ClientError as e:
+        error_detail = f"Error: {str(e)}"
+        logger.error(error_detail)
+        response = (
+            "Apologies, but my current subscription access with the LLM has been cut off."
+            "\nPlease wait a few moments before trying again."
+        )
+        return ChatResponse(response=response, session_id=session_id, user_id=user_id)
     except Exception as e:
         import traceback
 
         error_detail = f"Error: {str(e)}"
         logger.error(error_detail)
-        logger.info(
+        logger.debug(
             f"\n{'='*60}\nERROR in /chat endpoint:\n"
             f"{error_detail}\n\nTraceback:\n{traceback.format_exc()}\n{'='*60}\n"
         )
+
+        response = (
+            "I'm sorry, but I'm having trouble processing that request."
+            "\nCould you try re-wording your request and I'll try again?"
+        )
+        return ChatResponse(response=response, session_id=session_id, user_id=user_id)
 
 
 async def query_agent(query: str, runner, user_id, session_id) -> str:
@@ -158,9 +168,7 @@ async def query_agent(query: str, runner, user_id, session_id) -> str:
     async for event in runner.run_async(
         user_id=user_id, session_id=session_id, new_message=content
     ):
-        logger.debug(
-            f"🌐 Event Triggered! (type: {type(event).__name__})"
-        )
+        logger.debug(f"🌐 Event Triggered! (type: {type(event).__name__})")
 
         # Key Concept: is_final_response() marks the concluding message for the turn.
         if event.is_final_response():
@@ -252,8 +260,10 @@ async def delete_session(user_id: str, session_id: str):
     """Delete a specific session"""
     session_key = f"{user_id}_{session_id}"
     if session_key in sessions:
-        del sessions[session_key]
-        return {"message": f"Session {session_key} deleted"}
+        sessions[session_key] = await service.create_session(
+            app_name=APP_NAME, user_id=user_id, session_id=session_id, state={}
+        )
+        return {"message": f"Session {session_key} cleared"}
     return {"message": "Session not found"}
 
 
