@@ -91,7 +91,8 @@
         // API Configuration
         const API_BASE_URL = window.location.hostname === 'localhost' 
             ? 'http://localhost:8000' 
-            : 'https://career-agent-9cif.onrender.com';
+            : `${window.location.protocol}//${window.location.host}`;
+            //: 'https://career-agent-9cif.onrender.com';
 
         // Token counting function - Fixed
         const countTokens = (text) => {
