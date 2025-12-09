@@ -1008,68 +1008,95 @@
             };
 
             const handleFileUpload = async (file, documentType) => {
-                const typeLabels = {
-                    'transcript': 'transcript',
-                    'resume': 'resume',
-                    'job_description': 'job description',
-                    'course_list': 'course list'
-                };
-                
                 try {
-                    // Read the file content
-                    const reader = new FileReader();
+                    // Generate user ID if not exists
+                    const userId = 'user_' + Date.now();
                     
-                    reader.onload = async (e) => {
-                        const fileContent = e.target.result;
-                        
-                        // For text files, send the content directly
-                        let documentText = '';
-                        
-                        if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
-                            documentText = fileContent;
-                        } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-                            // For PDFs, we'd need a PDF parser library
-                            // For now, we'll send a note that PDF parsing is needed
-                            documentText = `[PDF Document - ${file.name}]\n\nNote: PDF parsing requires backend processing. Please implement PDF text extraction on the server side.`;
-                        } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || 
-                                   file.type === 'application/msword' ||
-                                   file.name.endsWith('.docx') || 
-                                   file.name.endsWith('.doc')) {
-                            // For Word documents, we'd need a parser library
-                            documentText = `[Word Document - ${file.name}]\n\nNote: Word document parsing requires backend processing. Please implement DOCX text extraction on the server side.`;
-                        } else {
-                            documentText = fileContent;
-                        }
-                        
-                        // Create a comprehensive message with the document content
-                        const message = `User uploads a ${typeLabels[documentType]}: ${file.name}\n\n--- DOCUMENT CONTENT START ---\n${documentText}\n--- DOCUMENT CONTENT END ---\n\nPlease analyze this ${typeLabels[documentType]} and provide insights.`;
-                        
-                        console.log('Uploading document with content:', {
-                            type: documentType,
-                            filename: file.name,
-                            contentLength: documentText.length,
-                            preview: documentText.substring(0, 200) + '...'
-                        });
-                        
-                        sendMessage(message);
-                    };
+                    // Create FormData to send the file
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('document_type', documentType);
                     
-                    reader.onerror = (error) => {
-                        console.error('Error reading file:', error);
-                        alert('Error reading file. Please try again.');
-                    };
+                    // Show uploading message (on the right side as user message)
+                    setIsTyping(true);
+                    setMessages(prev => [...prev, {
+                        id: Date.now(),
+                        text: `📤 Uploading ${documentType}...`,
+                        sender: 'user',
+                        timestamp: new Date()
+                    }]);
                     
-                    // Read as text for .txt files
-                    if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
-                        reader.readAsText(file);
-                    } else {
-                        // For other file types, read as text anyway (will need proper parsing)
-                        reader.readAsText(file);
+                    // Upload to backend
+                    const response = await fetch(`${API_BASE_URL}/upload-document`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || 'Upload failed');
                     }
                     
+                    const uploadResult = await response.json();
+                    
+                    // Update success message (without showing the full document text)
+                    setMessages(prev => prev.map((m, idx) => 
+                        idx === prev.length - 1 
+                            ? {
+                                ...m,
+                                text: `✅ Successfully uploaded ${documentType}`,
+                                sender: 'user'
+                            }
+                            : m
+                    ));
+                    
+                    // Send the extracted text directly to the agent API without displaying in chat
+                    const typeLabels = {
+                        'transcript': 'transcript',
+                        'resume': 'resume',
+                        'job_description': 'job description',
+                        'course_list': 'course list',
+                        'other': 'document'
+                    };
+                    const fullMessage = `Please analyze my uploaded ${typeLabels[documentType]}:\n\n"${uploadResult.extracted_text}"`;
+                    
+                    // Send to agent backend directly without displaying to user
+                    const chatResponse = await fetch(`${API_BASE_URL}/chat`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message: fullMessage,
+                            user_id: userId,
+                            session_id: sessionId,
+                            is_document_upload: true
+                        })
+                    });
+                    
+                    const chatData = await chatResponse.json();
+                    
+                    if (!sessionId && chatData.session_id) {
+                        setSessionId(chatData.session_id);
+                    }
+                    
+                    // Only display the agent's response, not the user's message with the full document
+                    const agentMessage = {
+                        id: Date.now() + 1,
+                        text: chatData.response || "I've analyzed your document.",
+                        sender: 'agent',
+                        timestamp: new Date()
+                    };
+                    setMessages(prev => [...prev, agentMessage]);
+                    setIsTyping(false);
+                    
                 } catch (error) {
-                    console.error('Error processing file:', error);
-                    alert('Error processing file. Please try again.');
+                    console.error('File upload error:', error);
+                    setMessages(prev => [...prev, {
+                        id: Date.now(),
+                        text: `❌ Upload failed: ${error.message}`,
+                        sender: 'agent',
+                        timestamp: new Date()
+                    }]);
+                    setIsTyping(false);
                 }
             };
 
