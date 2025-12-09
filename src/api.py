@@ -137,6 +137,8 @@ async def chat(request: ChatRequest):
     except ClientError as e:
         error_detail = f"Error: {str(e)}"
         logger.error(error_detail)
+        logger.debug(f"MODEL Name - {os.getenv("MODEL_NAME")}")
+        logger.debug(f"API Key - ...{str(os.getenv("GOOGLE_API_KEY"))[-5:]}")
         response = (
             "Apologies, but my current subscription access with the LLM has been cut off."
             "\nPlease wait a few moments before trying again."
@@ -274,8 +276,7 @@ app.mount(
 if __name__ == "__main__":
     # Load environment variables from .env file
     from dotenv import load_dotenv
-
-    load_dotenv()
+    load_dotenv(override=True)
 
     port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
