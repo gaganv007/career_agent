@@ -901,6 +901,13 @@
         // Chat Page Component with all features
         const ChatPage = ({ messages, setMessages, inputValue, setInputValue, sessionId, setSessionId }) => {
             const [isTyping, setIsTyping] = useState(false);
+            const [userId] = useState(() => {
+                try {
+                    return localStorage.getItem('userId') || `user_${Date.now()}`;
+                } catch (e) {
+                    return `user_${Date.now()}`;
+                }
+            });
             const [uploadModalOpen, setUploadModalOpen] = useState(false);
             const [tokenCount, setTokenCount] = useState(0);
             const messagesEndRef = useRef(null);
@@ -909,7 +916,7 @@
                 if (messages.length === 0) {
                     setMessages([{
                         id: Date.now(),
-                        text: "Hello! I'm your BU Course Assistant. How can I help you today?",
+                        text: "Hello! I'm your BU Course Agent. I can help you with:\n\n• Course recommendations\n• Schedule planning\n• Degree requirements\n• Academic guidance\n\nYou can also upload documents like transcripts, resumes, or job descriptions for personalized advice!",
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
@@ -941,6 +948,22 @@
                 setTokenCount(0);
                 setIsTyping(true);
 
+                // Set up 3-second timeout to show a status update
+                let statusUpdateTimeout;
+                let statusMessageId = null;
+
+                const showStatusUpdate = () => {
+                    statusMessageId = Date.now() + 0.3;
+                    setMessages(prev => [...prev, {
+                        id: statusMessageId,
+                        text: "Please hold one moment as I'm gathering some materials to analyze...",
+                        sender: 'agent',
+                        timestamp: new Date()
+                    }]);
+                };
+
+                statusUpdateTimeout = setTimeout(showStatusUpdate, 3000);
+
                 try {
                     console.log('Sending message to:', `${API_BASE_URL}/chat`);
                     console.log('Message payload:', {
@@ -956,8 +979,8 @@
                         },
                         body: JSON.stringify({
                             message: messageText,
-                            session_id: sessionId || null,
-                            user_id: 'user_' + Date.now()
+                            session_id: sessionId,
+                            user_id: userId,
                         })
                     });
 
@@ -980,7 +1003,18 @@
                         sender: 'agent',
                         timestamp: new Date()
                     };
-                    setMessages(prev => [...prev, agentMessage]);
+
+                    // If status message was shown, replace it with the final response
+                    if (statusMessageId) {
+                        setMessages(prev => {
+                            // Replace the status update message with the final response
+                            return prev.map(msg => 
+                                msg.id === statusMessageId ? agentMessage : msg
+                            );
+                        });
+                    } else {
+                        setMessages(prev => [...prev, agentMessage]);
+                    }
                     
                 } catch (error) {
                     console.error('Error sending message:', error);

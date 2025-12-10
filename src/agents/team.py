@@ -59,7 +59,7 @@ schedule = build_agent(
 )
 
 # Document Analysis
-documents = build_agent(name="Document_Agent", file_name=file_name)
+documents = build_agent(name="Document_Agent", file_name=file_name, content_config=setup_content_config(temperature=0.1))
 
 
 # CS633 Topics
