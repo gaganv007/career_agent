@@ -91,7 +91,7 @@ async def chat(request: ChatRequest):
         user_id = request.user_id
         session_id = (
             request.session_id
-            or f"session_{user_id}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+            or f"session_{user_id}"
         )
         logger.info(f"⚙️ User: {user_id}, Session: {session_id}")
 
