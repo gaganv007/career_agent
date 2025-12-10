@@ -192,8 +192,8 @@ def get_schedule(conditions: str) -> List[ScheduleResponse]:
             session = ScheduleResponse(
                 course_number=row[0],
                 day_of_week=row[1],
-                start_time=row[2].strftime("%H:%M"),
-                end_time=row[3].strftime("%H:%M"),
+                start_time=row[2].strftime("%I:%M %p"),
+                end_time=row[3].strftime("%I:%M %p"),
             )
             sessions.append(session)
         return sessions
