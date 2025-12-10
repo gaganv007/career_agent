@@ -59,7 +59,7 @@ def setup_content_config(**kwargs) -> types.GenerateContentConfig:
         temperature=kwargs.pop("temperature", 0.5),
         max_output_tokens=kwargs.pop("max_output_tokens", 1000),
         top_p=kwargs.pop("top_p", 0.8),
-        top_k=kwargs.pop("top_k", 400),
+        top_k=kwargs.pop("top_k", 750),
         safety_settings=kwargs.pop(
             "safety_settings",
             [
