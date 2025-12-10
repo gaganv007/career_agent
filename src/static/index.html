@@ -16,13 +16,6 @@
             height: 100vh;
             overflow: hidden;
             background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
-            animation: gradientShift 10s ease infinite;
-        }
-        
-        @keyframes gradientShift {
-            0% { background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%); }
-            50% { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-            100% { background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%); }
         }
         
         #root {
@@ -154,8 +147,12 @@
                         const parts = text.split(/\*\*(.*?)\*\*/g);
                         return parts.map((part, idx) => {
                             if (idx % 2 === 1) {
-                                return <strong key={idx} style={{color: '#86efac'}}>{part}</strong>;
-                            }
+                                return (
+                                    <strong key={idx} style={{ color: '#ffffff', textDecoration: 'underline' }}>
+                                        {part}
+                                    </strong>
+                                );                           
+                             }
                             return part;
                         });
                     };
@@ -283,7 +280,7 @@
                         
                         formatted.push(
                             <h4 key={`header-${index}`} style={{
-                                color: '#86efac',
+                                color: '#ffffff',
                                 fontWeight: 'bold',
                                 marginTop: '15px',
                                 marginBottom: '10px',
@@ -913,10 +910,16 @@
             const messagesEndRef = useRef(null);
 
             useEffect(() => {
+                try {
+                    localStorage.setItem('userId', userId);
+                } catch (e) {
+                    console.error('Could not save to localStorage:', e);
+                }
+                // Only add welcome message if chat is empty
                 if (messages.length === 0) {
                     setMessages([{
                         id: Date.now(),
-                        text: "Hello! I'm your BU Course Agent. I can help you with:\n\n• Course recommendations\n• Schedule planning\n• Degree requirements\n• Academic guidance\n\nYou can also upload documents like transcripts, resumes, or job descriptions for personalized advice!",
+                        text: "Hello! I'm your BU Course Agent. I can help you with\:\n\n• Course recommendations\n• Schedule planning\n• Degree requirements\n• Academic guidance\n\nYou can also upload documents like transcripts, resumes, or job descriptions for personalized advice!",
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
@@ -979,10 +982,12 @@
                         },
                         body: JSON.stringify({
                             message: messageText,
-                            session_id: sessionId,
                             user_id: userId,
+                            session_id: sessionId,
                         })
                     });
+                    
+                    clearTimeout(statusUpdateTimeout);
 
                     console.log('Response status:', response.status);
                     
@@ -999,7 +1004,7 @@
 
                     const agentMessage = {
                         id: Date.now() + 1,
-                        text: data.response || data.message || "I'm here to help with your academic planning!",
+                        text: data.response || "I'm here to help with your academic planning!",
                         sender: 'agent',
                         timestamp: new Date()
                     };
@@ -1037,15 +1042,13 @@
                         timestamp: new Date()
                     }]);
                 } finally {
+                    clearTimeout(statusUpdateTimeout);
                     setIsTyping(false);
                 }
             };
 
             const handleFileUpload = async (file, documentType) => {
-                try {
-                    // Generate user ID if not exists
-                    const userId = 'user_' + Date.now();
-                    
+                try {                    
                     // Create FormData to send the file
                     const formData = new FormData();
                     formData.append('file', file);
@@ -1134,15 +1137,91 @@
                 }
             };
 
+            /*
             const newChat = () => {
                 if (window.confirm('Start a new chat? Current conversation will be lost.')) {
                     setMessages([{
                         id: Date.now(),
-                        text: "New chat started. How can I help you today? I can assit you with:\n\n• Course recommendations\n• Schedule planning\n• Degree requirements\n• Academic guidance\n\nYou can also upload documents like transcripts, resumes, or job descriptions for personalized advice!",
+                        text: "New chat started. How can I help you today?",
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
                     setSessionId(null);
+                }
+            };
+            */
+
+            const newChat = async () => {
+                // Clear the current chat history by resetting the messages state
+                setMessages([]);
+                setTokenCount(0);
+                setInputValue('');
+                setIsTyping(false);
+
+                // Set a loading status to indicate a new session is being started
+                const statusMessageId = Date.now();
+                setMessages(prev => [
+                    ...prev, 
+                    {
+                        id: statusMessageId,
+                        text: "New chat started. How can I help you today?",
+                        sender: 'agent',
+                        timestamp: new Date()
+                    }
+                ]);
+
+                try {
+                    console.log('Requesting to delete current session and start a new one...');
+                    
+                    // Sending a DELETE request to the /session/{user_id}/{session_id} endpoint
+                    const response = await fetch(`${API_BASE_URL}/session/${userId}/${sessionId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    // If the response is not OK, throw an error
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    // Process the response data
+                    const data = await response.json();
+                    console.log('Delete session response:', data);
+
+                    // Clear any previous session data
+                    setSessionId(null);
+
+                    // If the session is successfully deleted, notify the user
+                    setMessages(prev => {
+                        // Replace the "starting new chat" status with the confirmation message
+                        return prev.map(msg =>
+                            msg.id === statusMessageId 
+                                ? { ...msg, text: "A new chat session has been started. Feel free to ask me anything!" } 
+                                : msg
+                        );
+                    });
+
+                    console.log('New session started successfully.');
+
+                } catch (error) {
+                    console.error('Error starting new chat session:', error);
+                    
+                    // Show error message to user if session deletion fails
+                    const errorMessage = "I'm having trouble starting a new session. Please try again later.";
+                    setMessages(prev => [
+                        ...prev, 
+                        {
+                            id: Date.now(),
+                            text: errorMessage,
+                            sender: 'agent',
+                            timestamp: new Date()
+                        }
+                    ]);
+                } finally {
+                    setIsTyping(false);
                 }
             };
 
@@ -1169,19 +1248,6 @@
                 window.URL.revokeObjectURL(url);
             };
 
-            const clearChat = () => {
-                if (window.confirm('Clear all messages? This cannot be undone.')) {
-                    setMessages([{
-                        id: Date.now(),
-                        text: "Chat cleared. How can I help you today?",
-                        sender: 'agent',
-                        timestamp: new Date()
-                    }]);
-                    setSessionId(null);
-                    setInputValue('');
-                    setTokenCount(0);
-                }
-            };
 
             const predefinedPrompts = [
                 "What topics are covered in BU MET CS633?",
@@ -1238,15 +1304,10 @@
                                 key={index}
                                 onClick={() => {
                                     // Start a new chat first
-                                    setMessages([{
-                                        id: Date.now(),
-                                        text: "New chat started. How can I help?",
-                                        sender: 'agent',
-                                        timestamp: new Date()
-                                    }]);
+                                    setMessages([]);
                                     setSessionId(null);
-                                    setInputValue('');
                                     setTokenCount(0);
+                                    
                                     // Then send the predefined prompt
                                     setTimeout(() => sendMessage(prompt), 100);
                                 }}
@@ -1309,23 +1370,6 @@
                             >
                                 <i className="fas fa-download" style={{marginRight: '8px'}}></i>
                                 Export Chat
-                            </button>
-
-                            <button 
-                                onClick={clearChat}
-                                style={{
-                                    width: '100%',
-                                    background: 'rgba(255, 255, 255, 0.1)',
-                                    color: 'white',
-                                    padding: '10px',
-                                    borderRadius: '10px',
-                                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                                    cursor: 'pointer',
-                                    fontSize: '12px'
-                                }}
-                            >
-                                <i className="fas fa-trash" style={{marginRight: '8px'}}></i>
-                                Clear Chat
                             </button>
                         </div>
                     </div>
@@ -1477,7 +1521,7 @@
                                                    'rgba(134, 239, 172, 0.2)',
                                         color: tokenCount > 100 ? '#f87171' : 
                                                tokenCount > 80 ? '#fbbf24' : 
-                                               '#86efac'
+                                               '#ffffff'
                                     }}>
                                         {tokenCount}/100
                                     </span>

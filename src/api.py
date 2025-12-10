@@ -261,11 +261,23 @@ async def upload_document(file: UploadFile = File(...), document_type: str = "")
 async def delete_session(user_id: str, session_id: str):
     """Delete a specific session"""
     session_key = f"{user_id}_{session_id}"
+    
     if session_key in sessions:
-        sessions[session_key] = await service.create_session(
+        # Create new session
+        await service.create_session(
             app_name=APP_NAME, user_id=user_id, session_id=session_id, state={}
         )
+
+        # Create runner for this session
+        runner = Runner(
+            agent=orchestrator,
+            app_name=APP_NAME,
+            session_service=service,
+        )
+        session_key = runner
+        logger.info(f"🧹 Cleared session for: {user_id}_{session_id}")
         return {"message": f"Session {session_key} cleared"}
+    
     return {"message": "Session not found"}
 
 
