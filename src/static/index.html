@@ -16,13 +16,6 @@
             height: 100vh;
             overflow: hidden;
             background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
-            animation: gradientShift 10s ease infinite;
-        }
-        
-        @keyframes gradientShift {
-            0% { background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%); }
-            50% { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-            100% { background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%); }
         }
         
         #root {
@@ -902,9 +895,15 @@
             const [isTyping, setIsTyping] = useState(false);
             const [uploadModalOpen, setUploadModalOpen] = useState(false);
             const [tokenCount, setTokenCount] = useState(0);
+            const [userId, setUserId] = useState(null);
             const messagesEndRef = useRef(null);
 
             useEffect(() => {
+                // Generate userId only once when component mounts
+                if (!userId) {
+                    setUserId('user_' + Date.now());
+                }
+                
                 if (messages.length === 0) {
                     setMessages([{
                         id: Date.now(),
@@ -956,7 +955,7 @@
                         body: JSON.stringify({
                             message: messageText,
                             session_id: sessionId || null,
-                            user_id: 'user_' + Date.now()
+                            user_id: userId
                         })
                     });
 
@@ -1008,9 +1007,6 @@
 
             const handleFileUpload = async (file, documentType) => {
                 try {
-                    // Generate user ID if not exists
-                    const userId = 'user_' + Date.now();
-                    
                     // Create FormData to send the file
                     const formData = new FormData();
                     formData.append('file', file);
@@ -1108,6 +1104,7 @@
                         timestamp: new Date()
                     }]);
                     setSessionId(null);
+                    setUserId('user_' + Date.now()); // Generate new userId for new chat
                 }
             };
 
@@ -1143,6 +1140,7 @@
                         timestamp: new Date()
                     }]);
                     setSessionId(null);
+                    setUserId('user_' + Date.now()); // Generate new userId for cleared chat
                     setInputValue('');
                     setTokenCount(0);
                 }
@@ -1202,7 +1200,7 @@
                             <button
                                 key={index}
                                 onClick={() => {
-                                    // Start a new chat first
+                                    // Start a new chat first with new userId
                                     setMessages([{
                                         id: Date.now(),
                                         text: "New chat started. How can I help?",
@@ -1210,6 +1208,7 @@
                                         timestamp: new Date()
                                     }]);
                                     setSessionId(null);
+                                    setUserId('user_' + Date.now()); // Generate new userId for fresh context
                                     setInputValue('');
                                     setTokenCount(0);
                                     // Then send the predefined prompt
