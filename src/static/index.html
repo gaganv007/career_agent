@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BU Course Agent - AI Academic Advisor</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -14,530 +13,742 @@
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        /* Static Background - Colorblind Friendly */
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            height: 100vh;
+            overflow: hidden;
             background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
-            z-index: -1;
         }
         
-        /* Static Orbs */
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.3;
-        }
-        
-        /* Glass Effect */
-        .glass {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-        }
-        
-        /* Modal Styles */
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .modal-content {
-            animation: slideUp 0.3s ease;
-        }
-        
-        @keyframes slideUp {
-            from { 
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Rainbow Text - Dynamic Version*/
-        .rainbow-text-gradient {
-            background: linear-gradient(45deg, #f72585, #b5179e, #7209b7, #560bad, #480ca8, #3a0ca3, #3f37c9, #4361ee, #4895ef, #4cc9f0);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: rainbow 3s linear infinite;
-        }
-
-        /* Rainbow Text - Static Version */
-        .rainbow-text {
-            background: linear-gradient(90deg, #5e72e4, #825ee4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* White Text - Static Version
-           For Readability  
-        */
-        .white-text-header {
-            color: white;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 4px 12px;
-            border-radius: 8px;
-            display: inline-block;
-        }
-        
-        /* Bounce Animation */
-        .bounce-in {
-            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-        
-        @keyframes bounceIn {
-            0% { opacity: 0; transform: scale(0.3) translateY(30px); }
-            50% { transform: scale(1.05) translateY(-10px); }
-            70% { transform: scale(0.95) translateY(5px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
+        #root {
+            height: 100vh;
+            overflow: hidden;
         }
         
         /* Floating Animation */
-        .floating {
-            animation: floating 6s ease-in-out infinite;
-        }
-        
         @keyframes floating {
-            0%, 100% { transform: translateY(0); }
+            0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }
         }
         
-        /* Neon Glow - Static Version */
-        .neon-glow {
-            box-shadow: 0 0 20px rgba(94, 114, 228, 0.5),
-                        0 0 40px rgba(94, 114, 228, 0.3);
+        /* Fade In Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Card Hover */
-        .card-hover {
-            transition: all 0.3s ease;
-            cursor: pointer;
+        /* Slide In Animation */
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
         
-        .card-hover:hover {
-            transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        /* Pulse Animation */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
         
-        /* Button - Static Gradient */
-        .btn-animated {
-            background: linear-gradient(135deg, #5e72e4, #825ee4);
-            color: white;
-            padding: 12px 32px;
-            border-radius: 50px;
-            font-weight: bold;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s;
+        /* Glow Animation */
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255,255,255,0.5); }
+            50% { box-shadow: 0 0 40px rgba(255,255,255,0.8); }
         }
         
-        .btn-animated:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(94, 114, 228, 0.4);
+        /* Typing Animation - Fixed */
+        @keyframes typing {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0.3; transform: scale(0.8); }
         }
         
-        /* Message Animation */
-        .message-bubble {
-            animation: messagePop 0.5s ease-out;
-        }
-        
-        @keyframes messagePop {
-            0% { opacity: 0; transform: scale(0.8) translateY(20px); }
-            50% { transform: scale(1.05) translateY(-5px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        
-        /* Better formatting for agent lists and recommendations */
-        .agent-message ul {
-            list-style: none;
-            padding-left: 0;
-            margin-top: 12px;
-        }
-        
-        .agent-message li {
-            margin-bottom: 8px;
-            padding-left: 24px;
-            position: relative;
-        }
-        
-        .agent-message li:before {
-            content: '▸';
-            position: absolute;
-            left: 8px;
-            color: #a0aec0;
-        }
-        
-        .agent-message strong {
-            color: #e0e7ff;
-            font-weight: 600;
-        }
-        
-        .agent-message code {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.9em;
-        }
-        
-        /* Typing Dots */
         .typing-dot {
             display: inline-block;
             width: 8px;
             height: 8px;
-            border-radius: 50%;
-            background: white;
             margin: 0 3px;
-            animation: typingAnimation 1.4s infinite ease-in-out;
+            background: white;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
         }
         
         .typing-dot:nth-child(1) { animation-delay: -0.32s; }
         .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-        
-        @keyframes typingAnimation {
-            0%, 80%, 100% {
-                transform: scale(0.8);
-                opacity: 0.5;
-            }
-            40% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
+        .typing-dot:nth-child(3) { animation-delay: 0s; }
     </style>
 </head>
 <body>
-    <div class="animated-bg"></div>
-    
-    <!-- Static Background Orbs -->
-    <div class="orb" style="width: 400px; height: 400px; top: -200px; left: -100px; background: radial-gradient(circle, rgba(94, 114, 228, 0.2), transparent);"></div>
-    <div class="orb" style="width: 300px; height: 300px; bottom: -150px; right: -100px; background: radial-gradient(circle, rgba(130, 94, 228, 0.2), transparent);"></div>
-    <div class="orb" style="width: 350px; height: 350px; top: 50%; left: 50%; background: radial-gradient(circle, rgba(94, 114, 228, 0.2), transparent);"></div>
-
-    
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // API Configuration - Dynamic based on environment
+        // API Configuration
         const API_BASE_URL = window.location.hostname === 'localhost' 
-            ? 'http://localhost:8000'
+            ? 'http://localhost:8000' 
             : `${window.location.protocol}//${window.location.host}`;
-        
-        // Navigation Component
-        const Navigation = ({ currentPage, setCurrentPage }) => {
-            const [isScrolled, setIsScrolled] = useState(false);
-            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+            //: 'https://career-agent-9cif.onrender.com';
 
-            useEffect(() => {
-                const handleScroll = () => {
-                    setIsScrolled(window.scrollY > 20);
-                };
-                window.addEventListener('scroll', handleScroll);
-                return () => window.removeEventListener('scroll', handleScroll);
-                // Format message text to handle lists, tables, and formatting
-            const formatMessageText = (text) => {
-                // Check if this is a structured response with ** markers
-                if (text.includes('**') && text.includes('**')) {
-                    // Parse sections with headers
-                    const sections = text.split(/\*\*\d+\.\s+/).filter(Boolean);
-                    
+        // Token counting function - Fixed
+        const countTokens = (text) => {
+            if (!text || text.length === 0) return 0;
+            // More accurate token counting
+            const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+            const chars = text.length;
+            // Approximation: average of word-based and character-based estimates
+            const tokensByWords = Math.ceil(words.length * 1.3);
+            const tokensByChars = Math.ceil(chars / 4);
+            return Math.max(tokensByWords, tokensByChars);
+        };
+
+        // Enhanced Format message text with better formatting support
+        const formatMessageText = (text) => {
+            if (!text || typeof text !== 'string') {
+                return <div>No message content</div>;
+            }
+
+            // Try to parse as JSON first
+            try {
+                const jsonData = JSON.parse(text);
+                if (typeof jsonData === 'object') {
                     return (
-                        <div className="formatted-content">
-                            {sections.map((section, idx) => {
-                                // Extract title and content
-                                const lines = section.split('\n').filter(line => line.trim());
-                                const titleMatch = section.match(/^([^:]+):\*\*/);
-                                const title = titleMatch ? titleMatch[1].replace(/\*\*/g, '') : '';
-                                
-                                // Parse subsections
-                                const items = [];
-                                lines.forEach(line => {
-                                    if (line.includes('**Purpose**:')) {
-                                        items.push({
-                                            label: 'Purpose',
-                                            content: line.replace(/.*\*\*Purpose\*\*:\s*/, '').replace(/\*\*/g, '')
-                                        });
-                                    } else if (line.includes('**Examples**:')) {
-                                        items.push({
-                                            label: 'Examples',
-                                            content: ''
-                                        });
-                                    } else if (line.match(/^\s*\*\s+\*\*([^:]+):\*\*/)) {
-                                        const match = line.match(/^\s*\*\s+\*\*([^:]+):\*\*\s*(.*)/);
-                                        if (match) {
-                                            items.push({
-                                                label: match[1],
-                                                content: match[2].replace(/\*\*/g, '')
-                                            });
-                                        }
-                                    }
-                                });
-                                
-                                return (
-                                    <div key={idx} className="mb-6">
-                                        {title && (
-                                            <h3 className="text-lg font-bold text-white mb-3 border-b border-white border-opacity-20 pb-2">
-                                                {idx + 1}. {title}
-                                            </h3>
-                                        )}
-                                        {items.length > 0 && (
-                                            <table className="w-full">
-                                                <tbody>
-                                                    {items.map((item, i) => (
-                                                        <tr key={i} className="border-b border-white border-opacity-10">
-                                                            <td className="py-2 px-3 font-semibold text-white opacity-80 align-top w-32">
-                                                                {item.label}:
-                                                            </td>
-                                                            <td className="py-2 px-3 text-white opacity-90">
-                                                                {item.content}
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
+                        <pre style={{
+                            background: 'rgba(0,0,0,0.2)', 
+                            padding: '12px', 
+                            borderRadius: '6px', 
+                            overflow: 'auto', 
+                            color: 'white',
+                            whiteSpace: 'pre-wrap',
+                            fontFamily: 'monospace'
+                        }}>
+                            <code>{JSON.stringify(jsonData, null, 2)}</code>
+                        </pre>
                     );
                 }
-                
-                // Check if this looks like JSON or structured data
-                try {
-                    const jsonData = JSON.parse(text);
-                    if (typeof jsonData === 'object') {
-                        return (
-                            <div className="json-content">
-                                <pre className="bg-black bg-opacity-20 p-3 rounded-lg overflow-x-auto">
-                                    <code className="text-white text-sm">
-                                        {JSON.stringify(jsonData, null, 2)}
-                                    </code>
-                                </pre>
-                            </div>
+            } catch (e) {
+                // Not JSON, continue with text formatting
+            }
+
+            // Function to parse and format the text with proper markers
+            const formatTextWithMarkers = (inputText) => {
+                const lines = inputText.split('\n');
+                const formatted = [];
+                let inList = false;
+                let listItems = [];
+                let inNumberedList = false;
+                let numberedItems = [];
+                let currentSection = null;
+                let inTable = false;
+                let tableRows = [];
+
+                lines.forEach((line, index) => {
+                    const trimmedLine = line.trim();
+                    
+                    // Handle bold text markers **text**
+                    const processBoldText = (text) => {
+                        const parts = text.split(/\*\*(.*?)\*\*/g);
+                        return parts.map((part, idx) => {
+                            if (idx % 2 === 1) {
+                                return (
+                                    <strong key={idx} style={{ color: '#ffffff', textDecoration: 'underline' }}>
+                                        {part}
+                                    </strong>
+                                );                           
+                             }
+                            return part;
+                        });
+                    };
+
+                    // Detect start/end of table
+                    const isTableRow = trimmedLine.includes('|') && trimmedLine.split('|').length > 2;
+                    const isHeaderDivider = trimmedLine.match(/^[\|\s\-:]+$/) && trimmedLine.includes('|');
+                    
+                    // If we encounter a table row
+                    if (isTableRow && !isHeaderDivider) {
+                        if (!inTable) {
+                            // Start a new table
+                            inTable = true;
+                            tableRows = [];
+                            // Close any open lists
+                            if (inList && listItems.length > 0) {
+                                formatted.push(
+                                    <ul key={`list-${formatted.length}`} style={{
+                                        marginLeft: '20px',
+                                        marginBottom: '15px',
+                                        listStyle: 'disc'
+                                    }}>
+                                        {listItems}
+                                    </ul>
+                                );
+                                listItems = [];
+                                inList = false;
+                            }
+                            if (inNumberedList && numberedItems.length > 0) {
+                                formatted.push(
+                                    <ol key={`numlist-${formatted.length}`} style={{
+                                        marginLeft: '20px',
+                                        marginBottom: '15px',
+                                        listStyleType: 'decimal',
+                                        listStylePosition: 'inside',
+                                        paddingLeft: '10px'
+                                    }}>
+                                        {numberedItems}
+                                    </ol>
+                                );
+                                numberedItems = [];
+                                inNumberedList = false;
+                            }
+                        }
+                        
+                        const cells = trimmedLine.split('|').map(cell => cell.trim()).filter(cell => cell !== '');
+                        tableRows.push(cells);
+                    }
+                    // Skip header divider rows
+                    else if (isHeaderDivider && inTable) {
+                        // Skip this line but stay in table mode
+                    }
+                    // End of table - output the complete table
+                    else if (inTable && !isTableRow) {
+                        if (tableRows.length > 0) {
+                            formatted.push(
+                                <div key={`table-${formatted.length}`} style={{
+                                    marginBottom: '15px',
+                                    border: '1px solid rgba(255,255,255,0.2)',
+                                    borderRadius: '8px',
+                                    overflow: 'hidden'
+                                }}>
+                                    <table style={{
+                                        width: '100%',
+                                        borderCollapse: 'collapse'
+                                    }}>
+                                        <tbody>
+                                            {tableRows.map((row, rowIdx) => (
+                                                <tr key={rowIdx} style={{
+                                                    background: rowIdx === 0 ? 'rgba(94, 114, 228, 0.2)' : 
+                                                               rowIdx % 2 === 0 ? 'rgba(255,255,255,0.05)' : 'transparent'
+                                                }}>
+                                                    {row.map((cell, cellIdx) => (
+                                                        <td key={cellIdx} style={{
+                                                            padding: '8px 12px',
+                                                            borderRight: cellIdx < row.length - 1 ? '1px solid rgba(255,255,255,0.1)' : 'none',
+                                                            borderBottom: rowIdx < tableRows.length - 1 ? '1px solid rgba(255,255,255,0.1)' : 'none',
+                                                            color: 'white',
+                                                            fontWeight: rowIdx === 0 ? 'bold' : 'normal',
+                                                            textAlign: 'left'
+                                                        }}>
+                                                            {processBoldText(cell)}
+                                                        </td>
+                                                    ))}
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            );
+                        }
+                        inTable = false;
+                        tableRows = [];
+                        // Now process the current line normally
+                        if (trimmedLine) {
+                            // Process this line with the regular logic below
+                        }
+                    }
+
+                    // Check for section headers (lines ending with :)
+                    if (trimmedLine.endsWith(':') && trimmedLine.length > 1 && !trimmedLine.includes('http')) {
+                        // Save any pending list
+                        if (inList && listItems.length > 0) {
+                            formatted.push(
+                                <ul key={`list-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px',
+                                    listStyle: 'disc'
+                                }}>
+                                    {listItems}
+                                </ul>
+                            );
+                            listItems = [];
+                            inList = false;
+                        }
+                        if (inNumberedList && numberedItems.length > 0) {
+                            formatted.push(
+                                <ol key={`numlist-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px',
+                                    listStyleType: 'decimal',
+                                    listStylePosition: 'inside',
+                                    paddingLeft: '10px'
+                                }}>
+                                    {numberedItems}
+                                </ol>
+                            );
+                            numberedItems = [];
+                            inNumberedList = false;
+                        }
+                        
+                        formatted.push(
+                            <h4 key={`header-${index}`} style={{
+                                color: '#ffffff',
+                                fontWeight: 'bold',
+                                marginTop: '15px',
+                                marginBottom: '10px',
+                                fontSize: '16px'
+                            }}>
+                                {processBoldText(trimmedLine.slice(0, -1))}
+                            </h4>
                         );
                     }
-                } catch (e) {
-                    // Not JSON, continue with regular formatting
-                }
-                
-                // Handle bullet points and regular formatting
-                let formatted = text.replace(/^[•·▪▸]\s*/gm, '');
-                formatted = formatted.replace(/^[-*]\s+/gm, '• ');
-                formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-                
-                // Handle numbered lists
-                formatted = formatted.replace(/^\d+\.\s+/gm, (match) => `${match}`);
-                
-                // Handle line breaks for better readability
-                const lines = formatted.split('\n');
-                return (
-                    <div>
-                        {lines.map((line, idx) => {
-                            if (line.startsWith('• ')) {
-                                return <li key={idx} style={{marginLeft: '20px', marginBottom: '4px', listStyle: 'none'}}>{line.substring(2)}</li>;
-                            } else if (/^\d+\.\s/.test(line)) {
-                                return <li key={idx} style={{marginLeft: '20px', marginBottom: '4px', listStyle: 'none'}}>{line}</li>;
-                            } else if (line.trim() === '') {
-                                return <br key={idx} />;
-                            } else {
-                                return <div key={idx} dangerouslySetInnerHTML={{ __html: line }} />;
+                    // Handle bullet points (-, *, •)
+                    else if (/^[-*•]\s+/.test(trimmedLine)) {
+                        const content = trimmedLine.replace(/^[-*•]\s+/, '');
+                        if (!inList) {
+                            inList = true;
+                            if (inNumberedList && numberedItems.length > 0) {
+                                formatted.push(
+                                    <ol key={`numlist-${formatted.length}`} style={{
+                                        marginLeft: '20px',
+                                        marginBottom: '15px'
+                                    }}>
+                                        {numberedItems}
+                                    </ol>
+                                );
+                                numberedItems = [];
+                                inNumberedList = false;
                             }
-                        })}
-                    </div>
-                );
-            };
-            }, []);
-
-            const navLinks = [
-                { name: 'Home', path: 'home', icon: 'fa-home' },
-                { name: 'Features', path: 'features', icon: 'fa-sparkles' },
-                { name: 'About', path: 'about', icon: 'fa-info-circle' },
-                { name: 'Contact', path: 'contact', icon: 'fa-envelope' }
-            ];
-
-            return (
-                <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-                    isScrolled ? 'glass py-3' : 'py-6'
-                }`}>
-                    <div className="container mx-auto px-6">
-                        <div className="flex justify-between items-center">
-                            <div className="flex items-center space-x-3">
-                                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-400 to-pink-600 flex items-center justify-center floating">
-                                    <i className="fas fa-graduation-cap text-white text-xl"></i>
-                                </div>
-                                <h1 className="text-2xl font-bold white-text-header">BU Course Agent</h1>
-                            </div>
-                            
-                            {/* Desktop Menu */}
-                            <div className="hidden md:flex items-center space-x-6">
-                                {navLinks.map(link => (
-                                    <button
-                                        key={link.path}
-                                        onClick={() => setCurrentPage(link.path)}
-                                        className={`text-white transition-all duration-300 hover:scale-110 ${
-                                            currentPage === link.path ? 'font-bold' : ''
-                                        }`}
-                                    >
-                                        <i className={`fas ${link.icon} mr-2`}></i>
-                                        {link.name}
-                                    </button>
-                                ))}
-                                <button 
-                                    onClick={() => setCurrentPage('chat')}
-                                    className="btn-animated"
-                                >
-                                    Get Started ✨
-                                </button>
-                            </div>
-                            
-                            {/* Mobile Menu Button */}
-                            <button
-                                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                className="md:hidden text-white text-2xl"
-                            >
-                                <i className={`fas ${mobileMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
-                            </button>
-                        </div>
+                        }
+                        listItems.push(
+                            <li key={`item-${index}`} style={{marginBottom: '5px', color: 'white'}}>
+                                {processBoldText(content)}
+                            </li>
+                        );
+                    }
+                    // Handle numbered lists (1., 2., etc.)
+                    else if (/^\d+\.\s+/.test(trimmedLine)) {
+                        const content = trimmedLine.replace(/^\d+\.\s+/, '');
+                        if (!inNumberedList) {
+                            inNumberedList = true;
+                            if (inList && listItems.length > 0) {
+                                formatted.push(
+                                    <ul key={`list-${formatted.length}`} style={{
+                                        marginLeft: '20px',
+                                        marginBottom: '15px',
+                                        listStyle: 'disc'
+                                    }}>
+                                        {listItems}
+                                    </ul>
+                                );
+                                listItems = [];
+                                inList = false;
+                            }
+                        }
+                        numberedItems.push(
+                            <li key={`numitem-${index}`} style={{marginBottom: '5px', color: 'white'}}>
+                                {processBoldText(content)}
+                            </li>
+                        );
+                    }
+                    // Handle tables (lines with | separators or structured data)
+                    else if (trimmedLine.includes('|') && trimmedLine.split('|').length > 2) {
+                        // Close any open lists
+                        if (inList && listItems.length > 0) {
+                            formatted.push(
+                                <ul key={`list-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px',
+                                    listStyle: 'disc'
+                                }}>
+                                    {listItems}
+                                </ul>
+                            );
+                            listItems = [];
+                            inList = false;
+                        }
+                        if (inNumberedList && numberedItems.length > 0) {
+                            formatted.push(
+                                <ol key={`numlist-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px',
+                                    listStyleType: 'decimal',
+                                    listStylePosition: 'inside',
+                                    paddingLeft: '10px'
+                                }}>
+                                    {numberedItems}
+                                </ol>
+                            );
+                            numberedItems = [];
+                            inNumberedList = false;
+                        }
                         
-                        {/* Mobile Menu */}
-                        {mobileMenuOpen && (
-                            <div className="md:hidden glass mt-4 p-6 rounded-2xl bounce-in">
-                                {navLinks.map(link => (
-                                    <button
-                                        key={link.path}
-                                        onClick={() => {
-                                            setCurrentPage(link.path);
-                                            setMobileMenuOpen(false);
-                                        }}
-                                        className={`block w-full text-left text-white py-3 px-4 rounded-lg transition-all hover:bg-white hover:bg-opacity-10 ${
-                                            currentPage === link.path ? 'bg-white bg-opacity-10' : ''
-                                        }`}
-                                    >
-                                        <i className={`fas ${link.icon} mr-3`}></i>
-                                        {link.name}
-                                    </button>
-                                ))}
-                                <button
-                                    onClick={() => {
-                                        setCurrentPage('chat');
-                                        setMobileMenuOpen(false);
-                                    }}
-                                    className="w-full text-left text-white py-3 px-4 rounded-lg transition-all hover:bg-white hover:bg-opacity-10 mt-2 font-bold"
-                                >
-                                    <i className="fas fa-comments mr-3"></i>
-                                    Get Started
-                                </button>
+                        // Check if this looks like a table header or divider
+                        const cells = trimmedLine.split('|').map(cell => cell.trim()).filter(cell => cell);
+                        const isHeaderDivider = cells.every(cell => /^[-:]+$/.test(cell));
+                        
+                        if (!isHeaderDivider) {
+                            // Create proper table row
+                            formatted.push(
+                                <div key={`table-row-${index}`} style={{
+                                    display: 'flex',
+                                    borderBottom: '1px solid rgba(255,255,255,0.2)',
+                                    padding: '8px 0',
+                                    background: index % 2 === 0 ? 'rgba(255,255,255,0.05)' : 'transparent'
+                                }}>
+                                    {cells.map((cell, idx) => (
+                                        <div key={idx} style={{
+                                            flex: 1,
+                                            padding: '5px 10px',
+                                            color: 'white',
+                                            fontWeight: index === 0 ? 'bold' : 'normal',
+                                            borderRight: idx < cells.length - 1 ? '1px solid rgba(255,255,255,0.1)' : 'none'
+                                        }}>
+                                            {processBoldText(cell)}
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        }
+                    }
+                    // Handle table-like structures with multiple spaces or tabs
+                    else if (trimmedLine.match(/\s{2,}|\t/) && trimmedLine.split(/\s{2,}|\t/).length > 1) {
+                        const cells = trimmedLine.split(/\s{2,}|\t/).map(cell => cell.trim()).filter(cell => cell);
+                        if (cells.length > 1) {
+                            formatted.push(
+                                <div key={`spaced-table-${index}`} style={{
+                                    display: 'flex',
+                                    borderBottom: '1px solid rgba(255,255,255,0.1)',
+                                    padding: '6px 0'
+                                }}>
+                                    {cells.map((cell, idx) => (
+                                        <div key={idx} style={{
+                                            flex: 1,
+                                            padding: '3px 8px',
+                                            color: 'white'
+                                        }}>
+                                            {processBoldText(cell)}
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        } else {
+                            // Single cell, treat as regular text
+                            formatted.push(
+                                <p key={`text-${index}`} style={{
+                                    marginBottom: '10px',
+                                    color: 'white',
+                                    lineHeight: '1.6'
+                                }}>
+                                    {processBoldText(trimmedLine)}
+                                </p>
+                            );
+                        }
+                    }
+                    // Regular text
+                    else if (trimmedLine) {
+                        // Close any open lists
+                        if (inList && listItems.length > 0) {
+                            formatted.push(
+                                <ul key={`list-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px',
+                                    listStyle: 'disc'
+                                }}>
+                                    {listItems}
+                                </ul>
+                            );
+                            listItems = [];
+                            inList = false;
+                        }
+                        if (inNumberedList && numberedItems.length > 0) {
+                            formatted.push(
+                                <ol key={`numlist-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px'
+                                }}>
+                                    {numberedItems}
+                                </ol>
+                            );
+                            numberedItems = [];
+                            inNumberedList = false;
+                        }
+                        
+                        formatted.push(
+                            <p key={`text-${index}`} style={{
+                                marginBottom: '10px',
+                                color: 'white',
+                                lineHeight: '1.6'
+                            }}>
+                                {processBoldText(trimmedLine)}
+                            </p>
+                        );
+                    }
+                    // Empty line
+                    else if (index < lines.length - 1) {
+                        // Close any open lists
+                        if (inList && listItems.length > 0) {
+                            formatted.push(
+                                <ul key={`list-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px',
+                                    listStyle: 'disc'
+                                }}>
+                                    {listItems}
+                                </ul>
+                            );
+                            listItems = [];
+                            inList = false;
+                        }
+                        if (inNumberedList && numberedItems.length > 0) {
+                            formatted.push(
+                                <ol key={`numlist-${formatted.length}`} style={{
+                                    marginLeft: '20px',
+                                    marginBottom: '15px'
+                                }}>
+                                    {numberedItems}
+                                </ol>
+                            );
+                            numberedItems = [];
+                            inNumberedList = false;
+                        }
+                    }
+                });
+
+                // Handle any remaining list items
+                if (inList && listItems.length > 0) {
+                    formatted.push(
+                        <ul key={`list-${formatted.length}`} style={{
+                            marginLeft: '20px',
+                            marginBottom: '15px',
+                            listStyle: 'disc'
+                        }}>
+                            {listItems}
+                        </ul>
+                    );
+                }
+                if (inNumberedList && numberedItems.length > 0) {
+                    formatted.push(
+                        <ol key={`numlist-${formatted.length}`} style={{
+                            marginLeft: '20px',
+                            marginBottom: '15px'
+                        }}>
+                            {numberedItems}
+                        </ol>
+                    );
+                }
+
+                return formatted;
+            };
+
+            const formattedContent = formatTextWithMarkers(text);
+            
+            return (
+                <div style={{
+                    maxWidth: '100%',
+                    wordWrap: 'break-word',
+                    overflowWrap: 'break-word'
+                }}>
+                    {formattedContent}
+                </div>
+            );
+        };
+
+        // Navigation Component
+        const Navigation = ({ currentPage, setCurrentPage }) => {
+            return (
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    padding: '16px 0',
+                    height: '70px',
+                    display: 'flex',
+                    alignItems: 'center'
+                }}>
+                    <div style={{
+                        maxWidth: '1200px', 
+                        margin: '0 auto', 
+                        padding: '0 20px', 
+                        width: '100%',
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center'
+                    }}>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
+                            <div style={{
+                                width: '48px',
+                                height: '48px',
+                                borderRadius: '50%',
+                                background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}>
+                                <i className="fas fa-graduation-cap" style={{color: 'white', fontSize: '20px'}}></i>
                             </div>
-                        )}
+                            <span style={{
+                                fontSize: '24px',
+                                fontWeight: 'bold',
+                                background: 'linear-gradient(90deg, #5e72e4, #825ee4)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent'
+                            }}>
+                                BU Course Agent
+                            </span>
+                        </div>
+                        <nav style={{display: 'flex', gap: '30px', alignItems: 'center'}}>
+                            <button
+                                onClick={() => setCurrentPage('home')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: currentPage === 'home' ? '#5e72e4' : '#333',
+                                    fontWeight: currentPage === 'home' ? 'bold' : 'normal',
+                                    fontSize: '16px'
+                                }}
+                            >
+                                Home
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage('about')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: currentPage === 'about' ? '#5e72e4' : '#333',
+                                    fontWeight: currentPage === 'about' ? 'bold' : 'normal',
+                                    fontSize: '16px'
+                                }}
+                            >
+                                About
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage('contact')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: currentPage === 'contact' ? '#5e72e4' : '#333',
+                                    fontWeight: currentPage === 'contact' ? 'bold' : 'normal',
+                                    fontSize: '16px'
+                                }}
+                            >
+                                Contact Us
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage('chat')}
+                                style={{
+                                    background: 'linear-gradient(135deg, #5e72e4, #825ee4)',
+                                    color: 'white',
+                                    padding: '10px 24px',
+                                    borderRadius: '50px',
+                                    border: 'none',
+                                    fontWeight: 'bold',
+                                    cursor: 'pointer',
+                                    fontSize: '16px',
+                                    boxShadow: '0 4px 15px rgba(94, 114, 228, 0.4)'
+                                }}
+                            >
+                                Chat Now
+                            </button>
+                        </nav>
                     </div>
-                </nav>
+                </div>
+            );
+        };
+
+        // Footer Component
+        const Footer = ({ setCurrentPage }) => {
+            return (
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    padding: '20px 0',
+                    height: '70px',
+                    display: 'flex',
+                    alignItems: 'center'
+                }}>
+                    <div style={{textAlign: 'center', width: '100%'}}>
+                        <button 
+                            onClick={() => setCurrentPage('terms')}
+                            style={{background: 'none', border: 'none', cursor: 'pointer', color: '#5e72e4', marginRight: '20px'}}
+                        >
+                            Terms of Service
+                        </button>
+                        <span style={{color: '#999'}}>|</span>
+                        <button 
+                            onClick={() => setCurrentPage('privacy')}
+                            style={{background: 'none', border: 'none', cursor: 'pointer', color: '#5e72e4', margin: '0 20px'}}
+                        >
+                            Privacy policy
+                        </button>
+                        <span style={{color: '#999'}}>|</span>
+                        <button 
+                            onClick={() => setCurrentPage('contact')}
+                            style={{background: 'none', border: 'none', cursor: 'pointer', color: '#5e72e4', marginLeft: '20px'}}
+                        >
+                            Contact us
+                        </button>
+                    </div>
+                </div>
             );
         };
 
         // Home Page
         const HomePage = ({ setCurrentPage }) => {
-            const features = [
-                { icon: 'fa-brain', title: 'AI-Powered Recommendations', description: 'Get personalized course suggestions based on your academic profile', color: 'from-blue-500 to-blue-700' },
-                { icon: 'fa-calendar-check', title: 'Smart Schedule Planning', description: 'Optimize your semester schedule with intelligent conflict resolution', color: 'from-green-500 to-green-700' },
-                { icon: 'fa-graduation-cap', title: 'Degree Planning', description: 'Map out your academic path from enrollment to graduation', color: 'from-orange-500 to-orange-700' },
-                { icon: 'fa-file-alt', title: 'Document Analysis', description: 'Upload transcripts, resumes, and job descriptions for tailored advice', color: 'from-purple-500 to-purple-700' }
-            ];
-
             return (
-                <div className="min-h-screen pt-24 pb-12">
-                    <section className="container mx-auto px-6 py-20">
-                        <div className="text-center max-w-5xl mx-auto">
-                            <div className="mb-8">
-                                <i className="fas fa-robot text-8xl text-white opacity-90 floating"></i>
-                            </div>
-                            <h1 className="text-5xl md:text-7xl font-black text-white mb-6 bounce-in">
-                                Your AI Academic Companion
-                            </h1>
-                            <p className="text-xl md:text-2xl text-white opacity-90 mb-12">
-                                Navigate your academic journey at BU MET with AI-powered assistance
-                            </p>
-                            <button 
-                                onClick={() => setCurrentPage('chat')}
-                                className="btn-animated text-lg px-8 py-4 neon-glow"
-                            >
-                                <i className="fas fa-comments mr-3"></i>
-                                Start Chatting
-                            </button>
-                        </div>
-                    </section>
-
-                    <section className="container mx-auto px-6 py-20">
-                        <h2 className="text-4xl font-bold text-center text-white mb-12">
-                            Core Features
-                        </h2>
-                        <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                            {features.map((feature, index) => (
-                                <div
-                                    key={index}
-                                    className="glass p-8 rounded-2xl card-hover bounce-in"
-                                    style={{ animationDelay: `${index * 0.1}s` }}
-                                >
-                                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center mb-6`}>
-                                        <i className={`fas ${feature.icon} text-white text-2xl`}></i>
-                                    </div>
-                                    <h3 className="text-2xl font-bold text-white mb-3">{feature.title}</h3>
-                                    <p className="text-white opacity-80">{feature.description}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-
-                    <section className="container mx-auto px-6 py-20">
-                        <div className="glass rounded-3xl p-12 text-center">
-                            <h2 className="text-4xl font-bold text-white mb-6">
-                                Ready to Start Your Academic Journey?
-                            </h2>
-                            <p className="text-xl text-white opacity-80 mb-8 max-w-2xl mx-auto">
-                                Get instant, AI-powered guidance for course selection and academic planning at Boston University MET.
-                            </p>
-                            <button 
-                                onClick={() => setCurrentPage('chat')}
-                                className="btn-animated text-lg px-10 py-4"
-                            >
-                                Get Started Now
-                                <i className="fas fa-arrow-right ml-3"></i>
-                            </button>
-                        </div>
-                    </section>
+                <div style={{
+                    height: 'calc(100vh - 140px)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    color: 'white',
+                    animation: 'fadeIn 1s ease-out'
+                }}>
+                    <i className="fas fa-robot" style={{
+                        fontSize: '96px', 
+                        marginBottom: '30px', 
+                        opacity: 0.9,
+                        animation: 'floating 6s ease-in-out infinite'
+                    }}></i>
+                    <h1 style={{
+                        fontSize: '48px', 
+                        marginBottom: '20px', 
+                        fontWeight: 'bold',
+                        animation: 'slideIn 0.8s ease-out'
+                    }}>
+                        BU Course Agent
+                    </h1>
+                    <p style={{
+                        fontSize: '20px', 
+                        marginBottom: '30px', 
+                        opacity: 0.9, 
+                        maxWidth: '600px',
+                        animation: 'fadeIn 1.2s ease-out'
+                    }}>
+                        Your AI-powered academic advisor for BU MET Computer Science programs
+                    </p>
+                    <button 
+                        onClick={() => setCurrentPage('chat')}
+                        style={{
+                            background: 'white',
+                            color: '#5e72e4',
+                            fontSize: '18px',
+                            padding: '15px 40px',
+                            borderRadius: '50px',
+                            border: 'none',
+                            fontWeight: 'bold',
+                            cursor: 'pointer',
+                            boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+                            animation: 'pulse 2s infinite',
+                            transition: 'all 0.3s'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.target.style.transform = 'scale(1.1)';
+                            e.target.style.boxShadow = '0 15px 40px rgba(0,0,0,0.3)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.transform = 'scale(1)';
+                            e.target.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
+                        }}
+                    >
+                        Get Started
+                    </button>
                 </div>
             );
         };
@@ -552,7 +763,7 @@
                 { value: 'transcript', label: 'Academic Transcript', icon: 'fa-file-alt' },
                 { value: 'resume', label: 'Resume/CV', icon: 'fa-id-card' },
                 { value: 'job_description', label: 'Job Description', icon: 'fa-briefcase' },
-                { value: 'course_list', label: 'Course List', icon: 'fa-list' }
+                { value: 'course_list', label: 'Course List', icon: 'fa-list' },
             ];
 
             const handleFileSelect = (e) => {
@@ -574,72 +785,116 @@
             if (!isOpen) return null;
 
             return (
-                <div className="modal-backdrop">
-                    <div className="modal-content glass rounded-2xl p-8 max-w-lg w-full mx-4">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-bold text-white">Upload Document</h2>
-                            <button onClick={onClose} className="text-white opacity-60 hover:opacity-100">
-                                <i className="fas fa-times text-xl"></i>
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0, 0, 0, 0.7)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1000
+                }}>
+                    <div style={{
+                        background: 'linear-gradient(135deg, #5e72e4, #825ee4)',
+                        borderRadius: '20px',
+                        padding: '30px',
+                        maxWidth: '500px',
+                        width: '90%',
+                        color: 'white'
+                    }}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
+                            <h2 style={{fontSize: '24px', fontWeight: 'bold'}}>Upload Document</h2>
+                            <button onClick={onClose} style={{background: 'none', border: 'none', cursor: 'pointer', fontSize: '28px', color: 'white'}}>
+                                ×
                             </button>
                         </div>
 
-                        {/* Document Type Selection */}
-                        <div className="mb-6">
-                            <label className="text-white mb-3 block">Select Document Type:</label>
-                            <div className="space-y-2">
-                                {documentTypes.map(type => (
-                                    <button
-                                        key={type.value}
-                                        onClick={() => setDocumentType(type.value)}
-                                        className={`w-full p-3 rounded-lg text-white text-left flex items-center transition-all ${
-                                            documentType === type.value 
-                                                ? 'bg-gradient-to-r from-blue-500 to-purple-600' 
-                                                : 'glass hover:bg-white hover:bg-opacity-10'
-                                        }`}
-                                    >
-                                        <i className={`fas ${type.icon} mr-3`}></i>
-                                        {type.label}
-                                    </button>
-                                ))}
-                            </div>
+                        <div style={{marginBottom: '20px'}}>
+                            <label style={{display: 'block', marginBottom: '10px', fontWeight: '500'}}>
+                                Select Document Type:
+                            </label>
+                            {documentTypes.map(type => (
+                                <button
+                                    key={type.value}
+                                    onClick={() => setDocumentType(type.value)}
+                                    style={{
+                                        display: 'block',
+                                        width: '100%',
+                                        padding: '12px',
+                                        marginBottom: '8px',
+                                        borderRadius: '12px',
+                                        border: documentType === type.value ? '2px solid white' : '1px solid rgba(255,255,255,0.3)',
+                                        background: documentType === type.value ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)',
+                                        color: 'white',
+                                        textAlign: 'left',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    <i className={`fas ${type.icon}`} style={{marginRight: '10px'}}></i>
+                                    {type.label}
+                                </button>
+                            ))}
                         </div>
 
-                        {/* File Selection */}
                         {documentType && (
-                            <div className="mb-6">
+                            <div style={{marginBottom: '20px'}}>
                                 <input
                                     ref={fileInputRef}
                                     type="file"
                                     onChange={handleFileSelect}
-                                    accept=".pdf,.docx,.txt,.text"
-                                    className="hidden"
+                                    accept=".pdf,.doc,.docx,.txt"
+                                    style={{display: 'none'}}
                                 />
                                 <button
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="w-full glass p-4 rounded-lg text-white hover:bg-white hover:bg-opacity-10 transition-all"
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '12px',
+                                        border: '1px solid rgba(255,255,255,0.3)',
+                                        background: 'rgba(255,255,255,0.1)',
+                                        color: 'white',
+                                        cursor: 'pointer'
+                                    }}
                                 >
-                                    <i className="fas fa-cloud-upload-alt mr-3"></i>
+                                    <i className="fas fa-cloud-upload-alt" style={{marginRight: '10px'}}></i>
                                     {selectedFile ? selectedFile.name : 'Choose File'}
                                 </button>
                             </div>
                         )}
 
-                        {/* Action Buttons */}
-                        <div className="flex space-x-3">
+                        <div style={{display: 'flex', gap: '10px'}}>
                             <button
                                 onClick={handleUpload}
                                 disabled={!selectedFile || !documentType}
-                                className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
-                                    selectedFile && documentType
-                                        ? 'btn-animated'
-                                        : 'glass text-white opacity-50 cursor-not-allowed'
-                                }`}
+                                style={{
+                                    flex: 1,
+                                    padding: '12px',
+                                    borderRadius: '12px',
+                                    border: 'none',
+                                    background: 'white',
+                                    color: '#5e72e4',
+                                    fontWeight: 'bold',
+                                    opacity: (!selectedFile || !documentType) ? 0.5 : 1,
+                                    cursor: (!selectedFile || !documentType) ? 'not-allowed' : 'pointer'
+                                }}
                             >
                                 Upload
                             </button>
                             <button
                                 onClick={onClose}
-                                className="flex-1 glass text-white py-3 rounded-lg font-semibold hover:bg-white hover:bg-opacity-10 transition-all"
+                                style={{
+                                    flex: 1,
+                                    padding: '12px',
+                                    borderRadius: '12px',
+                                    border: '1px solid rgba(255,255,255,0.3)',
+                                    background: 'rgba(255,255,255,0.1)',
+                                    color: 'white',
+                                    cursor: 'pointer'
+                                }}
                             >
                                 Cancel
                             </button>
@@ -649,7 +904,7 @@
             );
         };
 
-        // Chat Page Component
+        // Chat Page Component with all features
         const ChatPage = ({ messages, setMessages, inputValue, setInputValue, sessionId, setSessionId }) => {
             const [isTyping, setIsTyping] = useState(false);
             const [userId] = useState(() => {
@@ -660,6 +915,7 @@
                 }
             });
             const [uploadModalOpen, setUploadModalOpen] = useState(false);
+            const [tokenCount, setTokenCount] = useState(0);
             const messagesEndRef = useRef(null);
 
             useEffect(() => {
@@ -672,7 +928,7 @@
                 if (messages.length === 0) {
                     setMessages([{
                         id: Date.now(),
-                        text: "Hello! I'm your BU Course Agent. I can help you with:\n\n• Course recommendations\n• Schedule planning\n• Degree requirements\n• Academic guidance\n\nYou can also upload documents like transcripts, resumes, or job descriptions for personalized advice!",
+                        text: "Hello! I'm your BU Course Agent. I can help you with\:\n\n• Course recommendations\n• Schedule planning\n• Degree requirements\n• Academic guidance\n\nYou can also upload documents like transcripts, resumes, or job descriptions for personalized advice!",
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
@@ -687,6 +943,12 @@
                 const messageText = text || inputValue.trim();
                 if (!messageText) return;
 
+                const tokens = countTokens(messageText);
+                if (tokens > 100) {
+                    alert(`Your message is too long (${tokens} tokens). Please limit to 100 tokens.`);
+                    return;
+                }
+
                 const userMessage = {
                     id: Date.now(),
                     text: messageText,
@@ -695,6 +957,7 @@
                 };
                 setMessages(prev => [...prev, userMessage]);
                 setInputValue('');
+                setTokenCount(0);
                 setIsTyping(true);
 
                 // Set up 3-second timeout to show a status update
@@ -714,19 +977,35 @@
                 statusUpdateTimeout = setTimeout(showStatusUpdate, 3000);
 
                 try {
+                    console.log('Sending message to:', `${API_BASE_URL}/chat`);
+                    console.log('Message payload:', {
+                        message: messageText,
+                        session_id: sessionId
+                    });
+
                     const response = await fetch(`${API_BASE_URL}/chat`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
                         body: JSON.stringify({
                             message: messageText,
                             user_id: userId,
-                            session_id: sessionId
+                            session_id: sessionId,
                         })
                     });
-
+                    
                     clearTimeout(statusUpdateTimeout);
 
+                    console.log('Response status:', response.status);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
                     const data = await response.json();
+                    console.log('Response data:', data);
                     
                     if (!sessionId && data.session_id) {
                         setSessionId(data.session_id);
@@ -738,7 +1017,7 @@
                         sender: 'agent',
                         timestamp: new Date()
                     };
-                    
+
                     // If status message was shown, replace it with the final response
                     if (statusMessageId) {
                         setMessages(prev => {
@@ -750,13 +1029,24 @@
                     } else {
                         setMessages(prev => [...prev, agentMessage]);
                     }
-
+                    
                 } catch (error) {
-                    clearTimeout(statusUpdateTimeout);
-                    console.error('Error:', error);
+                    console.error('Error sending message:', error);
+                    console.error('Error details:', error.message);
+                    
+                    // Show more specific error message
+                    let errorMessage = "I'm having trouble connecting. ";
+                    if (error.message.includes('404')) {
+                        errorMessage += "The chat endpoint was not found. Please check if the backend is running at the correct URL.";
+                    } else if (error.message.includes('Failed to fetch')) {
+                        errorMessage += "Cannot connect to the server. Please make sure the backend is running on port 8000.";
+                    } else {
+                        errorMessage += "Error: " + error.message;
+                    }
+                    
                     setMessages(prev => [...prev, {
                         id: Date.now() + 1,
-                        text: "I'm having trouble connecting right now. Please ensure the backend server is running",
+                        text: errorMessage,
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
@@ -766,16 +1056,8 @@
                 }
             };
 
-            const quickActions = [
-                { text: '📄 CS633 Help', action: 'What topics are covered in BU MET CS633?' },
-                { text: '📚 Course Recommendations', action: 'What courses are relevant to my career goals?' },
-                { text: '📅 Schedule Planning', action: 'Can you me plan my class schedule for next semester?' },
-                { text: '🎓 Degree Requirements', action: 'What are the core courses for BU MET\'s Master\'s program in Computer Information Systems?' },
-                { text: '🙋 Academic Advice', action: 'Which are the top trending skills in Computer Science right now?' }
-            ];
-
             const handleFileUpload = async (file, documentType) => {
-                try {
+                try {                    
                     // Create FormData to send the file
                     const formData = new FormData();
                     formData.append('file', file);
@@ -864,36 +1146,131 @@
                 }
             };
 
-            const clearChat = () => {
-                if (window.confirm('Are you sure you want to clear the chat history?')) {
+            /*
+            const newChat = () => {
+                if (window.confirm('Start a new chat? Current conversation will be lost.')) {
                     setMessages([{
                         id: Date.now(),
-                        text: "Chat cleared. How can I help you?",
+                        text: "New chat started. How can I help you today?",
                         sender: 'agent',
                         timestamp: new Date()
                     }]);
                     setSessionId(null);
                 }
             };
+            */
+
+            const newChat = async () => {
+                // Clear the current chat history by resetting the messages state
+                setMessages([]);
+                setTokenCount(0);
+                setInputValue('');
+                setIsTyping(false);
+
+                // Set a loading status to indicate a new session is being started
+                const statusMessageId = Date.now();
+                setMessages(prev => [
+                    ...prev, 
+                    {
+                        id: statusMessageId,
+                        text: "New chat started. How can I help you today?",
+                        sender: 'agent',
+                        timestamp: new Date()
+                    }
+                ]);
+
+                try {
+                    console.log('Requesting to delete current session and start a new one...');
+                    
+                    // Sending a DELETE request to the /session/{user_id}/{session_id} endpoint
+                    const response = await fetch(`${API_BASE_URL}/session/${userId}/${sessionId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    // If the response is not OK, throw an error
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    // Process the response data
+                    const data = await response.json();
+                    console.log('Delete session response:', data);
+
+                    // Clear any previous session data
+                    setSessionId(null);
+
+                    // If the session is successfully deleted, notify the user
+                    setMessages(prev => {
+                        // Replace the "starting new chat" status with the confirmation message
+                        return prev.map(msg =>
+                            msg.id === statusMessageId 
+                                ? { ...msg, text: "A new chat session has been started. Feel free to ask me anything!" } 
+                                : msg
+                        );
+                    });
+
+                    console.log('New session started successfully.');
+
+                } catch (error) {
+                    console.error('Error starting new chat session:', error);
+                    
+                    // Show error message to user if session deletion fails
+                    const errorMessage = "I'm having trouble starting a new session. Please try again later.";
+                    setMessages(prev => [
+                        ...prev, 
+                        {
+                            id: Date.now(),
+                            text: errorMessage,
+                            sender: 'agent',
+                            timestamp: new Date()
+                        }
+                    ]);
+                } finally {
+                    setIsTyping(false);
+                }
+            };
 
             const exportChat = () => {
-                const chatText = messages.map(m => 
-                    `[${m.timestamp.toLocaleTimeString()}] ${m.sender === 'user' ? 'You' : 'Agent'}: ${m.text}`
-                ).join('\n\n');
-                
-                const blob = new Blob([chatText], { type: 'text/plain' });
+                if (messages.length === 0) {
+                    alert('No messages to export.');
+                    return;
+                }
+
+                const chatContent = messages.map(msg => {
+                    const sender = msg.sender === 'user' ? 'You' : 'BU Course Agent';
+                    const time = new Date(msg.timestamp).toLocaleString();
+                    return `[${time}] ${sender}: ${msg.text}`;
+                }).join('\n\n');
+
+                const blob = new Blob([chatContent], { type: 'text/plain' });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `chat_export_${new Date().toISOString().split('T')[0]}.txt`;
+                a.download = `BU_Course_Agent_Chat_${new Date().toISOString().slice(0,10)}.txt`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 window.URL.revokeObjectURL(url);
             };
 
+
+            const predefinedPrompts = [
+                "What topics are covered in BU MET CS633?",
+                "What courses are relevant to my career goals?",
+                "Can you help me plan my class schedule?",
+                "Which are the top trending skills in CS?"
+            ];
+
             return (
-                <div className="min-h-screen pt-20 flex">
+                <div style={{
+                    height: 'calc(100vh - 140px)',
+                    display: 'flex',
+                    overflow: 'hidden'
+                }}>
                     {/* Upload Modal */}
                     <UploadModal
                         isOpen={uploadModalOpen}
@@ -902,366 +1279,761 @@
                     />
 
                     {/* Sidebar */}
-                    <div className="w-80 glass m-4 rounded-2xl p-6">
-                        <h3 className="text-xl font-bold text-white mb-4">Quick Actions</h3>
-                        
+                    <div style={{
+                        width: '250px',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        padding: '20px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '10px'
+                    }}>
                         <button 
-                            onClick={() => {
-                                setMessages([{
-                                    id: Date.now(),
-                                    text: "Hello! I'm your BU Course Agent. I can help you with:\n\n• Course recommendations\n• Schedule planning\n• Degree requirements\n• Academic guidance\n\nYou can also upload documents like transcripts, resumes, or job descriptions for personalized advice!",
-                                    sender: 'agent',
-                                    timestamp: new Date()
-                                }]);
-                                setSessionId(null);
+                            onClick={newChat}
+                            style={{
+                                background: 'white',
+                                color: '#5e72e4',
+                                padding: '10px',
+                                borderRadius: '25px',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontWeight: 'bold',
+                                marginBottom: '10px'
                             }}
-                            className="w-full btn-animated mb-6"
                         >
-                            <i className="fas fa-plus mr-2"></i>
+                            <i className="fas fa-plus" style={{marginRight: '8px'}}></i>
                             New Chat
                         </button>
 
-                        <div className="space-y-3 mb-6">
-                            {quickActions.map((action, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => {
-                                        setMessages([]);
-                                        setSessionId(null);
-                                        sendMessage(action.action);
-                                    }}
+                        <h3 style={{color: 'white', fontSize: '14px', marginBottom: '10px'}}>
+                            Predefined Prompts
+                        </h3>
+                        
+                        {predefinedPrompts.map((prompt, index) => (
+                            <button
+                                key={index}
+                                onClick={() => {
+                                    // Start a new chat first
+                                    setMessages([]);
+                                    setSessionId(null);
+                                    setTokenCount(0);
                                     
-                                    className="w-full text-left glass p-3 rounded-lg text-white hover:bg-white hover:bg-opacity-10 transition-all"
-                                >
-                                    {action.text}
-                                </button>
-                            ))}
-                        </div>
+                                    // Then send the predefined prompt
+                                    setTimeout(() => sendMessage(prompt), 100);
+                                }}
+                                style={{
+                                    background: 'rgba(255, 255, 255, 0.1)',
+                                    color: 'white',
+                                    padding: '10px',
+                                    borderRadius: '10px',
+                                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                                    cursor: 'pointer',
+                                    textAlign: 'left',
+                                    fontSize: '12px',
+                                    transition: 'all 0.3s'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                                    e.target.style.transform = 'translateX(5px)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                                    e.target.style.transform = 'translateX(0)';
+                                }}
+                            >
+                                {prompt}
+                            </button>
+                        ))}
 
-                        <div className="mt-auto">
+                        <div style={{marginTop: '20px'}}>
                             <button 
                                 onClick={() => setUploadModalOpen(true)}
-                                className="w-full glass p-3 rounded-lg text-white hover:bg-white hover:bg-opacity-10 transition-all"
+                                style={{
+                                    width: '100%',
+                                    background: 'rgba(255, 255, 255, 0.1)',
+                                    color: 'white',
+                                    padding: '10px',
+                                    borderRadius: '10px',
+                                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                                    cursor: 'pointer',
+                                    fontSize: '12px',
+                                    marginBottom: '10px'
+                                }}
                             >
-                                <i className="fas fa-upload mr-2"></i>
+                                <i className="fas fa-upload" style={{marginRight: '8px'}}></i>
                                 Upload Document
+                            </button>
+
+                            <button 
+                                onClick={exportChat}
+                                style={{
+                                    width: '100%',
+                                    background: 'rgba(255, 255, 255, 0.1)',
+                                    color: 'white',
+                                    padding: '10px',
+                                    borderRadius: '10px',
+                                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                                    cursor: 'pointer',
+                                    fontSize: '12px',
+                                    marginBottom: '10px'
+                                }}
+                            >
+                                <i className="fas fa-download" style={{marginRight: '8px'}}></i>
+                                Export Chat
                             </button>
                         </div>
                     </div>
 
                     {/* Chat Area */}
-                    <div className="flex-grow flex flex-col m-4">
-                        <div className="glass rounded-t-2xl p-6">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center">
-                                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-400 to-pink-600 flex items-center justify-center mr-4">
-                                        <i className="fas fa-robot text-white"></i>
-                                    </div>
-                                    <div>
-                                        <h2 className="text-xl font-bold text-white">BU Course Assistant</h2>
-                                        <p className="text-white opacity-60 text-sm">Always here to help</p>
-                                    </div>
-                                </div>
-                                <div className="flex space-x-3">
-                                    <button 
-                                        onClick={exportChat}
-                                        className="text-white opacity-60 hover:opacity-100 transition" 
-                                        title="Export Chat"
-                                    >
-                                        <i className="fas fa-download text-xl"></i>
-                                    </button>
-                                    <button 
-                                        onClick={clearChat}
-                                        className="text-white opacity-60 hover:opacity-100 transition" 
-                                        title="Clear Chat"
-                                    >
-                                        <i className="fas fa-trash text-xl"></i>
-                                    </button>
-                                </div>
-                            </div>
+                    <div style={{
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        margin: '20px',
+                        borderRadius: '20px'
+                    }}>
+                        {/* Header */}
+                        <div style={{
+                            padding: '20px',
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            borderRadius: '20px 20px 0 0',
+                            textAlign: 'center'
+                        }}>
+                            <h2 style={{color: 'white', margin: 0}}>BU Course Agent</h2>
                         </div>
 
-                        <div className="flex-grow glass p-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 280px)' }}>
+                        {/* Messages */}
+                        <div style={{
+                            flex: 1,
+                            padding: '20px',
+                            overflowY: 'auto',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '15px'
+                        }}>
                             {messages.map(message => (
-                                <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} mb-4 message-bubble`}>
-                                    <div className={`max-w-2xl px-6 py-3 rounded-2xl ${
-                                        message.sender === 'user'
-                                            ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
-                                            : 'glass text-white agent-message'
-                                    }`}>
-                                    {
-                                        //formatMessageText(message.text)}
-                                    }
-                                    <p className="whitespace-pre-wrap">{message.text}</p>
-                                        <p className="text-xs opacity-60 mt-2">
-                                            {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                        </p>
+                                <div key={message.id} style={{
+                                    display: 'flex',
+                                    alignItems: 'flex-start',
+                                    justifyContent: message.sender === 'user' ? 'flex-end' : 'flex-start'
+                                }}>
+                                    {message.sender === 'agent' && (
+                                        <span style={{fontSize: '24px', marginRight: '10px'}}>🤖</span>
+                                    )}
+                                    <div style={{
+                                        maxWidth: '70%',
+                                        padding: '12px 16px',
+                                        borderRadius: '12px',
+                                        background: message.sender === 'user' 
+                                            ? 'linear-gradient(135deg, #667eea, #764ba2)' 
+                                            : 'rgba(255, 255, 255, 0.1)',
+                                        color: 'white'
+                                    }}>
+                                        {message.sender === 'agent' ? formatMessageText(message.text) : message.text}
                                     </div>
+                                    {message.sender === 'user' && (
+                                        <span style={{fontSize: '24px', marginLeft: '10px'}}>👤</span>
+                                    )}
                                 </div>
                             ))}
                             
                             {isTyping && (
-                                <div className="flex justify-start mb-4">
-                                    <div className="glass px-6 py-3 rounded-2xl">
-                                        <div className="typing-dot"></div>
-                                        <div className="typing-dot"></div>
-                                        <div className="typing-dot"></div>
+                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                    <span style={{fontSize: '24px', marginRight: '10px'}}>🤖</span>
+                                    <div style={{
+                                        padding: '12px 16px',
+                                        borderRadius: '12px',
+                                        background: 'rgba(255, 255, 255, 0.1)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '3px'
+                                    }}>
+                                        <span className="typing-dot"></span>
+                                        <span className="typing-dot"></span>
+                                        <span className="typing-dot"></span>
                                     </div>
                                 </div>
                             )}
                             <div ref={messagesEndRef} />
                         </div>
 
-                        <div className="glass rounded-b-2xl p-4">
-                            <div className="flex items-center space-x-3">
-                                <button 
+                        {/* Input */}
+                        <div style={{
+                            padding: '20px',
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            borderRadius: '0 0 20px 20px'
+                        }}>
+                            <div style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+                                <button
                                     onClick={() => setUploadModalOpen(true)}
-                                    className="text-white opacity-60 hover:opacity-100 transition" 
+                                    style={{
+                                        padding: '12px',
+                                        borderRadius: '50%',
+                                        border: 'none',
+                                        background: 'rgba(255, 255, 255, 0.1)',
+                                        color: 'white',
+                                        cursor: 'pointer'
+                                    }}
                                     title="Upload Document"
                                 >
-                                    <i className="fas fa-paperclip text-xl"></i>
+                                    <i className="fas fa-paperclip"></i>
                                 </button>
-                                <input
-                                    type="text"
-                                    value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                                    placeholder="Type your message..."
-                                    className="flex-grow bg-white bg-opacity-10 text-white placeholder-white placeholder-opacity-60 px-5 py-3 rounded-full focus:outline-none focus:bg-opacity-20 transition-all"
-                                />
-                                <button onClick={() => sendMessage()} className="btn-animated rounded-full px-6">
+                                <div style={{flex: 1, position: 'relative'}}>
+                                    <input
+                                        type="text"
+                                        value={inputValue}
+                                        onChange={(e) => {
+                                            const newValue = e.target.value;
+                                            setInputValue(newValue);
+                                            const newTokenCount = countTokens(newValue);
+                                            setTokenCount(newTokenCount);
+                                            console.log('Input changed:', { 
+                                                text: newValue, 
+                                                tokens: newTokenCount,
+                                                length: newValue.length 
+                                            });
+                                        }}
+                                        onKeyPress={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                                e.preventDefault();
+                                                const currentTokens = countTokens(inputValue);
+                                                if (currentTokens <= 100 && inputValue.trim()) {
+                                                    sendMessage();
+                                                } else if (currentTokens > 100) {
+                                                    alert(`Your message is too long (${currentTokens} tokens). Please limit to 100 tokens.`);
+                                                }
+                                            }
+                                        }}
+                                        placeholder="Type a message..."
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px 80px 12px 15px',
+                                            borderRadius: '25px',
+                                            border: '2px solid ' + (tokenCount > 100 ? '#f87171' : 'transparent'),
+                                            background: 'rgba(255, 255, 255, 0.1)',
+                                            color: 'white',
+                                            fontSize: '14px',
+                                            outline: 'none',
+                                            transition: 'border-color 0.3s'
+                                        }}
+                                    />
+                                    <span style={{
+                                        position: 'absolute',
+                                        right: '10px',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        fontSize: '12px',
+                                        padding: '4px 8px',
+                                        borderRadius: '12px',
+                                        background: tokenCount > 100 ? 'rgba(248, 113, 113, 0.2)' : 
+                                                   tokenCount > 80 ? 'rgba(251, 191, 36, 0.2)' : 
+                                                   'rgba(134, 239, 172, 0.2)',
+                                        color: tokenCount > 100 ? '#f87171' : 
+                                               tokenCount > 80 ? '#fbbf24' : 
+                                               '#ffffff'
+                                    }}>
+                                        {tokenCount}/100
+                                    </span>
+                                </div>
+                                <button 
+                                    onClick={() => sendMessage()}
+                                    disabled={tokenCount > 100}
+                                    style={{
+                                        padding: '12px 20px',
+                                        borderRadius: '25px',
+                                        border: 'none',
+                                        background: tokenCount > 100 ? '#999' : 'white',
+                                        color: tokenCount > 100 ? '#666' : '#5e72e4',
+                                        cursor: tokenCount > 100 ? 'not-allowed' : 'pointer'
+                                    }}
+                                >
                                     <i className="fas fa-paper-plane"></i>
                                 </button>
                             </div>
+                            {tokenCount > 100 && (
+                                <p style={{color: '#f87171', fontSize: '12px', marginTop: '8px', textAlign: 'center'}}>
+                                    Message exceeds 100 token limit
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>
             );
         };
 
-        // Features Page
-        const FeaturesPage = () => (
-            <div className="min-h-screen pt-24 pb-12">
-                <div className="container mx-auto px-6">
-                    <h1 className="text-5xl font-bold text-center rainbow-text mb-12">Features & Limitations</h1>
-                    
-                    <div className="max-w-4xl mx-auto">
-                        <div className="glass p-8 rounded-2xl mb-8">
-                            <h2 className="text-3xl font-bold text-white mb-6">What Our Chatbot Can Do</h2>
-                            <ul className="space-y-4 text-white">
-                                <li className="flex items-start">
-                                    <i className="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Course Recommendations:</strong> Suggests appropriate courses based on your academic background and program requirements
-                                    </div>
-                                </li>
-                                <li className="flex items-start">
-                                    <i className="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Schedule Planning:</strong> Helps create optimal class schedules considering prerequisites and time conflicts
-                                    </div>
-                                </li>
-                                <li className="flex items-start">
-                                    <i className="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Document Analysis:</strong> Process transcripts, resumes, and job descriptions for tailored academic advice
-                                    </div>
-                                </li>
-                                <li className="flex items-start">
-                                    <i className="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Degree Requirements:</strong> Provides information about program requirements and graduation criteria
-                                    </div>
-                                </li>
-                                <li className="flex items-start">
-                                    <i className="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Career Alignment:</strong> Matches course selections with career goals based on job descriptions
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div className="glass p-8 rounded-2xl">
-                            <h2 className="text-3xl font-bold text-white mb-6">Current Limitations</h2>
-                            <ul className="space-y-4 text-white">
-                                <li className="flex items-start">
-                                    <i className="fas fa-exclamation-triangle text-yellow-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Token Size:</strong> Maximum context window of 4,096 tokens per conversation
-                                    </div>
-                                </li>
-                                <li className="flex items-start">
-                                    <i className="fas fa-exclamation-triangle text-yellow-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Rate Limits:</strong> 10 queries per minute on the free tier (Google Gemini API)
-                                    </div>
-                                </li>
-                                <li className="flex items-start">
-                                    <i className="fas fa-exclamation-triangle text-yellow-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Scope:</strong> Focused specifically on BU MET Computer Science programs
-                                    </div>
-                                </li>
-                                <li className="flex items-start">
-                                    <i className="fas fa-exclamation-triangle text-yellow-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <strong>Real-time Data:</strong> Does not have access to real-time course availability or enrollment numbers
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-
-        // About Page
+        // About Page with complete content
         const AboutPage = () => (
-            <div className="min-h-screen pt-24 pb-12">
-                <div className="container mx-auto px-6">
-                    <h1 className="text-5xl font-bold text-center rainbow-text mb-12">Our Team</h1>
+            <div style={{
+                height: 'calc(100vh - 140px)',
+                padding: '40px',
+                color: 'white',
+                overflow: 'auto',
+                animation: 'fadeIn 0.8s ease-out'
+            }}>
+                <h1 style={{textAlign: 'center', marginBottom: '30px', animation: 'slideIn 0.6s ease-out'}}>About Us</h1>
+                <div style={{
+                    maxWidth: '900px',
+                    margin: '0 auto'
+                }}>
+                    <div style={{
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        padding: '30px',
+                        borderRadius: '20px',
+                        marginBottom: '20px',
+                        backdropFilter: 'blur(10px)',
+                        animation: 'fadeIn 1s ease-out'
+                    }}>
+                        <h2 style={{marginBottom: '15px'}}>Who We Are</h2>
+                        <p style={{marginBottom: '20px', lineHeight: '1.6'}}>
+                            We are graduate students at Boston University's Metropolitan College, enrolled in the 
+                            MET CS 633 Software Quality, Testing, and Security Management course. Our team is 
+                            passionate about leveraging AI technology to improve the academic experience for students.
+                        </p>
+                        
+                        <h3 style={{marginBottom: '15px'}}>Our Team:</h3>
+                        <ul style={{listStyle: 'none', padding: 0}}>
+                            <li style={{padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.1)'}}>
+                                <i className="fas fa-user-graduate" style={{marginRight: '10px', color: '#86efac'}}></i>
+                                <strong>Sean Silver</strong> - Team Lead & Backend Developer
+                                <p style={{marginLeft: '30px', fontSize: '14px', opacity: 0.8}}>
+                                    Leading architecture design and API development
+                                </p>
+                            </li>
+                            <li style={{padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.1)'}}>
+                                <i className="fas fa-user-graduate" style={{marginRight: '10px', color: '#86efac'}}></i>
+                                <strong>Gagan Veginati</strong> - Frontend Developer
+                                <p style={{marginLeft: '30px', fontSize: '14px', opacity: 0.8}}>
+                                    Creating responsive UI and user experience
+                                </p>
+                            </li>
+                            <li style={{padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.1)'}}>
+                                <i className="fas fa-user-graduate" style={{marginRight: '10px', color: '#86efac'}}></i>
+                                <strong>Brendan Collins</strong> - Scrum Master & Designer
+                                <p style={{marginLeft: '30px', fontSize: '14px', opacity: 0.8}}>
+                                    Managing sprints and designing wireframes
+                                </p>
+                            </li>
+                            <li style={{padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.1)'}}>
+                                <i className="fas fa-user-graduate" style={{marginRight: '10px', color: '#86efac'}}></i>
+                                <strong>Zharas Omirzak</strong> - UI Designer & Tester
+                                <p style={{marginLeft: '30px', fontSize: '14px', opacity: 0.8}}>
+                                    Designing interfaces and quality assurance
+                                </p>
+                            </li>
+                            <li style={{padding: '10px 0'}}>
+                                <i className="fas fa-user-graduate" style={{marginRight: '10px', color: '#86efac'}}></i>
+                                <strong>Jonathan Rothendler</strong> - Database Administrator
+                                <p style={{marginLeft: '30px', fontSize: '14px', opacity: 0.8}}>
+                                    Managing data architecture and storage
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
                     
-                    <div className="max-w-6xl mx-auto">
-                        <div className="glass p-8 rounded-2xl mb-8">
-                            <p className="text-white text-lg mb-8">
-                                We are graduate students at Boston University's Metropolitan College, enrolled in the MET CS 633 
-                                Software Quality, Testing, and Security Management course. Our team has developed this AI-powered 
-                                course advisory system as our final project.
-                            </p>
-                        </div>
-
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <div className="glass p-6 rounded-2xl">
-                                <div className="flex items-center mb-4">
-                                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-purple-600 flex items-center justify-center mr-4">
-                                        <i className="fas fa-user text-white text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-white">Gagan V</h3>
-                                        <p className="text-white opacity-80">Development Lead</p>
-                                    </div>
-                                </div>
-                                <p className="text-white opacity-90">
-                                    Led the development of the multi-agent system architecture and backend implementation using Google's Gemini API.
-                                </p>
-                            </div>
-
-                            <div className="glass p-6 rounded-2xl">
-                                <div className="flex items-center mb-4">
-                                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-green-400 to-teal-600 flex items-center justify-center mr-4">
-                                        <i className="fas fa-user text-white text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-white">Anand</h3>
-                                        <p className="text-white opacity-80">Frontend Developer</p>
-                                    </div>
-                                </div>
-                                <p className="text-white opacity-90">
-                                    Designed and implemented the React-based user interface with focus on user experience and responsive design.
-                                </p>
-                            </div>
-
-                            <div className="glass p-6 rounded-2xl">
-                                <div className="flex items-center mb-4">
-                                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-400 to-orange-600 flex items-center justify-center mr-4">
-                                        <i className="fas fa-user text-white text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-white">Shashank</h3>
-                                        <p className="text-white opacity-80">Project Manager</p>
-                                    </div>
-                                </div>
-                                <p className="text-white opacity-90">
-                                    Coordinated team efforts, managed project timeline, and ensured alignment with course requirements and objectives.
-                                </p>
-                            </div>
-
-                            <div className="glass p-6 rounded-2xl">
-                                <div className="flex items-center mb-4">
-                                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-pink-400 to-red-600 flex items-center justify-center mr-4">
-                                        <i className="fas fa-user text-white text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-white">Brendan</h3>
-                                        <p className="text-white opacity-80">QA & Testing Lead</p>
-                                    </div>
-                                </div>
-                                <p className="text-white opacity-90">
-                                    Led quality assurance efforts, conducted comprehensive testing, and ensured application reliability and user experience.
-                                </p>
-                            </div>
-                        </div>
+                    <div style={{
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        padding: '30px',
+                        borderRadius: '20px',
+                        marginBottom: '20px',
+                        backdropFilter: 'blur(10px)',
+                        animation: 'fadeIn 1.2s ease-out'
+                    }}>
+                        <h2 style={{marginBottom: '15px'}}>Our Mission</h2>
+                        <p style={{lineHeight: '1.6'}}>
+                            The BU Course Agent is designed to help students navigate the complex landscape of course 
+                            selection and degree planning. By leveraging Google's Gemini AI technology, we provide 
+                            personalized academic guidance that considers your career goals, prerequisites, and 
+                            academic interests.
+                        </p>
+                    </div>
+                    
+                    <div style={{
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        padding: '30px',
+                        borderRadius: '20px',
+                        backdropFilter: 'blur(10px)',
+                        animation: 'fadeIn 1.4s ease-out'
+                    }}>
+                        <h2 style={{marginBottom: '15px'}}>What We Offer</h2>
+                        <ul style={{lineHeight: '1.8'}}>
+                            <li>🎯 Personalized course recommendations based on your goals</li>
+                            <li>📚 Comprehensive information about BU MET CS programs</li>
+                            <li>🗓️ Smart schedule planning assistance</li>
+                            <li>💼 Career-aligned academic guidance</li>
+                            <li>📊 Transcript analysis and degree progress tracking</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         );
 
-        // Contact Page
+        // Contact Page with complete content
         const ContactPage = () => (
-            <div className="min-h-screen pt-24 pb-12">
-                <div className="container mx-auto px-6">
-                    <h1 className="text-5xl font-bold text-center rainbow-text mb-12">Contact & Resources</h1>
-                    
-                    <div className="max-w-4xl mx-auto">
-                        <div className="glass p-8 rounded-2xl mb-8">
-                            <h2 className="text-3xl font-bold text-white mb-6">Academic Resources</h2>
-                            <div className="space-y-6">
-                                <a href="https://www.bu.edu/met/programs/graduate/computer-science/" 
-                                   target="_blank" 
-                                   rel="noopener noreferrer"
-                                   className="flex items-center text-white hover:text-blue-300 transition">
-                                    <i className="fas fa-graduation-cap text-2xl mr-4"></i>
-                                    <div>
-                                        <h3 className="text-xl font-bold">BU MET Computer Science Program</h3>
-                                        <p className="opacity-80">Explore the full Computer Science graduate program at Boston University MET</p>
-                                    </div>
-                                </a>
-                            </div>
+            <div style={{
+                height: 'calc(100vh - 140px)',
+                padding: '40px',
+                color: 'white',
+                overflow: 'auto',
+                animation: 'fadeIn 0.8s ease-out'
+            }}>
+                <h1 style={{textAlign: 'center', marginBottom: '30px', animation: 'slideIn 0.6s ease-out'}}>Contact Us</h1>
+                <div style={{
+                    maxWidth: '800px',
+                    margin: '0 auto'
+                }}>
+                    <div style={{
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        padding: '30px',
+                        borderRadius: '20px',
+                        marginBottom: '20px',
+                        backdropFilter: 'blur(10px)',
+                        animation: 'fadeIn 1s ease-out'
+                    }}>
+                        <h2 style={{marginBottom: '20px'}}>Get in Touch</h2>
+                        <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                            For questions about this project or to learn more about BU's Computer Science programs, 
+                            please use the following resources:
+                        </p>
+                        
+                        <div style={{
+                            padding: '20px',
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            borderRadius: '15px',
+                            marginBottom: '15px',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.transform = 'translateX(10px)'}
+                        onMouseLeave={(e) => e.currentTarget.style.transform = 'translateX(0)'}>
+                            <a href="https://www.bu.edu/met/degrees-certificates/ms-computer-information-systems/" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               style={{color: 'white', textDecoration: 'none'}}>
+                                <i className="fas fa-graduation-cap" style={{marginRight: '15px', fontSize: '20px'}}></i>
+                                <strong>BU MET MS Computer Information Systems</strong>
+                                <p style={{marginLeft: '35px', fontSize: '14px', opacity: 0.8}}>
+                                    Explore our graduate programs and curriculum
+                                </p>
+                            </a>
                         </div>
-
-                        <div className="glass p-8 rounded-2xl mb-8">
-                            <h2 className="text-3xl font-bold text-white mb-6">Course Information</h2>
-                            <div className="space-y-6">
-                                <a href="https://www.bu.edu/met/courses/" 
-                                   target="_blank" 
-                                   rel="noopener noreferrer"
-                                   className="flex items-center text-white hover:text-blue-300 transition">
-                                    <i className="fas fa-book text-2xl mr-4"></i>
-                                    <div>
-                                        <h3 className="text-xl font-bold">MET CS 633</h3>
-                                        <p className="opacity-80">Software Quality, Testing, and Security Management</p>
-                                    </div>
-                                </a>
-                            </div>
+                        
+                        <div style={{
+                            padding: '20px',
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            borderRadius: '15px',
+                            marginBottom: '15px',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.transform = 'translateX(10px)'}
+                        onMouseLeave={(e) => e.currentTarget.style.transform = 'translateX(0)'}>
+                            <a href="https://met.bu.edu/inquiryform" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               style={{color: 'white', textDecoration: 'none'}}>
+                                <i className="fas fa-envelope" style={{marginRight: '15px', fontSize: '20px'}}></i>
+                                <strong>BU MET Inquiry Form</strong>
+                                <p style={{marginLeft: '35px', fontSize: '14px', opacity: 0.8}}>
+                                    Contact admissions for program information
+                                </p>
+                            </a>
                         </div>
-
-                        <div className="glass p-8 rounded-2xl">
-                            <h2 className="text-3xl font-bold text-white mb-6">Faculty Contact</h2>
-                            <div className="space-y-6">
-                                <div className="flex items-center text-white">
-                                    <i className="fas fa-user-tie text-2xl mr-4"></i>
-                                    <div>
-                                        <h3 className="text-xl font-bold">Course Instructor</h3>
-                                        <p className="opacity-80">For academic inquiries related to CS 633</p>
-                                        <p className="text-sm opacity-60 mt-2">Contact information available through BU MET portal</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="glass p-8 rounded-2xl mt-8">
-                            <h2 className="text-3xl font-bold text-white mb-4">API Setup Instructions</h2>
-                            <p className="text-white mb-4">To run this application locally, you need a Google Gemini API key:</p>
-                            <ol className="space-y-3 text-white">
-                                <li>1. Visit <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">Google AI Studio</a></li>
-                                <li>2. Create a new API key (free tier available)</li>
-                                <li>3. Create a <code className="bg-black bg-opacity-30 px-2 py-1 rounded">.env</code> file in the project root</li>
-                                <li>4. Add your key: <code className="bg-black bg-opacity-30 px-2 py-1 rounded">GOOGLE_API_KEY=your_key_here</code></li>
-                                <li>5. Add model name: <code className="bg-black bg-opacity-30 px-2 py-1 rounded">MODEL_NAME=gemini-2.0-flash-exp</code></li>
-                            </ol>
+                        
+                        <div style={{
+                            padding: '20px',
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            borderRadius: '15px',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.transform = 'translateX(10px)'}
+                        onMouseLeave={(e) => e.currentTarget.style.transform = 'translateX(0)'}>
+                            <a href="https://www.bu.edu/academics/met/courses/met-cs-633/" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               style={{color: 'white', textDecoration: 'none'}}>
+                                <i className="fas fa-book" style={{marginRight: '15px', fontSize: '20px'}}></i>
+                                <strong>MET CS 633 Course Information</strong>
+                                <p style={{marginLeft: '35px', fontSize: '14px', opacity: 0.8}}>
+                                    Learn about our Software Quality & Testing course
+                                </p>
+                            </a>
                         </div>
                     </div>
+                    
+                    <div style={{
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        padding: '30px',
+                        borderRadius: '20px',
+                        backdropFilter: 'blur(10px)',
+                        animation: 'fadeIn 1.2s ease-out',
+                        textAlign: 'center'
+                    }}>
+                        <h3 style={{marginBottom: '15px'}}>Office Hours</h3>
+                        <p>Monday - Friday: 9:00 AM - 5:00 PM EST</p>
+                        <p style={{marginTop: '20px', fontSize: '14px', opacity: 0.8}}>
+                            This is a student project. For official academic advising, 
+                            please contact BU MET directly.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // Terms Page with complete content
+        const TermsPage = () => (
+            <div style={{
+                height: 'calc(100vh - 140px)',
+                padding: '40px',
+                color: 'white',
+                overflow: 'auto',
+                animation: 'fadeIn 0.8s ease-out'
+            }}>
+                <h1 style={{textAlign: 'center', marginBottom: '30px', animation: 'slideIn 0.6s ease-out'}}>Terms of Service</h1>
+                <div style={{
+                    maxWidth: '900px',
+                    margin: '0 auto',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    padding: '40px',
+                    borderRadius: '20px',
+                    backdropFilter: 'blur(10px)'
+                }}>
+                    <p style={{marginBottom: '20px', fontStyle: 'italic'}}>
+                        Last Updated: December 2024
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>1. Acceptance of Terms</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        By accessing and using the BU Course Agent, you acknowledge that you have read, understood, 
+                        and agree to be bound by these Terms of Service. This is a student project created for 
+                        educational purposes as part of CS633 at Boston University.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>2. Purpose and Scope</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        The BU Course Agent is a prototype AI-powered academic advisory tool developed for the 
+                        CS633 Software Quality, Testing, and Security Management course. It is NOT an official 
+                        Boston University advising system and should not be used as the sole source for academic 
+                        planning decisions.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>3. No Official Academic Advice</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        All course recommendations, career insights, and academic guidance generated by this tool 
+                        are informational only and should not be considered official academic advising. Students 
+                        must consult with official BU academic advisors for formal degree planning and course 
+                        selection.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>4. User Responsibilities</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        Users are responsible for:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Verifying all program requirements through BU's official catalog</li>
+                        <li>Confirming prerequisites with official sources</li>
+                        <li>Meeting with official academic advisors for degree planning</li>
+                        <li>Ensuring accuracy of uploaded documents</li>
+                        <li>Using the tool responsibly and ethically</li>
+                    </ul>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>5. Acceptable Use Policy</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        You agree to use this tool for educational and informational purposes only. You will not:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Submit harmful, misleading, or inappropriate content</li>
+                        <li>Attempt to exploit or hack the system</li>
+                        <li>Impersonate others or provide false information</li>
+                        <li>Use the tool for commercial purposes</li>
+                        <li>Share sensitive personal information</li>
+                    </ul>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>6. Limitation of Liability</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        The project team, instructors, and Boston University are not liable for any decisions, 
+                        outcomes, or consequences resulting from the use of this tool. This includes but is not 
+                        limited to course enrollment decisions, degree planning choices, or career path selections.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>7. No Guarantees</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        This tool is a student term project created for CS633. All course suggestions, program 
+                        matches, and career insights are for demonstration purposes only. We make no guarantees 
+                        regarding academic success, admissions outcomes, graduation timelines, or employment 
+                        opportunities.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>8. Intellectual Property</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        This project was created by students at Boston University. All rights to the course data 
+                        and BU branding remain with Boston University. The tool uses Google's Gemini AI API for 
+                        natural language processing.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>9. Changes to Terms</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        As this is a student project, these terms are provided for educational completeness and 
+                        may be updated as part of the course requirements.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>10. Contact Information</h3>
+                    <p style={{lineHeight: '1.6'}}>
+                        For questions about these terms or the project, please refer to our Contact page or 
+                        reach out through the CS633 course channels.
+                    </p>
+                </div>
+            </div>
+        );
+
+        // Privacy Page with complete content
+        const PrivacyPage = () => (
+            <div style={{
+                height: 'calc(100vh - 140px)',
+                padding: '40px',
+                color: 'white',
+                overflow: 'auto',
+                animation: 'fadeIn 0.8s ease-out'
+            }}>
+                <h1 style={{textAlign: 'center', marginBottom: '30px', animation: 'slideIn 0.6s ease-out'}}>Privacy Policy</h1>
+                <div style={{
+                    maxWidth: '900px',
+                    margin: '0 auto',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    padding: '40px',
+                    borderRadius: '20px',
+                    backdropFilter: 'blur(10px)'
+                }}>
+                    <p style={{marginBottom: '20px', fontStyle: 'italic'}}>
+                        Effective Date: December 2024
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>1. Information We Collect</h3>
+                    <p style={{marginBottom: '20px', lineHeight: '1.6'}}>
+                        The BU Course Agent may temporarily process the following types of information:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li><strong>Chat Messages:</strong> Questions and responses during your session</li>
+                        <li><strong>Uploaded Documents:</strong> Transcripts, resumes, or course lists you choose to share</li>
+                        <li><strong>Session Data:</strong> Temporary session identifiers for conversation continuity</li>
+                        <li><strong>Usage Patterns:</strong> How you interact with the tool's features</li>
+                    </ul>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>2. How We Use Information</h3>
+                    <p style={{marginBottom: '20px', lineHeight: '1.6'}}>
+                        Information processed by the tool is used exclusively to:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Generate personalized course recommendations</li>
+                        <li>Provide academic planning guidance</li>
+                        <li>Analyze transcript data for degree progress</li>
+                        <li>Match career goals with course selections</li>
+                        <li>Improve the tool's responses during your session</li>
+                    </ul>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>3. Data Storage and Retention</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        <strong>Important:</strong> We do NOT permanently store your personal information. All data is:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Processed only during your active session</li>
+                        <li>Cleared when you start a new chat or close the browser</li>
+                        <li>Not saved to any database or file system</li>
+                        <li>Not shared with third parties except for AI processing</li>
+                    </ul>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>4. Third-Party Services</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        This tool uses Google's Gemini AI API for natural language processing. When you interact 
+                        with the chatbot, your messages are sent to Google's servers for processing. Google's 
+                        use of this data is governed by their own privacy policy:
+                    </p>
+                    <div style={{
+                        padding: '15px',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        borderRadius: '10px',
+                        marginBottom: '25px'
+                    }}>
+                        <a href="https://support.google.com/gemini/answer/13594961?hl=en" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           style={{color: '#86efac'}}>
+                            📖 Google Gemini Apps Privacy Hub
+                        </a>
+                    </div>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>5. No Personal Information Required</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        You are NOT required to provide personally identifiable information (PII) such as:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Social Security Numbers</li>
+                        <li>Student ID numbers</li>
+                        <li>Date of birth</li>
+                        <li>Home address</li>
+                        <li>Phone numbers</li>
+                        <li>Email addresses</li>
+                    </ul>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        Any such information you voluntarily provide will not be stored and is only used 
+                        within your current session.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>6. Cookies and Tracking</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        This prototype does NOT use:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Cookies for tracking</li>
+                        <li>Google Analytics or similar services</li>
+                        <li>User profiling or behavioral tracking</li>
+                        <li>Third-party advertising networks</li>
+                    </ul>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>7. Data Security</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        We implement reasonable security measures to protect your session data:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Secure HTTPS connections</li>
+                        <li>Session-based data isolation</li>
+                        <li>No permanent data storage</li>
+                        <li>Automatic session cleanup</li>
+                    </ul>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        However, as this is a student prototype, we recommend avoiding the upload of 
+                        highly sensitive personal documents.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>8. Your Rights</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        You have the right to:
+                    </p>
+                    <ul style={{marginLeft: '30px', marginBottom: '25px', lineHeight: '1.8'}}>
+                        <li>Use the tool without providing personal information</li>
+                        <li>Clear your chat history at any time</li>
+                        <li>Export your conversation for your records</li>
+                        <li>Start fresh sessions without historical data</li>
+                    </ul>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>9. Children's Privacy</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        This tool is designed for university students and is not intended for children under 13. 
+                        We do not knowingly collect information from children.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>10. Changes to This Policy</h3>
+                    <p style={{marginBottom: '25px', lineHeight: '1.6'}}>
+                        As this is a student project for CS633, this privacy policy may be updated as part of 
+                        course requirements. Any changes will be reflected on this page.
+                    </p>
+                    
+                    <h3 style={{marginBottom: '15px', color: '#86efac'}}>11. Contact Us</h3>
+                    <p style={{lineHeight: '1.6'}}>
+                        For privacy concerns or questions about data handling, please refer to our Contact page 
+                        or reach out through the appropriate BU MET channels. Remember, for official academic 
+                        records and privacy matters, contact BU's official services.
+                    </p>
                 </div>
             </div>
         );
@@ -1269,7 +2041,6 @@
         // Main App Component
         const App = () => {
             const [currentPage, setCurrentPage] = useState('home');
-            // Lifted chat state to App level so it persists across tab changes
             const [messages, setMessages] = useState([]);
             const [inputValue, setInputValue] = useState('');
             const [sessionId, setSessionId] = useState(null);
@@ -1289,21 +2060,24 @@
                                 setSessionId={setSessionId}
                             />
                         );
-                    case 'features':
-                        return <FeaturesPage />;
                     case 'about':
                         return <AboutPage />;
                     case 'contact':
                         return <ContactPage />;
+                    case 'terms':
+                        return <TermsPage />;
+                    case 'privacy':
+                        return <PrivacyPage />;
                     default:
                         return <HomePage setCurrentPage={setCurrentPage} />;
                 }
             };
 
             return (
-                <div className="min-h-screen">
+                <div style={{height: '100vh', display: 'flex', flexDirection: 'column'}}>
                     <Navigation currentPage={currentPage} setCurrentPage={setCurrentPage} />
                     {renderPage()}
+                    <Footer setCurrentPage={setCurrentPage} />
                 </div>
             );
         };

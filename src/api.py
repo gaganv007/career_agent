@@ -89,10 +89,7 @@ async def chat(request: ChatRequest):
     """
     try:
         user_id = request.user_id
-        session_id = (
-            request.session_id
-            or f"session_{user_id}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
-        )
+        session_id = request.session_id or f"session_{user_id}"
         logger.info(f"⚙️ User: {user_id}, Session: {session_id}")
 
         # Set token guard mode based on query source
@@ -137,6 +134,8 @@ async def chat(request: ChatRequest):
     except ClientError as e:
         error_detail = f"Error: {str(e)}"
         logger.error(error_detail)
+        logger.debug(f"MODEL Name - {os.getenv("MODEL_NAME")}")
+        logger.debug(f"API Key - ...{str(os.getenv("GOOGLE_API_KEY"))[-5:]}")
         response = (
             "Apologies, but my current subscription access with the LLM has been cut off."
             "\nPlease wait a few moments before trying again."
@@ -259,11 +258,23 @@ async def upload_document(file: UploadFile = File(...), document_type: str = "")
 async def delete_session(user_id: str, session_id: str):
     """Delete a specific session"""
     session_key = f"{user_id}_{session_id}"
+
     if session_key in sessions:
-        sessions[session_key] = await service.create_session(
+        # Create new session
+        await service.create_session(
             app_name=APP_NAME, user_id=user_id, session_id=session_id, state={}
         )
+
+        # Create runner for this session
+        runner = Runner(
+            agent=orchestrator,
+            app_name=APP_NAME,
+            session_service=service,
+        )
+        session_key = runner
+        logger.info(f"🧹 Cleared session for: {user_id}_{session_id}")
         return {"message": f"Session {session_key} cleared"}
+
     return {"message": "Session not found"}
 
 
@@ -275,7 +286,7 @@ if __name__ == "__main__":
     # Load environment variables from .env file
     from dotenv import load_dotenv
 
-    load_dotenv()
+    load_dotenv(override=True)
 
     port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)

@@ -6,7 +6,7 @@ from dotenv import find_dotenv, load_dotenv
 @pytest.fixture(scope="session", autouse=True)
 def load_env():
     env_file = find_dotenv(".env")
-    load_dotenv(env_file)
+    load_dotenv(env_file, override=True)
 
 
 @pytest.fixture(autouse=True)
@@ -19,7 +19,16 @@ def slow_down_tests():
 
 def pytest_collection_modifyitems(items):
     """Modify collected test in place to ensure test modules run in a specific order."""
-    MODULE_ORDER = ["tests.test_agent"]
+    MODULE_ORDER = [
+        "tests.test_logger_config_unit",
+        "tests.test_api_endpoints",
+        "tests.test_api_functions_unit",
+        "tests.test_upload_document_errors",
+        "tests.test_guardrails_unit",
+        "tests.test_delete_session",
+        "tests.test_agent_functions_unit",
+        "tests.test_agent",
+    ]
     module_mapping = {item: item.module.__name__ for item in items}
 
     sorted_items = items.copy()
