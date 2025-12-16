@@ -142,7 +142,9 @@ def test_chat_generic_exception_branch(monkeypatch):
     resp = client.post("/chat", json=payload)
     assert resp.status_code == 200
     data = resp.json()
-    assert "I'm sorry, but I'm having trouble processing that request." in data["response"]
+    assert (
+        "I'm sorry, but I'm having trouble processing that request." in data["response"]
+    )
 
 
 # ---------- query_agent function ----------

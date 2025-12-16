@@ -2,7 +2,7 @@
 
 import pytest
 from datetime import time
-from setup import agent_functions as af # for brevity in code below
+from setup import agent_functions as af  # for brevity in code below
 
 # ---- Dummy DB objects ------------------------------------------------------
 
@@ -160,6 +160,7 @@ def test_search_faq_handles_no_results(monkeypatch):
     # check that it handles empty results gracefully
     assert result == [] or result is not None
 
+
 def test_run_sql_query_raises_and_logs_on_error(monkeypatch, caplog):
     """
     Covers the exception path inside run_sql_query().
@@ -188,6 +189,7 @@ def test_run_sql_query_raises_and_logs_on_error(monkeypatch, caplog):
 
     # Adjust the message substring to whatever you log in run_sql_query
     assert "SQL query failed" in caplog.text or "Error running SQL query" in caplog.text
+
 
 class DummyCursor:
     def __init__(self, rows):

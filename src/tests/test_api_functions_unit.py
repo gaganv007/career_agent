@@ -37,7 +37,9 @@ def test_parse_document_rejects_unsupported_extension():
     with pytest.raises(HTTPException):
         api_functions.parse_document(file)
 
+
 # ---------- _parse_text tests ----------
+
 
 def test_parse_text_invalid_utf8_raises():
     # Invalid UTF-8 bytes → should raise during decode
@@ -113,6 +115,7 @@ class FakeDoc:
             FakeParagraph("Second paragraph"),
         ]
 
+
 class DummyCursorForRun:
     def __init__(self, rows):
         self._rows = rows
@@ -181,7 +184,9 @@ def test_parse_docx_propagates_errors(monkeypatch):
 
     assert "docx read error" in str(exc.value)
 
+
 # ---------- extra coverage for parse_document & _parse_pdf ----------
+
 
 def test_parse_document_routes_to_pdf(monkeypatch):
     """Ensure parse_document calls _parse_pdf when type is pdf."""

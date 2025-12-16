@@ -89,10 +89,7 @@ async def chat(request: ChatRequest):
     """
     try:
         user_id = request.user_id
-        session_id = (
-            request.session_id
-            or f"session_{user_id}"
-        )
+        session_id = request.session_id or f"session_{user_id}"
         logger.info(f"⚙️ User: {user_id}, Session: {session_id}")
 
         # Set token guard mode based on query source
@@ -261,7 +258,7 @@ async def upload_document(file: UploadFile = File(...), document_type: str = "")
 async def delete_session(user_id: str, session_id: str):
     """Delete a specific session"""
     session_key = f"{user_id}_{session_id}"
-    
+
     if session_key in sessions:
         # Create new session
         await service.create_session(
@@ -277,7 +274,7 @@ async def delete_session(user_id: str, session_id: str):
         session_key = runner
         logger.info(f"🧹 Cleared session for: {user_id}_{session_id}")
         return {"message": f"Session {session_key} cleared"}
-    
+
     return {"message": "Session not found"}
 
 

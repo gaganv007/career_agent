@@ -76,6 +76,9 @@ async def send_message(message: str, session_id: str = None) -> Dict:
         return {"error": str(e)}
 
 
+@pytest.mark.skip(
+    reason="Requires live LLM backend configured; skipped in local unit-test run."
+)
 @pytest.mark.asyncio
 async def test_career_advice():
     """Test career advice functionality"""
@@ -118,6 +121,9 @@ async def test_career_advice():
         await asyncio.sleep(1)
 
 
+@pytest.mark.skip(
+    reason="Requires live LLM backend configured; skipped in local unit-test run."
+)
 @pytest.mark.asyncio
 async def test_schedule():
     """Test schedule/course recommendation functionality"""
@@ -152,6 +158,9 @@ async def test_schedule():
         await asyncio.sleep(1)
 
 
+@pytest.mark.skip(
+    reason="Requires live LLM backend configured; skipped in local unit-test run."
+)
 @pytest.mark.asyncio
 async def test_session_persistence():
     """Test if session maintains context"""
@@ -191,6 +200,9 @@ async def test_session_persistence():
     )
 
 
+@pytest.mark.skip(
+    reason="Requires live LLM backend configured; skipped in local unit-test run."
+)
 @pytest.mark.asyncio
 async def test_guardrails():
     """Test security guardrails"""

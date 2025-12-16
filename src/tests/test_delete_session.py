@@ -14,7 +14,7 @@ def test_delete_non_existing_session():
 
 def test_delete_existing_session(monkeypatch):
     """Covers the existing-session branch that resets the session."""
-    
+
     # Fake a session
     sessions["u1_s1"] = "OLD_SESSION"
 
@@ -26,6 +26,7 @@ def test_delete_existing_session(monkeypatch):
         return FakeSession()
 
     from api import service
+
     monkeypatch.setattr(service, "create_session", fake_create_session)
 
     response = client.delete("/session/u1/s1")

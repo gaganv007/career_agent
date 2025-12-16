@@ -8,7 +8,7 @@ def test_upload_document_unsupported_type():
     """Covers unsupported document_type → triggers 400 error."""
     response = client.post(
         "/upload-document?document_type=exe",
-        files={"file": ("virus.exe", b"binarydata")}
+        files={"file": ("virus.exe", b"binarydata")},
     )
     assert response.status_code == 400
     assert "Unsupported file type" in response.json()["detail"]
@@ -21,11 +21,11 @@ def test_upload_document_empty_after_parse(monkeypatch):
         return ""  # simulate empty extraction
 
     from api import parse_document
+
     monkeypatch.setattr("api.parse_document", fake_parse)
 
     response = client.post(
-        "/upload-document?document_type=txt",
-        files={"file": ("empty.txt", b"")}
+        "/upload-document?document_type=txt", files={"file": ("empty.txt", b"")}
     )
 
     assert response.status_code == 400
